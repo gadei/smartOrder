@@ -1,12 +1,13 @@
 package smart.order.server;
 
+import static org.junit.Assert.assertTrue;
+
 public class Main {
 
 	public static void main(String[] args) {
 
+
 		SmartOrderServer orderServer = SmartOrderServer.getInstance();
-		
-		orderServer.initServer();
 		
 		try {
 			Thread.sleep(5000);
@@ -15,7 +16,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		orderServer.closeServer();
+		orderServer.stop();
 
 	}
 
