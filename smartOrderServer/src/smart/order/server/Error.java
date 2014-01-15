@@ -7,7 +7,9 @@ public enum Error {
 	
 	  ERR_OK(0, "Works well"),
 	  
-	  ERR_UNKNOWN(1, "An unknown error occurred.");
+	  ERR_UNKNOWN(1, "An unknown error occurred."),
+	  
+	  ERR_TCP_SERVER(2, "TCP-Server error.");
 
 	  private final int code;
 	  private final String description;

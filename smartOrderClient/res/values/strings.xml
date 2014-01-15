@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">smartOrder</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="connectClient">Connect</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

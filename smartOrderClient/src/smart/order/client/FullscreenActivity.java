@@ -1,12 +1,15 @@
 package smart.order.client;
 
 import smart.order.client.util.SystemUiHider;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -44,6 +47,11 @@ public class FullscreenActivity extends Activity {
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
 	private SystemUiHider mSystemUiHider;
+	
+	
+	private SmartOrderClient smartOrderClient = null;
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +122,12 @@ public class FullscreenActivity extends Activity {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(
-				mDelayHideTouchListener);
+		findViewById(R.id.connectClientButton).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				connectToServer();
+			}
+		});
 	}
 
 	@Override
@@ -158,5 +170,26 @@ public class FullscreenActivity extends Activity {
 	private void delayedHide(int delayMillis) {
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
+	}
+	
+	
+	private void connectToServer() {
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+	    StrictMode.setThreadPolicy(policy);
+	    
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Connecting to server");	
+		smartOrderClient = SmartOrderClient.getInstance(this);
+		smartOrderClient.initConnection();
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Connecting to server finished");	
+	}
+
+	
+	public void peep() {
+        
+        try {
+		    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		    Ringtone r = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
+		    r.play();
+		} catch (Exception e) {}
 	}
 }

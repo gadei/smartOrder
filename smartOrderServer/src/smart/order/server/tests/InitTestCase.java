@@ -14,7 +14,9 @@ public class InitTestCase {
 		
 		SmartOrderServer orderServer = SmartOrderServer.getInstance();
 		
-		assertTrue("initFailed!\n", orderServer.initServer() == Error.ERR_OK);
+		assertTrue("init server failed!\n", orderServer.initServer() == Error.ERR_OK);
+		
+		assertTrue("closing server failed!\n", orderServer.closeServer() == Error.ERR_OK);
 
 	}
 
