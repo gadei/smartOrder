@@ -26,9 +26,7 @@ public class TCPServer extends Thread {
 	
 	public Error errStatus = Error.ERR_OK;
 	
-	
-	
-	
+
 	
 	public Error startServer() {
 		
