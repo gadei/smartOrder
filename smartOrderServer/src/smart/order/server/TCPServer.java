@@ -20,13 +20,16 @@ public class TCPServer extends Thread {
     private BufferedReader inMessage;
 	
 	private ServerState serverState = ServerState.SERVER_CLOSED;
-	private static boolean serverRunning = false;
-	private static boolean threadRunning = false;
+	private volatile boolean serverRunning = false;
+	private volatile boolean threadRunning = false;
 	
 	public Error errStatus = Error.ERR_OK;
 	
+	private String sendBuffer = null;
 	
-	public static Error startServer() {
+	
+	
+	public Error startServer() {
 		
 		//TODO: Error wenn server bereits läuft
 		
@@ -36,7 +39,7 @@ public class TCPServer extends Thread {
 		return Error.ERR_OK;
 	}
 	
-	public static Error stopServer() {
+	public Error stopServer() {
 		
 		//TODO: Error wenn server bereits läuft
 		
@@ -44,6 +47,16 @@ public class TCPServer extends Thread {
 			serverRunning = false;
 		
 		return Error.ERR_OK;
+	}
+	
+	public Error sendMessageToClient(String msg) {
+		
+		if(msg == null)
+			sendBuffer = msg;
+		else
+			return Error.ERR_UNKNOWN; //TODO
+		
+		return Error.ERR_OK;	
 	}
 	
 	
@@ -54,7 +67,7 @@ public class TCPServer extends Thread {
 		
 		threadRunning = true;
 		
-		while(true) {
+		while(threadRunning) {
 
 				
 			errStatus = initServer();
@@ -64,12 +77,23 @@ public class TCPServer extends Thread {
 			
 			while(serverRunning) {
 				
-				
-				
-				
+				if(sendBuffer != null) {
+					
+					try {
+						outMessage.writeBytes(sendBuffer);	
+				        outMessage.flush();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					sendBuffer = null;
+				}
 			}
-
 		}
+		
+		Log.info("TCP-Thread stopped!\n");	
+		
 	}
 	
 	public Error initServer() {
@@ -102,15 +126,11 @@ public class TCPServer extends Thread {
 		//sends the message to the client
 		try {
 			outMessage = new DataOutputStream(client.getOutputStream());
-		
+			outMessage.writeBytes("TEST ME NOW\n");	
+	        outMessage.flush();
 
 	        //read the message received from client
 	        BufferedReader inMessage = new BufferedReader(new InputStreamReader(client.getInputStream()));
-	
-	        
-	        outMessage.writeBytes("Test message to client\n");
-	        outMessage.flush();
-	        
 	        
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -124,6 +144,7 @@ public class TCPServer extends Thread {
 		
 		try {
 			server.close();
+			client.close();
 		} catch (IOException e) {
 			Log.error("Failed to close Server on port " + String.valueOf(TCP_PORT) + "!\n");
 		}
@@ -131,6 +152,7 @@ public class TCPServer extends Thread {
 		Log.info("Closed server on port " + String.valueOf(TCP_PORT) + "!\n");	
 		
 		serverRunning = false;
+		threadRunning = false;
 		
 		return Error.ERR_OK;
 	}

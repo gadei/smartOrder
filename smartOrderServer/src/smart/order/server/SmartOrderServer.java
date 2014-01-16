@@ -1,14 +1,6 @@
 package smart.order.server;
 
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 import smart.order.server.Log.LogLevel;
 
@@ -19,6 +11,11 @@ public class SmartOrderServer {
 	
 	private TCPServer server = null;
 	
+	
+	public Error sendMessageToClient(String msg) {
+		
+		return server.sendMessageToClient(msg);
+	}
 	
 	private SmartOrderServer() {
 		
@@ -43,7 +40,10 @@ public class SmartOrderServer {
 	public void stop() {
 		
 		server.closeServer();
+		//server.stop();
 	}
+	
+	
 	
 }
 
