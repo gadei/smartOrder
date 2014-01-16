@@ -5,10 +5,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 
-import smart.order.client.SmartOrderClient.Command;
+import smart.order.client.Command;
 
 
 
@@ -67,7 +66,7 @@ public class TCPClient  extends Thread {
 						outMessage.writeBytes(sendBuffer);	
 				        outMessage.flush();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to send message via output stream");
 						e.printStackTrace();
 					}
 					

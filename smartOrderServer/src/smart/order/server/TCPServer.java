@@ -26,28 +26,6 @@ public class TCPServer extends Thread {
 	
 	public Error errStatus = Error.ERR_OK;
 	
-
-	
-	public Error startServer() {
-		
-		//TODO: Error wenn server bereits läuft
-		
-		if(!serverRunning)
-			serverRunning = true;
-		
-		return Error.ERR_OK;
-	}
-	
-	public Error stopServer() {
-		
-		//TODO: Error wenn server bereits läuft
-		
-		if(serverRunning)
-			serverRunning = false;
-		
-		return Error.ERR_OK;
-	}
-	
 	public Error sendMessageToClient(String msg) {
 		
 		if(sendBuffer == null)
@@ -91,7 +69,7 @@ public class TCPServer extends Thread {
 						outMessage.writeBytes(sendBuffer);	
 				        outMessage.flush();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						Log.error("Failed to send message via output stream");
 						e.printStackTrace();
 					}
 					
@@ -126,25 +104,21 @@ public class TCPServer extends Thread {
 		try {
 			client = server.accept();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Log.error("Failed to wait for a client to connect!\n");	
+			return Error.ERR_UNKNOWN;
 		}
 		
 		Log.info("Client connected!\n");	
 		
-		
-		//sends the message to the client
 		try {
 			outMessage = new DataOutputStream(client.getOutputStream());
-//			outMessage.writeBytes("TEST ME NOW\n");	
-//	        outMessage.flush();
-
-	        //read the message received from client
-	        BufferedReader inMessage = new BufferedReader(new InputStreamReader(client.getInputStream()));
+	        inMessage = new BufferedReader(new InputStreamReader(client.getInputStream()));
 	        
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.error("Failed to open input/output stream!\n");	
 			e.printStackTrace();
+			return Error.ERR_UNKNOWN;
 		}
 
 		return Error.ERR_OK;
@@ -177,25 +151,4 @@ public class TCPServer extends Thread {
 		SERVER_OPEN
 	}
 	
-	public enum Command {
-		
-		STOP_CLIENT(0, "CMD_STOP_CLIENT"),
-		DEBUG_MSG(1, "CMD_DBG_MSG");
-		
-		private final int code;
-		private final String cmdTag;
-		
-		private Command(int code, String cmdTag) {
-		    this.code = code;
-		    this.cmdTag = cmdTag;
-		}
-		
-		public String cmdTag() {
-			return cmdTag;
-		}
-		
-		public int getCode() {
-			return code;
-		}
-	}
 }

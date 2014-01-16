@@ -179,8 +179,7 @@ public class FullscreenActivity extends Activity {
 	    
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Starting client and connecting to server");	
 		smartOrderClient = SmartOrderClient.getInstance(this);
-		smartOrderClient.initConnection();
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Connecting to server finished");	
+		smartOrderClient.initConnection();	
 	}
 
 	

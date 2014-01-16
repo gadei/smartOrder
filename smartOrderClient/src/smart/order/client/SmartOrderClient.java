@@ -1,17 +1,11 @@
 package smart.order.client;
 
-
+import smart.order.client.Command;
 
 public class SmartOrderClient {
 
-	
-	private static int TCP_PORT = 1419;
-	private static String TCP_SERVER_IP = "10.0.0.45";
-	
 	private static SmartOrderClient instance = null;
-	
 	private FullscreenActivity androidActivity = null;
-
 	private TCPClient client = null;
 	
 	 protected FullscreenActivity getAndroidActivity() {
@@ -57,33 +51,12 @@ public class SmartOrderClient {
 		if(!msgFromServer.contains("CMD_"))
 			return null;
 		
-		if(msgFromServer.contains(Command.STOP_CLIENT.cmdTag))
+		if(msgFromServer.contains(Command.STOP_CLIENT.cmdTag()))
 			return Command.STOP_CLIENT;
-		else if(msgFromServer.contains(Command.DEBUG_MSG.cmdTag))
+		else if(msgFromServer.contains(Command.DEBUG_MSG.cmdTag()))
 			return Command.DEBUG_MSG;
 		
 		return Command.STOP_CLIENT;
 	}
-	
-	public enum Command {
-		
-		STOP_CLIENT(0, "CMD_STOP_CLIENT"),
-		DEBUG_MSG(1, "CMD_DBG_MSG");
-		
-		private final int code;
-		private final String cmdTag;
-		
-		private Command(int code, String cmdTag) {
-		    this.code = code;
-		    this.cmdTag = cmdTag;
-		}
-		
-		public String cmdTag() {
-			return cmdTag;
-		}
-		
-		public int getCode() {
-			return code;
-		}
-	}
+
 }

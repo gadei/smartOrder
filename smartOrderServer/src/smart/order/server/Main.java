@@ -1,7 +1,6 @@
 package smart.order.server;
 
-import static org.junit.Assert.assertTrue;
-import smart.order.server.TCPServer.Command;
+import smart.order.server.Command;
 
 public class Main {
 
