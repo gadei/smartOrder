@@ -52,8 +52,10 @@ public class TCPServer extends Thread {
 		
 		if(sendBuffer == null)
 			sendBuffer = msg;
-		else
-			return Error.ERR_UNKNOWN; //TODO
+		else {
+			Log.info("Thread wait: " + Error.ERR_MSG_QUEUE_FULL.getDescription());
+			return Error.ERR_MSG_QUEUE_FULL;
+		}
 		
 		return Error.ERR_OK;	
 	}
@@ -73,7 +75,7 @@ public class TCPServer extends Thread {
 		
 		threadRunning = true;
 		
-		while(threadRunning) {
+		if(threadRunning) {
 
 				
 			errStatus = initServer();
@@ -97,6 +99,8 @@ public class TCPServer extends Thread {
 				}
 			}
 		}
+		
+		serverRunning = false;
 		
 		Log.info("TCP-Thread stopped!\n");	
 		
@@ -171,5 +175,27 @@ public class TCPServer extends Thread {
 	public enum ServerState{
 		SERVER_CLOSED,
 		SERVER_OPEN
+	}
+	
+	public enum Command {
+		
+		STOP_CLIENT(0, "CMD_STOP_CLIENT"),
+		DEBUG_MSG(1, "CMD_DBG_MSG");
+		
+		private final int code;
+		private final String cmdTag;
+		
+		private Command(int code, String cmdTag) {
+		    this.code = code;
+		    this.cmdTag = cmdTag;
+		}
+		
+		public String cmdTag() {
+			return cmdTag;
+		}
+		
+		public int getCode() {
+			return code;
+		}
 	}
 }

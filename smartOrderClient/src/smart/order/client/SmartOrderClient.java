@@ -1,15 +1,5 @@
 package smart.order.client;
 
-import java.io.BufferedReader;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.net.InetAddress;
-
-import java.net.Socket;
-
 
 
 public class SmartOrderClient {
@@ -62,4 +52,38 @@ public class SmartOrderClient {
 		client = null;		
 	}
 	
+	public Command decodeCommand(String msgFromServer) {
+		
+		if(!msgFromServer.contains("CMD_"))
+			return null;
+		
+		if(msgFromServer.contains(Command.STOP_CLIENT.cmdTag))
+			return Command.STOP_CLIENT;
+		else if(msgFromServer.contains(Command.DEBUG_MSG.cmdTag))
+			return Command.DEBUG_MSG;
+		
+		return Command.STOP_CLIENT;
+	}
+	
+	public enum Command {
+		
+		STOP_CLIENT(0, "CMD_STOP_CLIENT"),
+		DEBUG_MSG(1, "CMD_DBG_MSG");
+		
+		private final int code;
+		private final String cmdTag;
+		
+		private Command(int code, String cmdTag) {
+		    this.code = code;
+		    this.cmdTag = cmdTag;
+		}
+		
+		public String cmdTag() {
+			return cmdTag;
+		}
+		
+		public int getCode() {
+			return code;
+		}
+	}
 }

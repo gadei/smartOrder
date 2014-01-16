@@ -6,10 +6,11 @@ public enum Error {
 	//my Errors!
 	
 	  ERR_OK(0, "Works well"),
+	  ERR_TCP_SERVER(1, "TCP-Server error."),
 	  
-	  ERR_UNKNOWN(1, "An unknown error occurred."),
+	  ERR_MSG_QUEUE_FULL(2, "Send buffer full"),
 	  
-	  ERR_TCP_SERVER(2, "TCP-Server error.");
+	  ERR_UNKNOWN(99, "An unknown error occurred.");
 
 	  private final int code;
 	  private final String description;

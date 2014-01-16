@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import smart.order.client.SmartOrderClient.Command;
+
 
 
 public class TCPClient  extends Thread {
@@ -22,7 +24,7 @@ public class TCPClient  extends Thread {
     private BufferedReader inMessage;
 	
     private Socket tcpSocket = null;
-	private volatile boolean serverRunning = false;
+	private volatile boolean clientRunning = false;
 	private volatile boolean threadRunning = false;
 	private volatile String sendBuffer = null;
 	private String serverMessage = null;
@@ -38,7 +40,7 @@ public class TCPClient  extends Thread {
 		if(sendBuffer == null)
 			sendBuffer = msg;
 		else
-			return Error.ERR_UNKNOWN; //TODO
+			return Error.ERR_UNKNOWN;
 		
 		return Error.ERR_OK;	
 	}
@@ -50,14 +52,14 @@ public class TCPClient  extends Thread {
 		
 		threadRunning = true;
 		
-		while(threadRunning) {
+		if(threadRunning) {
 				
 			errStatus = initConnection();
 			
 			if(errStatus == Error.ERR_OK) 
-				serverRunning = true;
+				clientRunning = true;
 			
-			while(serverRunning & threadRunning) {
+			while(clientRunning && threadRunning) {
 				
 				if(sendBuffer != null) {
 					
@@ -71,11 +73,42 @@ public class TCPClient  extends Thread {
 					
 					sendBuffer = null;
 				}
+				
+				
+				try {
+					if(inMessage.ready()) {
+						
+						//in this while the client listens for the messages sent by the server
+					    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
+					    
+						serverMessage = inMessage.readLine();
+					    
+					    if (serverMessage != null) {
+					    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
+					    	Command cmd = client.decodeCommand(serverMessage);
+					    	
+					    	if(cmd != null && cmd == Command.STOP_CLIENT) {
+					    		threadRunning = false;
+					    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Stop client#");
+					    	} else if(cmd != null && cmd == Command.DEBUG_MSG)
+					    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
+					    }
+					    
+					    serverMessage = null;     
+					    
+					}
+				} catch (IOException e) {
+					android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to read input stream");
+					e.printStackTrace();
+				}
+					
 			}
 		}
 		
-		client.tcpClientClosed();
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "TCP-Thread stopped!\n");	
+		clientRunning = false;
+		client.tcpClientClosed();
+		
 		
 	}
 	
@@ -100,38 +133,21 @@ public class TCPClient  extends Thread {
 			e.printStackTrace();
 		}
 		
-		serverRunning = true;
+		clientRunning = true;
 		
 		//send the message to the server
         try {
-
 
         	//OutputStream to Arduino-Server
             outMessage = new DataOutputStream(tcpSocket.getOutputStream());
             //BufferedReader from Arduino-Server
             inMessage = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));//
-            
-	
-	        //in this while the client listens for the messages sent by the server
-            android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
-            
-        	serverMessage = inMessage.readLine();
-            
-            if (serverMessage != null) {
-            	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
-            	serverRunning = false;
-            }
-            
-            serverMessage = null;          
+ 
             
         } catch (IOException e) {
         	android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Message ERROR");	
 			e.printStackTrace();
 		}
-        
-       //TODO: remove this - just for testing
-        threadRunning = false;
-        
  
         return Error.ERR_OK;
 	}

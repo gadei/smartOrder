@@ -14,7 +14,22 @@ public class SmartOrderServer {
 	
 	public Error sendMessageToClient(String msg) {
 		
-		return server.sendMessageToClient(msg);
+		Error err = Error.ERR_OK;
+		
+		do {
+			
+			err = server.sendMessageToClient(msg);
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+				err = Error.ERR_UNKNOWN;
+				e.printStackTrace();
+			}
+		
+		} while(err == Error.ERR_MSG_QUEUE_FULL);
+
+		
+		return err;
 	}
 	
 	private SmartOrderServer() {
