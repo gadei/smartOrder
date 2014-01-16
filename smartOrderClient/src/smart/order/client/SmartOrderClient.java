@@ -58,4 +58,8 @@ public class SmartOrderClient {
 		
 	}
 	
+	public void tcpClientClosed() {
+		client = null;		
+	}
+	
 }

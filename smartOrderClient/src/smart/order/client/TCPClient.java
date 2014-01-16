@@ -51,7 +51,6 @@ public class TCPClient  extends Thread {
 		threadRunning = true;
 		
 		while(threadRunning) {
-
 				
 			errStatus = initConnection();
 			
@@ -75,6 +74,7 @@ public class TCPClient  extends Thread {
 			}
 		}
 		
+		client.tcpClientClosed();
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "TCP-Thread stopped!\n");	
 		
 	}
@@ -122,14 +122,15 @@ public class TCPClient  extends Thread {
             	serverRunning = false;
             }
             
-            serverMessage = null;
-	
-	        
-        
+            serverMessage = null;          
+            
         } catch (IOException e) {
         	android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Message ERROR");	
 			e.printStackTrace();
 		}
+        
+       //TODO: remove this - just for testing
+        threadRunning = false;
         
  
         return Error.ERR_OK;
