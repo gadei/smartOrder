@@ -43,6 +43,9 @@ public class SmartOrderServer {
 		//server.stop();
 	}
 	
+	public boolean clientConnected() {
+		return server.clientConnected();
+	}
 	
 	
 }

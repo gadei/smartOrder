@@ -11,9 +11,10 @@ public class Main {
 		
 		try {
 			
-			Thread.sleep(1000);
-			
-//			orderServer.sendMessageToClient("HEHEHHE::Test message to client\n");
+			while(!orderServer.clientConnected())
+				Thread.sleep(25);
+				
+			orderServer.sendMessageToClient("HEHEHHE::Test message to client\n");
 			
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {

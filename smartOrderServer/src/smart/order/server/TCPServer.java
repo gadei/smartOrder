@@ -14,18 +14,19 @@ public class TCPServer extends Thread {
 	
 	private static int TCP_PORT = 1419;
 	
-	private ServerSocket server;
-	private Socket client;
+	private ServerSocket server = null;
+	private Socket client = null;
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
 	
 	private ServerState serverState = ServerState.SERVER_CLOSED;
 	private volatile boolean serverRunning = false;
 	private volatile boolean threadRunning = false;
+	private volatile String sendBuffer = null;
 	
 	public Error errStatus = Error.ERR_OK;
 	
-	private String sendBuffer = null;
+	
 	
 	
 	
@@ -51,7 +52,7 @@ public class TCPServer extends Thread {
 	
 	public Error sendMessageToClient(String msg) {
 		
-		if(msg == null)
+		if(sendBuffer == null)
 			sendBuffer = msg;
 		else
 			return Error.ERR_UNKNOWN; //TODO
@@ -59,7 +60,14 @@ public class TCPServer extends Thread {
 		return Error.ERR_OK;	
 	}
 	
-	
+	public boolean clientConnected() {
+		
+		if(client == null)
+			return false;
+		else
+			return true;
+		
+	}
 	
 	@Override
 	public void run() {
@@ -75,7 +83,7 @@ public class TCPServer extends Thread {
 			if(errStatus == Error.ERR_OK) 
 				serverRunning = true;
 			
-			while(serverRunning) {
+			while(serverRunning & threadRunning) {
 				
 				if(sendBuffer != null) {
 					
@@ -126,8 +134,8 @@ public class TCPServer extends Thread {
 		//sends the message to the client
 		try {
 			outMessage = new DataOutputStream(client.getOutputStream());
-			outMessage.writeBytes("TEST ME NOW\n");	
-	        outMessage.flush();
+//			outMessage.writeBytes("TEST ME NOW\n");	
+//	        outMessage.flush();
 
 	        //read the message received from client
 	        BufferedReader inMessage = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -151,8 +159,9 @@ public class TCPServer extends Thread {
 		
 		Log.info("Closed server on port " + String.valueOf(TCP_PORT) + "!\n");	
 		
-		serverRunning = false;
 		threadRunning = false;
+		serverRunning = false;
+		
 		
 		return Error.ERR_OK;
 	}

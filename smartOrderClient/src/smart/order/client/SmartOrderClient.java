@@ -23,8 +23,8 @@ public class SmartOrderClient extends Thread {
 	private Socket tcpSocket;
 	private FullscreenActivity androidActivity = null;
 	
-	private static boolean serverRunning = false;
-	private static boolean threadRunning = false;
+	private volatile boolean serverRunning = false;
+	private volatile boolean threadRunning = false;
 	
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
@@ -91,7 +91,10 @@ public class SmartOrderClient extends Thread {
 	
 	        //in this while the client listens for the messages sent by the server
             android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
-            serverMessage = inMessage.readLine();
+            
+ 
+        	serverMessage = inMessage.readLine();
+
 
 //            if (serverMessage != null && mMessageListener != null) {
 //                //call the method messageReceived from MyActivity class
