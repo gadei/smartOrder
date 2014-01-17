@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#D3D3D3"
-    tools:context=".FullscreenActivity" >
+    tools:context=".SmartOrderActivity" >
 
     <!--
          The primary full-screen view. This can be replaced with whatever view
@@ -12,7 +12,7 @@
     -->
 
     <TextView
-        android:id="@+id/fullscreen_content"
+        android:id="@+id/fullscreen_content_smartOrder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -32,7 +32,7 @@
         android:fitsSystemWindows="true" >
 
         <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
+            android:id="@+id/fullscreen_content_controls_smartOrder"
             style="?buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

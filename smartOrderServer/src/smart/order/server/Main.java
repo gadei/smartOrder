@@ -16,7 +16,7 @@ public class Main {
 				
 			orderServer.sendMessageToClient("HEHEHHE::Test message to client\n");
 			orderServer.sendMessageToClient(Command.DEBUG_MSG.cmdTag() + "\n");
-			orderServer.sendMessageToClient(Command.STOP_CLIENT.cmdTag() + "\n");
+			//orderServer.sendMessageToClient(Command.STOP_CLIENT.cmdTag() + "\n");
 			
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
