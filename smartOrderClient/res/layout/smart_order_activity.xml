@@ -1,0 +1,148 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D3D3D3"
+    tools:context=".FullscreenActivity" >
+
+    <!--
+         The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc.
+    -->
+
+    <TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:textColor="#33b5e5"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+    <!--
+         This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows.
+    -->
+
+   <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true" >
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" >
+
+            <Button
+                android:id="@+id/disconnectClientButton"
+                style="?buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/disconnectClient" />
+
+        </LinearLayout>
+
+        <GridLayout
+            android:layout_width="fill_parent"
+            android:background="#D3D3ff"
+            android:layout_height="255dp"
+            android:columnCount="5"
+            android:columnWidth="90dp"
+            android:gravity="center"
+            android:horizontalSpacing="10dp"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="10dp" >
+
+            <LinearLayout
+                android:layout_width="249dp"
+                android:layout_height="59dp"
+                android:layout_column="2"
+                android:layout_gravity="left|bottom"
+                android:layout_row="0" >
+
+                <Button
+                    android:id="@+id/Tisch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left|bottom"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="25dp"
+                    android:text="Tisch1"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/Tisch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|bottom"
+                    android:text="Tisch2"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="162dp"
+                android:layout_column="2"
+                android:layout_gravity="left|top"
+                android:layout_row="0" >
+
+                <Button
+                    android:id="@+id/button1"
+                    android:layout_width="173dp"
+                    android:layout_height="138dp"
+                    android:text="Bar" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="191dp"
+                android:layout_gravity="fill_horizontal"
+                android:layout_marginRight="5dp"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/Tisch5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Tisch5"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/Tisch4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Tisch4"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/Tisch3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Tisch3"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </GridLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

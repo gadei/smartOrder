@@ -3,6 +3,11 @@ package smart.order.client;
 import smart.order.client.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -20,6 +25,11 @@ import android.view.View;
  * @see SystemUiHider
  */
 public class FullscreenActivity extends Activity {
+	
+	private static final int MAX_TIME_TO_WAIT_FOR_CONNECTION = 3000;
+	
+	
+	
 	/**
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -111,6 +121,7 @@ public class FullscreenActivity extends Activity {
 		contentView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "display pressed");	
 				if (TOGGLE_ON_CLICK) {
 					mSystemUiHider.toggle();
 				} else {
@@ -125,6 +136,7 @@ public class FullscreenActivity extends Activity {
 		findViewById(R.id.connectClientButton).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Connect button pressed");	
 				connectToServer();
 			}
 		});
@@ -174,12 +186,57 @@ public class FullscreenActivity extends Activity {
 	
 	
 	private void connectToServer() {
+		
+		
+		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 	    StrictMode.setThreadPolicy(policy);
 	    
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Starting client and connecting to server");	
 		smartOrderClient = SmartOrderClient.getInstance(this);
 		smartOrderClient.initConnection();	
+		
+		int timeToConnection = 0;
+		int cycleTime = 250;
+		
+		while(!smartOrderClient.clientConnected() && timeToConnection < MAX_TIME_TO_WAIT_FOR_CONNECTION) {
+			try {
+				Thread.sleep(cycleTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			timeToConnection += cycleTime;
+		}
+		
+		if(smartOrderClient.clientConnected()) {
+		
+			android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "SUCCESS - Client started and connected to server");	
+			
+			Intent myIntent = new Intent(this.getApplicationContext(), SmartOrderActivity.class);
+	        startActivityForResult(myIntent, 0);
+	        
+		} else {
+			
+			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR - Failed to connect to the server");
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setMessage(R.string.connection_problem_dialog)
+	               .setPositiveButton(R.string.connection_problem_dialog_try_again, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Try Again");
+	                	   connectToServer();
+	                   }
+	               })
+	               .setNegativeButton(R.string.connection_problem_dialog_cancel, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Cancel");
+	                   }
+	               });
+	        // Create the AlertDialog object and return it
+	        builder.create().show();			
+		}
+		
 	}
 
 	

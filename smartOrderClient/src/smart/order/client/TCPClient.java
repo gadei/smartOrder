@@ -17,7 +17,7 @@ public class TCPClient  extends Thread {
 	private SmartOrderClient client = null;
 	
 	private static int TCP_PORT = 1419;
-	private static String TCP_SERVER_IP = "10.0.0.45";
+	private static String TCP_SERVER_IP = "10.0.0.51";
 	
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
@@ -128,28 +128,33 @@ public class TCPClient  extends Thread {
 	        tcpSocket = new Socket(serverAddr, TCP_PORT);
 
 		} catch (Exception e) {
-			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR");	
+			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR --- Cannot connect to server at " + TCP_SERVER_IP);	
 			e.printStackTrace();
+			return Error.ERR_TCP_CONNECTION;
 		}
+
 		
-		clientRunning = true;
-		
-		//send the message to the server
         try {
 
-        	//OutputStream to Arduino-Server
+        	//OutputStream to smartOrder-Server
             outMessage = new DataOutputStream(tcpSocket.getOutputStream());
-            //BufferedReader from Arduino-Server
+            //BufferedReader from smartOrder-Server
             inMessage = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));//
  
             
         } catch (IOException e) {
         	android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Message ERROR");	
 			e.printStackTrace();
+			clientRunning = false;
 		}
  
         return Error.ERR_OK;
 	}
+	
+	public boolean clientConnected()  {
+		return clientRunning;
+	}
+	
 	
 }
 

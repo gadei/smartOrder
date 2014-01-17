@@ -58,5 +58,12 @@ public class SmartOrderClient {
 		
 		return Command.STOP_CLIENT;
 	}
+	
+	public boolean clientConnected()  {
+		if(client == null)
+			return false;
+		
+		return client.clientConnected();
+	}
 
 }

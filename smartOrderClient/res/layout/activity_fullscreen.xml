@@ -11,17 +11,6 @@
          TextureView, etc.
     -->
 
-    <TextView
-        android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/smartOrder"
-        android:textColor="#33b5e5"
-        android:textSize="50sp"
-        android:textStyle="bold" />
-
     <!--
          This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows.
@@ -30,7 +19,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true" >
+        android:fitsSystemWindows="true" android:background="#0099cc">
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -51,6 +40,18 @@
                 android:text="@string/connectClient" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/fullscreen_content"
+            android:layout_width="match_parent"
+            android:layout_height="414dp"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/smartOrder"
+            android:textColor="#33b5e5"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
     </FrameLayout>
 
 </FrameLayout>

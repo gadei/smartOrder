@@ -25,16 +25,28 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int connectClientButton=0x7f070002;
-        public static final int fullscreen_content=0x7f070000;
-        public static final int fullscreen_content_controls=0x7f070001;
+        public static final int Tisch1=0x7f070004;
+        public static final int Tisch2=0x7f070005;
+        public static final int Tisch3=0x7f070009;
+        public static final int Tisch4=0x7f070008;
+        public static final int Tisch5=0x7f070007;
+        public static final int button1=0x7f070006;
+        public static final int connectClientButton=0x7f070001;
+        public static final int disconnectClientButton=0x7f070003;
+        public static final int fullscreen_content=0x7f070002;
+        public static final int fullscreen_content_controls=0x7f070000;
     }
     public static final class layout {
         public static final int activity_fullscreen=0x7f030000;
+        public static final int smart_order_activity=0x7f030001;
     }
     public static final class string {
         public static final int app_name=0x7f050000;
         public static final int connectClient=0x7f050001;
+        public static final int connection_problem_dialog=0x7f050004;
+        public static final int connection_problem_dialog_cancel=0x7f050006;
+        public static final int connection_problem_dialog_try_again=0x7f050005;
+        public static final int disconnectClient=0x7f050003;
         public static final int smartOrder=0x7f050002;
     }
     public static final class style {
