@@ -28,6 +28,86 @@ public class FullscreenActivity extends Activity {
 	
 	private static final int MAX_TIME_TO_WAIT_FOR_CONNECTION = 3000;
 	
+	private void connectToServer() {
+		
+		
+		
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+	    StrictMode.setThreadPolicy(policy);
+	    
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Starting client and connecting to server");	
+		smartOrderClient = SmartOrderClient.getInstance(this);
+		smartOrderClient.initConnection();	
+		
+		int timeToConnection = 0;
+		int cycleTime = 250;
+		
+		while(!smartOrderClient.clientConnected() && timeToConnection < MAX_TIME_TO_WAIT_FOR_CONNECTION) {
+			try {
+				Thread.sleep(cycleTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			timeToConnection += cycleTime;
+		}
+		
+		if(smartOrderClient.clientConnected()) {
+		
+			android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "SUCCESS - Client started and connected to server");	
+			
+			Intent myIntent = new Intent(this.getApplicationContext(), SmartOrderActivity.class);
+	        startActivityForResult(myIntent, 0);
+	        
+		} else {
+			
+			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR - Failed to connect to the server");
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setMessage(R.string.connection_problem_dialog)
+	               .setPositiveButton(R.string.connection_problem_dialog_try_again, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Try Again");
+	                	   connectToServer();
+	                   }
+	               })
+	               .setNegativeButton(R.string.connection_problem_dialog_cancel, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Cancel");
+	                   }
+	               });
+	        // Create the AlertDialog object and return it
+	        builder.create().show();			
+		}
+		
+	}
+
+	
+	public void peep() {
+        
+        try {
+		    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		    Ringtone r = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
+		    r.play();
+		} catch (Exception e) {}
+	}
+	
+	
+	
+	/***
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ON CREATE STUFF!!!!!!!!!!!!!!!!!!!!!!
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 * ===========================================================================================================
+	 */
 	
 	
 	/**
@@ -182,70 +262,5 @@ public class FullscreenActivity extends Activity {
 	private void delayedHide(int delayMillis) {
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
-	}
-	
-	
-	private void connectToServer() {
-		
-		
-		
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-	    StrictMode.setThreadPolicy(policy);
-	    
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Starting client and connecting to server");	
-		smartOrderClient = SmartOrderClient.getInstance(this);
-		smartOrderClient.initConnection();	
-		
-		int timeToConnection = 0;
-		int cycleTime = 250;
-		
-		while(!smartOrderClient.clientConnected() && timeToConnection < MAX_TIME_TO_WAIT_FOR_CONNECTION) {
-			try {
-				Thread.sleep(cycleTime);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			timeToConnection += cycleTime;
-		}
-		
-		if(smartOrderClient.clientConnected()) {
-		
-			android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "SUCCESS - Client started and connected to server");	
-			
-			Intent myIntent = new Intent(this.getApplicationContext(), SmartOrderActivity.class);
-	        startActivityForResult(myIntent, 0);
-	        
-		} else {
-			
-			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR - Failed to connect to the server");
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	        builder.setMessage(R.string.connection_problem_dialog)
-	               .setPositiveButton(R.string.connection_problem_dialog_try_again, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                	   android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Try Again");
-	                	   connectToServer();
-	                   }
-	               })
-	               .setNegativeButton(R.string.connection_problem_dialog_cancel, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                	   android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Cancel");
-	                   }
-	               });
-	        // Create the AlertDialog object and return it
-	        builder.create().show();			
-		}
-		
-	}
-
-	
-	public void peep() {
-        
-        try {
-		    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		    Ringtone r = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
-		    r.play();
-		} catch (Exception e) {}
 	}
 }
