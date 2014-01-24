@@ -1,8 +1,16 @@
 package smart.order.server;
 
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
 import smart.order.server.Command;
 
 public class Main {
+	
+	public static void quickTest() {
+		Log.info("TestString");
+	}
 
 	public static void main(String[] args) {
 
@@ -10,6 +18,13 @@ public class Main {
 		SmartOrderServer orderServer = SmartOrderServer.getInstance();
 		
 		try {
+			
+			
+			MainFrame mainFrame = new MainFrame();
+			mainFrame.setVisible(true);
+			
+			
+			
 			
 			while(!orderServer.clientConnected())
 				Thread.sleep(25);

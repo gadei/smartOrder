@@ -17,7 +17,7 @@ public class TCPClient  extends Thread {
 	private SmartOrderClient client = null;
 	
 	private static int TCP_PORT = 1419;
-	private static String TCP_SERVER_IP = "10.0.0.51";
+	private static String TCP_SERVER_IP = "10.0.0.55";
 	
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;

@@ -3,6 +3,8 @@ package smart.order.client;
 import smart.order.client.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,11 +23,22 @@ public class SmartOrderActivity extends Activity {
 		
 		Log.d("  ==> SMART_ORDER_CLIENT <==", "Table Button pressed: " + v.getId());
 		
+		 AlertDialog.Builder builder = OrderWizard.getOrderWizardMain(this, v.getId());
+		 builder.create().show();
+        
 		switch(v.getId()){
 	       case R.id.Tisch1: 
 	    	   
 	    	   break;
 		}
+	}
+	
+	public void orderDrinks(int tableNbr) {
+		Log.d("  ==> SMART_ORDER_CLIENT <==", "Order drinks for table: " + tableNbr);
+	}
+	
+	public void orderFood(int tableNbr) {
+		Log.d("  ==> SMART_ORDER_CLIENT <==", "Order food for table: " + tableNbr);
 	}
 
 	
@@ -33,8 +46,6 @@ public class SmartOrderActivity extends Activity {
 	private void disconnectFromServer() {
 		
 	}
-	
-	
 	
 	
 	

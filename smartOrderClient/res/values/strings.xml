@@ -8,5 +8,25 @@
     <string name="connection_problem_dialog">Problem mit der Verbindung</string>
     <string name="connection_problem_dialog_try_again">Erneut versuchen</string>
     <string name="connection_problem_dialog_cancel">Abbrechen</string>
+    <string name="order_wizard_main">Wählen sie</string>
+    <string-array name="order_wizard_array_main">
+        <item >Trinken</item>
+        <item >Essen</item>
+    </string-array>
+    <string name="order_wizard_groups">Wählen sie</string>
+    <string-array name="order_wizard_array_essen">
+        <item >Pizza</item>
+        <item >Eis</item>
+        <item >Nachspeisen</item>
+        <item >Suppen</item>
+        <item >Traditionell</item>
+    </string-array>
+    <string-array name="order_wizard_array_trinken">
+        <item >Bier</item>
+        <item >Hochprozentig</item>
+        <item >Kaffee</item>
+        <item >Wein</item>
+        <item >Antialkoholisch</item>
+    </string-array>
 
 </resources>

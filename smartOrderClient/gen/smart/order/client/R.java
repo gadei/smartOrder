@@ -8,6 +8,11 @@
 package smart.order.client;
 
 public final class R {
+    public static final class array {
+        public static final int order_wizard_array_essen=0x7f060001;
+        public static final int order_wizard_array_main=0x7f060000;
+        public static final int order_wizard_array_trinken=0x7f060002;
+    }
     public static final class attr {
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
@@ -25,18 +30,18 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int Bar=0x7f070008;
-        public static final int Tisch1=0x7f070006;
-        public static final int Tisch2=0x7f070007;
-        public static final int Tisch3=0x7f07000b;
-        public static final int Tisch4=0x7f07000a;
-        public static final int Tisch5=0x7f070009;
-        public static final int connectClientButton=0x7f070001;
-        public static final int disconnectClientButton=0x7f070005;
-        public static final int fullscreen_content=0x7f070002;
-        public static final int fullscreen_content_controls=0x7f070000;
-        public static final int fullscreen_content_controls_smartOrder=0x7f070004;
-        public static final int fullscreen_content_smartOrder=0x7f070003;
+        public static final int Bar=0x7f080008;
+        public static final int Tisch1=0x7f080006;
+        public static final int Tisch2=0x7f080007;
+        public static final int Tisch3=0x7f08000b;
+        public static final int Tisch4=0x7f08000a;
+        public static final int Tisch5=0x7f080009;
+        public static final int connectClientButton=0x7f080001;
+        public static final int disconnectClientButton=0x7f080005;
+        public static final int fullscreen_content=0x7f080002;
+        public static final int fullscreen_content_controls=0x7f080000;
+        public static final int fullscreen_content_controls_smartOrder=0x7f080004;
+        public static final int fullscreen_content_smartOrder=0x7f080003;
     }
     public static final class layout {
         public static final int activity_fullscreen=0x7f030000;
@@ -49,6 +54,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int connection_problem_dialog_cancel=0x7f050006;
         public static final int connection_problem_dialog_try_again=0x7f050005;
         public static final int disconnectClient=0x7f050003;
+        public static final int order_wizard_groups=0x7f050008;
+        public static final int order_wizard_main=0x7f050007;
         public static final int smartOrder=0x7f050002;
     }
     public static final class style {
@@ -76,15 +83,15 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
-        public static final int ButtonBar=0x7f060003;
-        public static final int ButtonBarButton=0x7f060004;
-        public static final int FullscreenActionBarStyle=0x7f060005;
-        public static final int FullscreenTheme=0x7f060002;
+        public static final int AppTheme=0x7f070001;
+        public static final int ButtonBar=0x7f070003;
+        public static final int ButtonBarButton=0x7f070004;
+        public static final int FullscreenActionBarStyle=0x7f070005;
+        public static final int FullscreenTheme=0x7f070002;
     }
     public static final class styleable {
         /** 
