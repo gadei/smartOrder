@@ -1,6 +1,9 @@
 package smart.order.server;
 
 import java.awt.Dimension;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 
@@ -16,6 +19,14 @@ public class Main {
 
 
 		SmartOrderServer orderServer = SmartOrderServer.getInstance();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/smart_order_database?user=gadei&password=mastege");
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		try {
 			

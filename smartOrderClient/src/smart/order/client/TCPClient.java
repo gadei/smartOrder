@@ -19,7 +19,7 @@ public class TCPClient  extends Thread {
 	
 	private SmartOrderClient client = null;
 	
-	private static int TCP_PORT = 1419;
+	private final static int TCP_INIT_PORT = 1419;
 	private static String TCP_SERVER_IP = "10.0.0.55";
 	
 	private DataOutputStream outMessage;
@@ -30,6 +30,8 @@ public class TCPClient  extends Thread {
 	private volatile boolean threadRunning = false;
 	private volatile String sendBuffer = null;
 	private String serverMessage = null;
+	
+	private int connectedToPortNbr = -1;
 	
 	public Error errStatus = Error.ERR_OK;
 	
@@ -55,10 +57,13 @@ public class TCPClient  extends Thread {
 		return wifiInf.getMacAddress();
 	}
 	
+	public int getConnectedToPortNbr() {
+		return connectedToPortNbr;
+	}
 	
-	private void connectToInitServer() {
+	private int connectToInitServer() {
 		
-		errStatus = initConnection();
+		errStatus = initConnection(TCP_INIT_PORT);
 		
 		if(errStatus == Error.ERR_OK) 
 			threadRunning = true;
@@ -96,18 +101,23 @@ public class TCPClient  extends Thread {
 			}
 		}
 		
+		connectedToPortNbr = TCP_INIT_PORT;
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "connectToInitServer finished!");
+		
+		return getNewPort(serverMessage);
 
 	}
 	
-	private void connectToNewSocket() {
+	private void connectToNewSocket(int newPort) {
 		
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "connectToNewSocket started!");
 		
-		errStatus = initConnection(getNewPort(serverMessage));
+		errStatus = initConnection(newPort);
 		
 		if(errStatus == Error.ERR_OK) 
 			clientRunning = true;
+		
+		connectedToPortNbr = newPort;
 		
 		while(clientRunning && threadRunning) {
 			
@@ -150,6 +160,8 @@ public class TCPClient  extends Thread {
 				e.printStackTrace();
 			}
 		}
+		
+		connectedToPortNbr = -1;
 	}
 	
 
@@ -158,11 +170,11 @@ public class TCPClient  extends Thread {
 		super.run();
 		
 		//Init phase! Connect to init server on reserved socket
-		connectToInitServer();
+		int newPort = connectToInitServer();
 
 		//now start on new port
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reopen server connection on new port");
-		connectToNewSocket();
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reopen server connection on new port (" + newPort + ")");
+		connectToNewSocket(newPort);
 		
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "TCP-Thread stopped!\n");	
 		clientRunning = false;
@@ -175,15 +187,9 @@ public class TCPClient  extends Thread {
 		return Integer.parseInt(tmpString);
 	}
 	
-	private Error initConnection(int newPort) {
-		TCP_PORT = newPort;
-		return initConnection();
-	}
-	
-	public Error initConnection() {
-		
-		
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Try to init connection on port " + TCP_PORT);	
+	private Error initConnection(int portToConnectTo) {
+
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Try to init connection on port " + portToConnectTo);	
 		
 		client.getAndroidActivity().peep();
 		
@@ -194,7 +200,7 @@ public class TCPClient  extends Thread {
 			serverAddr = InetAddress.getByName(TCP_SERVER_IP);
 	
 	        //create a socket to make the connection with the server
-	        tcpSocket = new Socket(serverAddr, TCP_PORT);
+	        tcpSocket = new Socket(serverAddr, portToConnectTo);
 
 		} catch (Exception e) {
 			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR --- Cannot connect to server at " + TCP_SERVER_IP);	

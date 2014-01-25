@@ -51,8 +51,11 @@ public class TCPInitServer extends Thread {
 			try {
 				client = server.accept();
 			} catch (IOException e) {
-				e.printStackTrace();
-				Log.error("Failed to wait for a client to connect!\n");	
+				if(serverRunning && threadRunning) {
+					e.printStackTrace();
+					Log.error("Failed to wait for a client to connect!\n");	
+					
+				}
 				continue;
 			}	
 			
