@@ -29,9 +29,7 @@ public class FullscreenActivity extends Activity {
 	private static final int MAX_TIME_TO_WAIT_FOR_CONNECTION = 3000;
 	
 	private void connectToServer() {
-		
-		
-		
+
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 	    StrictMode.setThreadPolicy(policy);
 	    

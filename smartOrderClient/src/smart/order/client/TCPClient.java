@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import smart.order.client.Command;
 
 
@@ -22,7 +25,7 @@ public class TCPClient  extends Thread {
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
 	
-    private Socket tcpSocket = null;
+    private volatile Socket tcpSocket = null;
 	private volatile boolean clientRunning = false;
 	private volatile boolean threadRunning = false;
 	private volatile String sendBuffer = null;
@@ -44,77 +47,143 @@ public class TCPClient  extends Thread {
 		return Error.ERR_OK;	
 	}
 	
+	protected String getWifiMAC() {
+		
+		WifiManager wifiMan = (WifiManager) client.getActivity().getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInf = wifiMan.getConnectionInfo();
+
+		return wifiInf.getMacAddress();
+	}
+	
+	
+	private void connectToInitServer() {
+		
+		errStatus = initConnection();
+		
+		if(errStatus == Error.ERR_OK) 
+			threadRunning = true;
+		
+		while(threadRunning && !tcpSocket.isClosed()) {
+						
+			try {
+				if(inMessage.ready()) {
+					
+					//in this while the client listens for the messages sent by the server
+				    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the new port...");
+					serverMessage = inMessage.readLine();
+				    
+				    if (serverMessage != null) {
+				    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
+				    	Command cmd = client.decodeCommand(serverMessage);
+				    	
+				    	if(cmd != null && cmd == Command.RECONNECT) {
+				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "(1)Received command: #Reconnect to port " + getNewPort(serverMessage) + "#");
+				    		outMessage.writeBytes(Command.ACK.cmdTag());	
+					        outMessage.flush();
+				    		tcpSocket.close();
+				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "(2)Received command: #Reconnect to port " + getNewPort(serverMessage) + "#");			    		
+				    	} else if(cmd != null && cmd == Command.DEBUG_MSG) {
+				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
+				    	} else {
+				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "!!Unknown command! Closing thread! #" + serverMessage + "#");
+				    		threadRunning = false;
+				    	}
+				    }  
+				}
+			} catch (IOException e) {
+				android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to read input stream");
+				e.printStackTrace();
+			}
+		}
+		
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "connectToInitServer finished!");
+
+	}
+	
+	private void connectToNewSocket() {
+		
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "connectToNewSocket started!");
+		
+		errStatus = initConnection(getNewPort(serverMessage));
+		
+		if(errStatus == Error.ERR_OK) 
+			clientRunning = true;
+		
+		while(clientRunning && threadRunning) {
+			
+			if(sendBuffer != null) {
+				
+				try {
+					outMessage.writeBytes(sendBuffer);	
+			        outMessage.flush();
+				} catch (IOException e) {
+					android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to send message via output stream");
+					e.printStackTrace();
+				}
+				sendBuffer = null;
+			}
+			
+			try {
+				if(inMessage.ready()) {
+					
+					//in this while the client listens for the messages sent by the server
+				    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
+					serverMessage = inMessage.readLine();
+				    
+				    if (serverMessage != null) {
+				    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
+				    	Command cmd = client.decodeCommand(serverMessage);
+				    	
+				    	if(cmd != null && cmd == Command.STOP_CLIENT) {
+				    		threadRunning = false;
+				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Stop client#");
+				    	} else if(cmd != null && cmd == Command.DEBUG_MSG)
+				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
+				    	
+				    }
+				    
+				    serverMessage = null;     
+				    
+				}
+			} catch (IOException e) {
+				android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to read input stream");
+				e.printStackTrace();
+			}
+		}
+	}
+	
 
 	@Override
 	public void run() {
 		super.run();
 		
-		threadRunning = true;
-		
-		if(threadRunning) {
-				
-			errStatus = initConnection();
-			
-			if(errStatus == Error.ERR_OK) 
-				clientRunning = true;
-			
-			while(clientRunning && threadRunning) {
-				
-				if(sendBuffer != null) {
-					
-					try {
-						outMessage.writeBytes(sendBuffer);	
-				        outMessage.flush();
-					} catch (IOException e) {
-						android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to send message via output stream");
-						e.printStackTrace();
-					}
-					
-					sendBuffer = null;
-				}
-				
-				
-				try {
-					if(inMessage.ready()) {
-						
-						//in this while the client listens for the messages sent by the server
-					    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
-					    
-						serverMessage = inMessage.readLine();
-					    
-					    if (serverMessage != null) {
-					    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
-					    	Command cmd = client.decodeCommand(serverMessage);
-					    	
-					    	if(cmd != null && cmd == Command.STOP_CLIENT) {
-					    		threadRunning = false;
-					    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Stop client#");
-					    	} else if(cmd != null && cmd == Command.DEBUG_MSG)
-					    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
-					    }
-					    
-					    serverMessage = null;     
-					    
-					}
-				} catch (IOException e) {
-					android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to read input stream");
-					e.printStackTrace();
-				}
-					
-			}
-		}
+		//Init phase! Connect to init server on reserved socket
+		connectToInitServer();
+
+		//now start on new port
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reopen server connection on new port");
+		connectToNewSocket();
 		
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "TCP-Thread stopped!\n");	
 		clientRunning = false;
 		client.tcpClientClosed();
-		
-		
+	}
+	
+	private int getNewPort(String serverMsg) {
+		String tmpString = serverMsg.split(" ")[4];
+				
+		return Integer.parseInt(tmpString);
+	}
+	
+	private Error initConnection(int newPort) {
+		TCP_PORT = newPort;
+		return initConnection();
 	}
 	
 	public Error initConnection() {
 		
 		
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Try to init connection");	
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Try to init connection on port " + TCP_PORT);	
 		
 		client.getAndroidActivity().peep();
 		
@@ -154,7 +223,6 @@ public class TCPClient  extends Thread {
 	public boolean clientConnected()  {
 		return clientRunning;
 	}
-	
 	
 }
 

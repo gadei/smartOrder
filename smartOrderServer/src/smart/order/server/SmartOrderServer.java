@@ -2,6 +2,8 @@ package smart.order.server;
 
 
 
+import java.util.LinkedList;
+
 import smart.order.server.Log.LogLevel;
 
 public class SmartOrderServer {
@@ -9,40 +11,35 @@ public class SmartOrderServer {
 	
 	private static SmartOrderServer instance = null;
 	
-	private TCPServer server = null;
+	private TCPInitServer initServer = null;
+	
+	private LinkedList<SmartOrderTCPClient> connectedClients;
 	
 	
-	public Error sendMessageToClient(String msg) {
-		
-		Error err = Error.ERR_OK;
-		
-		do {
-			
-			err = server.sendMessageToClient(msg);
-			try {
-				Thread.sleep(25);
-			} catch (InterruptedException e) {
-				err = Error.ERR_UNKNOWN;
-				e.printStackTrace();
-			}
-		
-		} while(err == Error.ERR_MSG_QUEUE_FULL);
 
-		
-		return err;
-	}
-	
 	private SmartOrderServer() {
 		
 		Log.setLogLevel(LogLevel.LOG_INFO_AND_ERROR);
 		
 		Log.info("Creating smartOrder server\n");	
 		
-		server = new TCPServer();
-		server.start();
+		initServer = new TCPInitServer();
+		initServer.start();
+		
+		connectedClients = new LinkedList<>();
 		
 	}
 	
+	
+	public void addSocketToList(SmartOrderTCPClient newClient) {
+		
+		for(SmartOrderTCPClient client : connectedClients) {
+			if(client.getConnectedPort() == newClient.getConnectedPort())
+				Log.error("Client on port " + newClient.getConnectedPort() + " already exists\n");
+			else
+				connectedClients.add(newClient);
+		}
+	}
 	
 	public static SmartOrderServer getInstance() {
 		
@@ -54,12 +51,12 @@ public class SmartOrderServer {
 	
 	public void stop() {
 		
-		server.closeServer();
+		initServer.closeServer();
 		//server.stop();
 	}
 	
 	public boolean clientConnected() {
-		return server.clientConnected();
+		return initServer.clientConnected();
 	}
 	
 	

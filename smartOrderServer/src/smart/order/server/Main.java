@@ -29,11 +29,11 @@ public class Main {
 			while(!orderServer.clientConnected())
 				Thread.sleep(25);
 				
-			orderServer.sendMessageToClient("HEHEHHE::Test message to client\n");
-			orderServer.sendMessageToClient(Command.DEBUG_MSG.cmdTag() + "\n");
+//			orderServer.sendMessageToClient("HEHEHHE::Test message to client\n");
+//			orderServer.sendMessageToClient(Command.DEBUG_MSG.cmdTag() + "\n");
 			//orderServer.sendMessageToClient(Command.STOP_CLIENT.cmdTag() + "\n");
 			
-			Thread.sleep(5000);
+			Thread.sleep(25000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,5 +1,6 @@
 package smart.order.client;
 
+import android.app.Activity;
 import smart.order.client.Command;
 
 public class SmartOrderClient {
@@ -55,6 +56,8 @@ public class SmartOrderClient {
 			return Command.STOP_CLIENT;
 		else if(msgFromServer.contains(Command.DEBUG_MSG.cmdTag()))
 			return Command.DEBUG_MSG;
+		else if(msgFromServer.contains(Command.RECONNECT.cmdTag()))
+			return Command.RECONNECT;
 		
 		return Command.STOP_CLIENT;
 	}
@@ -64,6 +67,10 @@ public class SmartOrderClient {
 			return false;
 		
 		return client.clientConnected();
+	}
+	
+	protected Activity getActivity() {
+		return androidActivity;
 	}
 
 }

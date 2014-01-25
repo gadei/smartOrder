@@ -4,15 +4,17 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 import org.junit.rules.ErrorCollector;
 
 public class TCPServer extends Thread {
 
 	
-	private static int TCP_PORT = 1419;
+	private int tcp_port = 1419;
 	
 	private ServerSocket server = null;
 	private Socket client = null;
@@ -25,6 +27,10 @@ public class TCPServer extends Thread {
 	private volatile String sendBuffer = null;
 	
 	public Error errStatus = Error.ERR_OK;
+	
+	public TCPServer(int tcp_port) {
+		this.tcp_port = tcp_port;
+	}
 	
 	public Error sendMessageToClient(String msg) {
 		
@@ -61,7 +67,7 @@ public class TCPServer extends Thread {
 			if(errStatus == Error.ERR_OK) 
 				serverRunning = true;
 			
-			while(serverRunning & threadRunning) {
+			while(serverRunning && threadRunning) {
 				
 				if(sendBuffer != null) {
 					
@@ -90,16 +96,20 @@ public class TCPServer extends Thread {
 		
 		
 		try {
-			
-			server = new ServerSocket(TCP_PORT);
-			
+			server = new ServerSocket(tcp_port);
 		} catch (IOException e) {
-
-			Log.error("Failed to open Server on port " + String.valueOf(TCP_PORT) + "!\n");
+			Log.error("Failed to open Server on port " + String.valueOf(tcp_port) + "!\n");
 			return Error.ERR_TCP_SERVER;
 		}
 		
-		Log.info("Started server on port " + String.valueOf(TCP_PORT) + "!\n");	
+		Log.info("Started server on port " + String.valueOf(tcp_port) + "!\n");	
+		
+		try {
+			server.setSoTimeout(3000);
+		} catch (SocketException e1) {
+			Log.error("Failed to set server.setSoTimeout(3000)!\n");	
+			e1.printStackTrace();
+		}
 		
 		try {
 			client = server.accept();
@@ -130,10 +140,10 @@ public class TCPServer extends Thread {
 			server.close();
 			client.close();
 		} catch (IOException e) {
-			Log.error("Failed to close Server on port " + String.valueOf(TCP_PORT) + "!\n");
+			Log.error("Failed to close Server on port " + String.valueOf(tcp_port) + "!\n");
 		}
 		
-		Log.info("Closed server on port " + String.valueOf(TCP_PORT) + "!\n");	
+		Log.info("Closed server on port " + String.valueOf(tcp_port) + "!\n");	
 		
 		threadRunning = false;
 		serverRunning = false;
