@@ -28,5 +28,7 @@
         <item >Wein</item>
         <item >Antialkoholisch</item>
     </string-array>
+    <string name="SmartOrderActivity_view_inside">0</string>
+    <string name="SmartOrderActivity_view_outside">2</string>
 
 </resources>

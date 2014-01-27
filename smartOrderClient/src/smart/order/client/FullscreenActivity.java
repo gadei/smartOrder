@@ -1,5 +1,9 @@
 package smart.order.client;
 
+import smart.order.client.R;
+import smart.order.client.R.id;
+import smart.order.client.R.layout;
+import smart.order.client.R.string;
 import smart.order.client.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;

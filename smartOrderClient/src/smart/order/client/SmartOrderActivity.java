@@ -1,10 +1,14 @@
 package smart.order.client;
 
+import smart.order.client.R;
+import smart.order.client.R.id;
+import smart.order.client.R.layout;
 import smart.order.client.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.ResolveInfo;
 import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,12 +16,13 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 public class SmartOrderActivity extends Activity {
 
-
-	private static int VISIBLE = 0;
-	private static int INVISIBLE = 1;
+	private boolean insideViewActive = true;
 	
 	public void tableButtonClicked(View v) {
 		
@@ -43,9 +48,45 @@ public class SmartOrderActivity extends Activity {
 
 	
 	
+	public void changeInOutsideButtonClicked(View v) {
+		final FrameLayout insideFrame = (FrameLayout) findViewById(R.id.inside_frame);
+		final FrameLayout outsideFrame = (FrameLayout) findViewById(R.id.outside_frame);
+		
+		if(insideViewActive) {
+			//switch to outside view!
+			setVisivilityOfAllElemts(outsideFrame, View.VISIBLE);
+			setVisivilityOfAllElemts(insideFrame, View.GONE);
+			
+			insideViewActive = false;
+		} else {
+			//switch to inside view!
+			setVisivilityOfAllElemts(outsideFrame, View.GONE);
+			setVisivilityOfAllElemts(insideFrame, View.VISIBLE);
+			insideViewActive = true;
+		}
+	}
+	
+	private void setVisivilityOfAllElemts(View view, int visibility) {
+		
+		view.setVisibility(visibility);	
+		
+		if(view instanceof ViewGroup) {
+
+			ViewGroup layout = (ViewGroup)view;
+
+			int count = layout.getChildCount();
+			for(int i = 0; i < count; i++) {
+				setVisivilityOfAllElemts(layout.getChildAt(i), visibility);
+			}
+		}
+	}
+	
+	
 	private void disconnectFromServer() {
 		
 	}
+	
+	
 	
 	
 	
@@ -87,10 +128,10 @@ public class SmartOrderActivity extends Activity {
 				
 				
 				if (controlElementIsHided) {
-					controlsView.setVisibility(INVISIBLE);
+					controlsView.setVisibility(View.INVISIBLE);
 					controlElementIsHided = true;
 				} else {
-					controlsView.setVisibility(VISIBLE);
+					controlsView.setVisibility(View.VISIBLE);
 					controlElementIsHided = false;
 				}
 				
@@ -98,7 +139,7 @@ public class SmartOrderActivity extends Activity {
 			}
 		});
 		
-		controlsView.setVisibility(INVISIBLE);
+		controlsView.setVisibility(View.INVISIBLE);
 		
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
@@ -110,6 +151,14 @@ public class SmartOrderActivity extends Activity {
 				disconnectFromServer();
 			}
 		});
+
+		final FrameLayout insideFrame = (FrameLayout) findViewById(R.id.inside_frame);
+		final FrameLayout outsideFrame = (FrameLayout) findViewById(R.id.outside_frame);
+	
+		setVisivilityOfAllElemts(insideFrame, View.VISIBLE);
+		setVisivilityOfAllElemts(outsideFrame, View.GONE);
+		insideViewActive = true;
+	
 	}
 	
 	

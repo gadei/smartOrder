@@ -31,10 +31,10 @@ public class Main {
 		try {
 			
 			
-			MainFrame mainFrame = new MainFrame();
-			mainFrame.setVisible(true);
-			
-			
+//			MainFrame mainFrame = new MainFrame();
+//			mainFrame.setVisible(true);
+//			
+//			
 			
 			
 			while(!orderServer.clientConnected())
@@ -44,7 +44,7 @@ public class Main {
 //			orderServer.sendMessageToClient(Command.DEBUG_MSG.cmdTag() + "\n");
 			//orderServer.sendMessageToClient(Command.STOP_CLIENT.cmdTag() + "\n");
 			
-			Thread.sleep(25000);
+			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
