@@ -2,6 +2,7 @@ package smart.order.client;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -20,7 +21,7 @@ public class TCPClient  extends Thread {
 	private SmartOrderClient client = null;
 	
 	private final static int TCP_INIT_PORT = 1419;
-	private static String TCP_SERVER_IP = "10.0.0.55";
+	private static String TCP_SERVER_IP = "10.0.0.2";
 	
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
@@ -30,6 +31,8 @@ public class TCPClient  extends Thread {
 	private volatile boolean threadRunning = false;
 	private volatile String sendBuffer = null;
 	private String serverMessage = null;
+	
+	public static final char EOF = (char)-1;
 	
 	private int connectedToPortNbr = -1;
 	
@@ -80,10 +83,9 @@ public class TCPClient  extends Thread {
 				    if (serverMessage != null) {
 				    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
 				    	Command cmd = client.decodeCommand(serverMessage);
-				    	
 				    	if(cmd != null && cmd == Command.RECONNECT) {
 				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "(1)Received command: #Reconnect to port " + getNewPort(serverMessage) + "#");
-				    		outMessage.writeBytes(Command.ACK.cmdTag());	
+				    		outMessage.writeBytes(Command.ACK.cmdTag() + "<EOF>");	
 					        outMessage.flush();
 				    		tcpSocket.close();
 				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "(2)Received command: #Reconnect to port " + getNewPort(serverMessage) + "#");			    		

@@ -1,0 +1,8 @@
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\bin\Debug\SmartOrderSystem.exe.config
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\obj\Debug\SmartOrderSystem.csprojResolveAssemblyReference.cache
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\bin\Debug\SmartOrderSystem.exe
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\bin\Debug\SmartOrderSystem.pdb
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\obj\Debug\SmartOrderSystem.exe
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\obj\Debug\SmartOrderSystem.pdb
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\obj\Debug\Interop.bpac.dll
+D:\Repos\smartOrder\SmartOrderSystem\SmartOrderSystem\obj\Debug\SmartOrderSystem.csproj.ResolveComReference.cache

@@ -112,6 +112,7 @@ public class TCPInitServer extends Thread {
 		Log.info("TCP init Thread stopped!\n");	
 	}
 	
+	
 	public Error initServer() {
 		
 		Log.info("Init smartOrder server. Starting thread to init TCP connection\n");	
