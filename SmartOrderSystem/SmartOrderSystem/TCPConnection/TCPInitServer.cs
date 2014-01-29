@@ -21,6 +21,8 @@ namespace SmartOrderSystem.TCPConnection
     private StateObject connectedClient = null;
     private SmartOrderServer smartOrderServer = null;
 
+    private IPAddress ipAddress = null;
+
     // Thread signal.
     public ManualResetEvent allDone = new ManualResetEvent(false);
 
@@ -41,7 +43,14 @@ namespace SmartOrderSystem.TCPConnection
       // The DNS name of the computer
       // running the listener is "host.contoso.com".
       IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-      IPAddress ipAddress = ipHostInfo.AddressList[1]; //TODO: This must be improved!!!
+      // Get only IPv4 Addresses
+      for(int i = 0; i < ipHostInfo.AddressList.Length; i++)
+      {
+          if(ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+          {
+              ipAddress = ipHostInfo.AddressList[i];
+          }
+      }
       IPEndPoint localEndPoint = new IPEndPoint(ipAddress, TCP_INIT_PORT);
 
       // Create a TCP/IP socket.
