@@ -11,6 +11,8 @@ namespace SmartOrderSystem
   {
     static void Main(string[] args)
     {
+
+      Console.SetWindowSize(120, 30);
       Console.WriteLine("Starting SmartOder System!");
 
       PrintService.PrinterInterface printer = new PrintService.PrinterInterface();
@@ -25,6 +27,12 @@ namespace SmartOrderSystem
       serversThread.Start();
 
       waitOnServer.WaitOne();
+
+      Thread.Sleep(10000);
+
+      servers.closeSmartOrderServers();
+
+      Thread.Sleep(100);
 
       Console.WriteLine("Stopping SmartOder System!\nPress any Key...");
       Console.ReadKey();

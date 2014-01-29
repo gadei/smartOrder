@@ -8,6 +8,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.opengl.Visibility;
 import android.os.Build;
@@ -23,6 +24,7 @@ import android.widget.LinearLayout;
 public class SmartOrderActivity extends Activity {
 
 	private boolean insideViewActive = true;
+	private SmartOrderClient smartOrderClient = null;
 	
 	public void tableButtonClicked(View v) {
 		
@@ -84,11 +86,24 @@ public class SmartOrderActivity extends Activity {
 	
 	private void disconnectFromServer() {
 		
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Disconnecting client-server...");	
+		smartOrderClient.disconnectClient();
+		
+		while(smartOrderClient.clientConnected()) {
+			android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for disconnection...");	
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Disconnected! Switching back to inital activity");	
+		Intent myIntent = new Intent(this.getApplicationContext(), FullscreenActivity.class);
+        startActivityForResult(myIntent, 0);
 	}
-	
-	
-	
-	
+
 	
 	/***
 	 * ===========================================================================================================
@@ -158,6 +173,9 @@ public class SmartOrderActivity extends Activity {
 		setVisivilityOfAllElemts(insideFrame, View.VISIBLE);
 		setVisivilityOfAllElemts(outsideFrame, View.GONE);
 		insideViewActive = true;
+		
+		smartOrderClient = SmartOrderClient.getInstance(null);
+		smartOrderClient.setSmartOrderActivity(this);
 	
 	}
 	

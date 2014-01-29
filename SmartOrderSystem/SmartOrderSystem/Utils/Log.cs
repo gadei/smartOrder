@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace SmartOrderSystem.Utils
 {
@@ -40,18 +41,42 @@ namespace SmartOrderSystem.Utils
         break;
 		}
 	}
-	
-	
-	public static void info(String infoString) {
+
+
+	public static void info(String infoString,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string fileName = "",
+    [CallerLineNumber] int lineNumber = 0) 
+  {
+    string shortFileName = null;
+
+    if (fileName.Contains('\\'))
+      shortFileName = fileName.Split('\\').Last();
+    else if (fileName.Contains('/'))
+      shortFileName = fileName.Split('/').Last();
+    else
+      shortFileName = fileName;
 
 		if(logInfo)
-			Console.WriteLine("   ***@INFO*** " + infoString);
+			Console.WriteLine("  ***INFO[" + shortFileName + " (" + lineNumber + ")]: @ " + memberName + "*** " + infoString);
 	}
-	
-	public static void error(String errorString) {
-		
+
+  public static void error(String errorString,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string fileName = "",
+    [CallerLineNumber] int lineNumber = 0)
+  {
+    string shortFileName = null;
+
+    if (fileName.Contains('\\'))
+      shortFileName = fileName.Split('\\').Last();
+    else if (fileName.Contains('/'))
+      shortFileName = fileName.Split('/').Last();
+    else
+      shortFileName = fileName;
+
 		if(logError)
-      Console.Error.WriteLine("   ***@Err*** " + errorString);
+      Console.Error.WriteLine("  ***Err[" + shortFileName + " (" + lineNumber + ")]: @ " + memberName + "*** " + errorString);
 	}
 	
 }

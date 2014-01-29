@@ -8,15 +8,17 @@ using System.Net.Sockets;
 using System.Threading;
 using SmartOrderSystem.Utils;
 
+
 namespace SmartOrderSystem.TCPConnection
 {
 
-  public class TCPInitServer
+  public class TCPServer
   {
-    public static int TCP_INIT_PORT = 1419;
-    private static String RECONNECT_MSG = "CMD_RECONNECT_ON_NEW_PORT";
+    public static int socketPort;
 
     private volatile bool serverRunning = false;
+
+    private Thread myThread = null;
 
     private StateObject connectedClient = null;
     private SmartOrderServer smartOrderServer = null;
@@ -24,9 +26,15 @@ namespace SmartOrderSystem.TCPConnection
     // Thread signal.
     public ManualResetEvent allDone = new ManualResetEvent(false);
 
-    public TCPInitServer(SmartOrderServer smartOrderServer)
+    public TCPServer(SmartOrderServer smartOrderServer, int startSocketOnPort)
     {
+      socketPort = startSocketOnPort;
       this.smartOrderServer = smartOrderServer;
+    }
+
+    public void setMyThread(Thread myThread) 
+    {
+      this.myThread = myThread;
     }
 
     public void StartServer()
@@ -42,7 +50,7 @@ namespace SmartOrderSystem.TCPConnection
       // running the listener is "host.contoso.com".
       IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
       IPAddress ipAddress = ipHostInfo.AddressList[1]; //TODO: This must be improved!!!
-      IPEndPoint localEndPoint = new IPEndPoint(ipAddress, TCP_INIT_PORT);
+      IPEndPoint localEndPoint = new IPEndPoint(ipAddress, socketPort);
 
       // Create a TCP/IP socket.
       Socket listener = new Socket(AddressFamily.InterNetwork,
@@ -54,27 +62,26 @@ namespace SmartOrderSystem.TCPConnection
         listener.Bind(localEndPoint);
         listener.Listen(100);
 
+        // Set the event to nonsignaled state.
+        allDone.Reset();
+
+        // Start an asynchronous socket to listen for connections.
+        Log.info("Waiting for a connection...");
+        listener.BeginAccept(
+            new AsyncCallback(AcceptCallback),
+            listener);
+
+        Log.info("MainThread: Waiting for Client to connect on worker socket");
+        allDone.WaitOne();
+        Log.info("MainThread: Client connected to worker socket");
+
         while (serverRunning)
         {
-          // Set the event to nonsignaled state.
-          allDone.Reset();
-
-          // Start an asynchronous socket to listen for connections.
-          Log.info("Waiting for a connection...");
-          listener.BeginAccept(
-              new AsyncCallback(AcceptCallback),
-              listener);
-
-          if (serverRunning)
-          {
-            // Wait until a connection is made before continuing.
-            Log.info("MainThread: Waiting for Connections");
-            allDone.WaitOne();
-            Log.info("MainThread: Not waiting any more");
-          } 
+          //TODO: maybe check connection periodically
+          Thread.Sleep(1000);
         }
 
-        Log.info("MainThread: Stopping Server; Closing connection");
+        Log.info("MainThread: Stopping Server on port " + socketPort + "; Closing connection");
         connectedClient.workSocket.Shutdown(SocketShutdown.Both);
         connectedClient.workSocket.Close();
 
@@ -92,7 +99,7 @@ namespace SmartOrderSystem.TCPConnection
       Log.info("AcceptCallback: No a client connects");
       allDone.Set();
       Log.info("AcceptCallback: Main thread is allowed to work again");
-      
+
       // Get the socket that handles the client request.
       Socket listener = (Socket)ar.AsyncState;
       Socket handler = listener.EndAccept(ar);
@@ -106,9 +113,7 @@ namespace SmartOrderSystem.TCPConnection
 
       Log.info("Client Connected!");
 
-      connectedClient.workSocketPort = smartOrderServer.getNextFreePortForWorkerServer();
-      Send(handler, RECONNECT_MSG + ": Client use port " + connectedClient.workSocketPort + "\n");
-
+      connectedClient.workSocketPort = socketPort;
     }
 
     public void ReadCallback(IAsyncResult ar)
@@ -139,10 +144,6 @@ namespace SmartOrderSystem.TCPConnection
           Log.info("Read" + content.Length + " bytes from socket. \n Data : " + content);
 
           content = content.Replace(Command.EOF, "");
-
-          if(content.CompareTo(Command.ACK) == 0)
-            smartOrderServer.connectNewClientToWorkerServer(state.workSocketPort);
-
         }
         else
         {
@@ -151,6 +152,11 @@ namespace SmartOrderSystem.TCPConnection
           new AsyncCallback(ReadCallback), state);
         }
       }
+    }
+
+    public void SendMsgToClient(String data)
+    {
+      Send(connectedClient.workSocket, data);
     }
 
     private void Send(Socket handler, String data)
@@ -177,17 +183,18 @@ namespace SmartOrderSystem.TCPConnection
       }
       catch (Exception e)
       {
-        Log.error(e.ToString());
+        Log.info(e.ToString());
       }
     }
 
-    public void CloseServer() {
+    public void CloseServer()
+    {
 
       Log.info("TCPInitServer: Command close thread!");
       serverRunning = false;
       allDone.Set();
- 
+
     }
-      
+
   }
 }

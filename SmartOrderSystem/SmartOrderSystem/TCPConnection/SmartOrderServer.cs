@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SmartOrderSystem.Utils;
 using System.Threading;
+using System.Collections.Concurrent;
 
 namespace SmartOrderSystem.TCPConnection
 {
@@ -18,9 +19,18 @@ namespace SmartOrderSystem.TCPConnection
     private Thread initServerThread = null;
     private ManualResetEvent waitOnServer;
 
+    private Dictionary<int, TCPServer> workerServers = null;
+
+    private static Mutex nextFreePortMutex = new Mutex();
+
+    private int nextFreePortForWorkerServer = -1;
+
     public SmartOrderServer(ManualResetEvent waitOnServer)
     {
       this.waitOnServer = waitOnServer;
+      workerServers = new Dictionary<int, TCPServer>();
+
+      nextFreePortForWorkerServer = TCPInitServer.TCP_INIT_PORT + 1;
 
       initServer = new TCPInitServer(this);
       initServerThread = new Thread(initServer.StartServer);
@@ -35,11 +45,11 @@ namespace SmartOrderSystem.TCPConnection
       Log.info("Init server started");
 
       while(threadRunning) {
-        ;
+        Thread.Sleep(100);
       }
 
       Log.info("Closing smartServers main thread");
-      waitOnServer.Set();
+     
 
     }
 
@@ -51,10 +61,29 @@ namespace SmartOrderSystem.TCPConnection
       threadRunning = false;
     }
 
+    public int getNextFreePortForWorkerServer()
+    {     
+      nextFreePortMutex.WaitOne();
+      int freePort = nextFreePortForWorkerServer;
+      nextFreePortForWorkerServer++;
+      nextFreePortMutex.ReleaseMutex();
+
+      return freePort;
+    }
+
     public void connectNewClientToWorkerServer(int workerPort)
     {
-      //TODO: Replace this!
-      closeSmartOrderServers();
+      TCPServer server = new TCPServer(this, workerPort);
+      Thread serverThread = new Thread(server.StartServer);
+      server.setMyThread(serverThread);
+      Log.info("TcpServer on port " + workerPort + " and Thread created");
+
+      workerServers.Add(workerPort, server);
+
+      Log.info("Starting TcpServer on port " + workerPort + "!");
+      serverThread.Start();
+
+      waitOnServer.Set();
     }
 
 

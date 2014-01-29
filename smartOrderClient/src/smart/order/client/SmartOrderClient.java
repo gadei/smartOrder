@@ -7,10 +7,15 @@ public class SmartOrderClient {
 
 	private static SmartOrderClient instance = null;
 	private FullscreenActivity androidActivity = null;
+	private SmartOrderActivity smartOrderActivity = null;
 	private TCPClient client = null;
 	
 	 protected FullscreenActivity getAndroidActivity() {
 		 return androidActivity;
+	 }
+	 
+	 protected void setSmartOrderActivity(SmartOrderActivity act) {
+		 smartOrderActivity = act;
 	 }
 	
 	private SmartOrderClient(FullscreenActivity activity) {
@@ -71,6 +76,13 @@ public class SmartOrderClient {
 	
 	protected Activity getActivity() {
 		return androidActivity;
+	}
+	
+	public Error disconnectClient() {
+		
+		client.closeConnection();
+		
+		return Error.ERR_OK;
 	}
 
 }

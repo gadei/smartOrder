@@ -228,6 +228,13 @@ public class TCPClient  extends Thread {
         return Error.ERR_OK;
 	}
 	
+	public Error closeConnection() {
+		clientRunning = false;
+		threadRunning = false;
+		
+		return Error.ERR_OK;
+	}
+	
 	public boolean clientConnected()  {
 		return clientRunning;
 	}
