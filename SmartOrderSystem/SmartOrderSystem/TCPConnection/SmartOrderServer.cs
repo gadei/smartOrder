@@ -58,6 +58,9 @@ namespace SmartOrderSystem.TCPConnection
       Log.info("Closing all smartOder server");
       initServer.CloseServer();
 
+      foreach (TCPServer server in workerServers.Values)
+        server.CloseServer();
+
       threadRunning = false;
     }
 

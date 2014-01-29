@@ -77,8 +77,9 @@ namespace SmartOrderSystem.TCPConnection
 
         while (serverRunning)
         {
-          //TODO: maybe check connection periodically
+          //check connection periodically
           Thread.Sleep(1000);
+          SendMsgToClient(Command.STILL_ALIVE);
         }
 
         Log.info("MainThread: Stopping Server on port " + socketPort + "; Closing connection");
@@ -118,6 +119,7 @@ namespace SmartOrderSystem.TCPConnection
 
     public void ReadCallback(IAsyncResult ar)
     {
+      Log.info("ReadCallback: Reading Message");
       String content = String.Empty;
 
       // Retrieve the state object and the handler socket
@@ -144,6 +146,10 @@ namespace SmartOrderSystem.TCPConnection
           Log.info("Read" + content.Length + " bytes from socket. \n Data : " + content);
 
           content = content.Replace(Command.EOF, "");
+
+          //restart Listener
+          handler.BeginReceive(connectedClient.buffer, 0, StateObject.BufferSize, 0,
+            new AsyncCallback(ReadCallback), connectedClient);
         }
         else
         {
@@ -156,7 +162,7 @@ namespace SmartOrderSystem.TCPConnection
 
     public void SendMsgToClient(String data)
     {
-      Send(connectedClient.workSocket, data);
+      Send(connectedClient.workSocket, data + Command.EOF);
     }
 
     private void Send(Socket handler, String data)
@@ -191,6 +197,10 @@ namespace SmartOrderSystem.TCPConnection
     {
 
       Log.info("TCPInitServer: Command close thread!");
+      connectedClient.workSocket.Shutdown(SocketShutdown.Both);
+      connectedClient.workSocket.Disconnect(true);
+      connectedClient.workSocket.Close();
+      
       serverRunning = false;
       allDone.Set();
 

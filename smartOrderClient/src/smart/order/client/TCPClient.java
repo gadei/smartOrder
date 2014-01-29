@@ -32,7 +32,7 @@ public class TCPClient  extends Thread {
 	private volatile String sendBuffer = null;
 	private String serverMessage = null;
 	
-	public static final char EOF = (char)-1;
+	public static final String EOF = "<EOF>";
 	
 	private int connectedToPortNbr = -1;
 	
@@ -45,7 +45,7 @@ public class TCPClient  extends Thread {
 	public Error sendMessageToServer(String msg) {
 		
 		if(sendBuffer == null)
-			sendBuffer = msg;
+			sendBuffer = msg + EOF;
 		else
 			return Error.ERR_UNKNOWN;
 		
@@ -85,10 +85,10 @@ public class TCPClient  extends Thread {
 				    	Command cmd = client.decodeCommand(serverMessage);
 				    	if(cmd != null && cmd == Command.RECONNECT) {
 				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "(1)Received command: #Reconnect to port " + getNewPort(serverMessage) + "#");
-				    		outMessage.writeBytes(Command.ACK.cmdTag() + "<EOF>");	
+				    		outMessage.writeBytes(Command.ACK.cmdTag() + EOF);	
 					        outMessage.flush();
 				    		tcpSocket.close();
-				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "(2)Received command: #Reconnect to port " + getNewPort(serverMessage) + "#");			    		
+				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Sent ACK to end handshake");			    		
 				    	} else if(cmd != null && cmd == Command.DEBUG_MSG) {
 				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
 				    	} else {
@@ -136,27 +136,9 @@ public class TCPClient  extends Thread {
 			}
 			
 			try {
-				if(inMessage.ready()) {
-					
-					//in this while the client listens for the messages sent by the server
-				    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
-					serverMessage = inMessage.readLine();
-				    
-				    if (serverMessage != null) {
-				    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
-				    	Command cmd = client.decodeCommand(serverMessage);
-				    	
-				    	if(cmd != null && cmd == Command.STOP_CLIENT) {
-				    		threadRunning = false;
-				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Stop client#");
-				    	} else if(cmd != null && cmd == Command.DEBUG_MSG)
-				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
-				    	
-				    }
-				    
-				    serverMessage = null;     
-				    
-				}
+				if(inMessage.ready())
+					readMessageFromServer();
+				
 			} catch (IOException e) {
 				android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to read input stream");
 				e.printStackTrace();
@@ -164,6 +146,28 @@ public class TCPClient  extends Thread {
 		}
 		
 		connectedToPortNbr = -1;
+	}
+	
+	private void readMessageFromServer() throws IOException {
+		//in this while the client listens for the messages sent by the server
+	    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
+		serverMessage = inMessage.readLine();
+	    
+	    if (serverMessage != null) {
+	    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
+	    	Command cmd = client.decodeCommand(serverMessage);
+	    	
+	    	if(cmd != null && cmd == Command.STOP_CLIENT) {
+	    		threadRunning = false;
+	    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Stop client#");
+	    	} else if(cmd != null && cmd == Command.DEBUG_MSG)
+	    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
+	    	
+	    	if(serverMessage.compareTo(Command.STILL_ALIVE.cmdTag()) == 0)
+	    		sendMessageToServer(Command.ACK.cmdTag());
+	    }
+	    
+	    serverMessage = null;    
 	}
 	
 

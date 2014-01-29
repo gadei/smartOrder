@@ -18,7 +18,6 @@ namespace SmartOrderSystem
       PrintService.PrinterInterface printer = new PrintService.PrinterInterface();
       //printer.printLabel();
 
-
       ManualResetEvent waitOnServer = new ManualResetEvent(false);
 
       TCPConnection.SmartOrderServer servers = new TCPConnection.SmartOrderServer(waitOnServer);
