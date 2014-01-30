@@ -69,7 +69,7 @@ namespace SmartOrderSystem.TCPConnection
           allDone.Reset();
 
           // Start an asynchronous socket to listen for connections.
-          Log.info("Waiting for a connection...");
+          Log.info("Waiting for a connection on " + ipAddress.ToString() + ":" + TCP_INIT_PORT);
           listener.BeginAccept(
               new AsyncCallback(AcceptCallback),
               listener);
