@@ -71,8 +71,8 @@ namespace SmartOrderSystem.TCPConnection
         while (serverRunning)
         {
           //check connection periodically
-          ;
-          //SendMsgToClient(Command.STILL_ALIVE);
+          Thread.Sleep(1000);
+          SendMsgToClient(Command.STILL_ALIVE);
         }
 
         connectedClient.workSocket.Shutdown(SocketShutdown.Both);

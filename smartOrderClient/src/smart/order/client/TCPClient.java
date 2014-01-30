@@ -17,7 +17,7 @@ import smart.order.client.Command;
 
 public class TCPClient  extends Thread {
 
-	
+	public static int RECEIVE_BUFFER_LEN = 1024;
 	private SmartOrderClient client = null;
 	
 	private final static int TCP_INIT_PORT = 1419;
@@ -32,6 +32,10 @@ public class TCPClient  extends Thread {
 	private volatile String sendBuffer = null;
 	private String serverMessage = null;
 	
+	private char[] receiveBuffer = null;
+	private int receivedDataLen = 0;
+	private char[] bigData = null;
+	
 	public static final String EOF = "<EOF>";
 	
 	private int connectedToPortNbr = -1;
@@ -40,6 +44,7 @@ public class TCPClient  extends Thread {
 	
 	public TCPClient(SmartOrderClient client) {
 		this.client = client;
+		receiveBuffer = new char[RECEIVE_BUFFER_LEN];
 	}
 	
 	public Error sendMessageToServer(String msg) {
@@ -151,19 +156,44 @@ public class TCPClient  extends Thread {
 	private void readMessageFromServer() throws IOException {
 		//in this while the client listens for the messages sent by the server
 	    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
-		serverMessage = inMessage.readLine();
+	    
+	    receivedDataLen = inMessage.read(receiveBuffer);
+	    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received " + receivedDataLen + " chars. EOF included?");
+	    
+	    char[] receivedDataArray = new char[receivedDataLen];
+	    System.arraycopy(receiveBuffer, 0, receivedDataArray, 0, receivedDataLen);
+	    String tmpString = String.valueOf(receivedDataArray);
+	    if(tmpString.endsWith(EOF) && bigData == null) { //A Command is received!
+	    	serverMessage = tmpString;
+	    } else {
+	    	if(bigData == null) { 
+	    		bigData = receivedDataArray;
+	    	} else {
+	    		char[] tmpBuffer = bigData;
+	    		bigData = new char[receivedDataLen + tmpBuffer.length];
+	    		System.arraycopy(tmpBuffer, 0, bigData, 0, tmpBuffer.length);
+	    		System.arraycopy(receiveBuffer, 0, bigData, tmpBuffer.length, receivedDataLen);
+	    	}  	
+	    	
+	    	receiveBuffer = new char[RECEIVE_BUFFER_LEN];
+	    }
+	    
+		
 	    
 	    if (serverMessage != null) {
 	    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
-	    	Command cmd = client.decodeCommand(serverMessage);
 	    	
-	    	if(cmd != null && cmd == Command.STOP_CLIENT) {
-	    		threadRunning = false;
-	    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Stop client#");
-	    	} else if(cmd != null && cmd == Command.DEBUG_MSG)
-	    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
+	    	//TODO: REFACTORE OR REMOVE THIS --- DESIGN DECISION
 	    	
-	    	if(serverMessage.compareTo(Command.STILL_ALIVE.cmdTag()) == 0)
+//	    	Command cmd = client.decodeCommand(serverMessage);
+//	    	
+//	    	if(cmd != null && cmd == Command.STOP_CLIENT) {
+//	    		threadRunning = false;
+//	    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Stop client#");
+//	    	} else if(cmd != null && cmd == Command.DEBUG_MSG)
+//	    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
+	    	
+	    	if(serverMessage.compareTo(Command.STILL_ALIVE.cmdTag() + EOF) == 0)
 	    		sendMessageToServer(Command.ACK.cmdTag());
 	    }
 	    
