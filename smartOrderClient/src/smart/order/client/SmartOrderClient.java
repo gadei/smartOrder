@@ -80,7 +80,8 @@ public class SmartOrderClient {
 	
 	public Error disconnectClient() {
 		
-		client.closeConnection();
+		if(client != null)
+			client.closeConnection();
 		
 		return Error.ERR_OK;
 	}
