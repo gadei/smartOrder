@@ -15,13 +15,9 @@ namespace SmartOrderSystem.TCPConnection
   {
     public static int TCP_INIT_PORT = 1419;
     private static String RECONNECT_MSG = "CMD_RECONNECT_ON_NEW_PORT";
-
     private volatile bool serverRunning = false;
-
     private StateObject connectedClient = null;
     private SmartOrderServer smartOrderServer = null;
-
-    private IPAddress ipAddress = null;
 
     // Thread signal.
     public ManualResetEvent allDone = new ManualResetEvent(false);
@@ -39,19 +35,7 @@ namespace SmartOrderSystem.TCPConnection
       // Data buffer for incoming data.
       byte[] bytes = new Byte[1024];
 
-      // Establish the local endpoint for the socket.
-      // The DNS name of the computer
-      // running the listener is "host.contoso.com".
-      IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-      // Get only IPv4 Addresses
-      for(int i = 0; i < ipHostInfo.AddressList.Length; i++)
-      {
-          if(ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-          {
-              ipAddress = ipHostInfo.AddressList[i];
-          }
-      }
-      IPEndPoint localEndPoint = new IPEndPoint(ipAddress, TCP_INIT_PORT);
+      IPEndPoint localEndPoint = new IPEndPoint(smartOrderServer.getWIFIIPAdress(), TCP_INIT_PORT);
 
       // Create a TCP/IP socket.
       Socket listener = new Socket(AddressFamily.InterNetwork,
@@ -122,6 +106,10 @@ namespace SmartOrderSystem.TCPConnection
 
     public void ReadCallback(IAsyncResult ar)
     {
+
+      if (serverRunning == false)
+        return;
+
       String content = String.Empty;
 
       // Retrieve the state object and the handler socket

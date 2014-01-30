@@ -30,8 +30,8 @@ namespace SmartOrderSystem
       Thread.Sleep(10000);
 
       servers.closeSmartOrderServers();
+      serversThread.Join();
 
-      Thread.Sleep(100);
 
       Console.WriteLine("Stopping SmartOder System!\nPress any Key...");
       Console.ReadKey();
