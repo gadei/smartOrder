@@ -15,9 +15,7 @@ namespace SmartOrderSystem.TCPConnection
   public class TCPServer
   {
     public static int socketPort;
-
     private volatile bool serverRunning = false;
-
     private Thread myThread = null;
 
     private StateObject connectedClient = null;
@@ -45,12 +43,7 @@ namespace SmartOrderSystem.TCPConnection
       // Data buffer for incoming data.
       byte[] bytes = new Byte[1024];
 
-      // Establish the local endpoint for the socket.
-      // The DNS name of the computer
-      // running the listener is "host.contoso.com".
-      IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-      IPAddress ipAddress = ipHostInfo.AddressList[1]; //TODO: This must be improved!!!
-      IPEndPoint localEndPoint = new IPEndPoint(ipAddress, socketPort);
+      IPEndPoint localEndPoint = new IPEndPoint(smartOrderServer.getWIFIIPAdress(), socketPort);
 
       // Create a TCP/IP socket.
       Socket listener = new Socket(AddressFamily.InterNetwork,
@@ -78,13 +71,14 @@ namespace SmartOrderSystem.TCPConnection
         while (serverRunning)
         {
           //check connection periodically
-          Thread.Sleep(1000);
-          SendMsgToClient(Command.STILL_ALIVE);
+          ;
+          //SendMsgToClient(Command.STILL_ALIVE);
         }
 
-        Log.info("MainThread: Stopping Server on port " + socketPort + "; Closing connection");
         connectedClient.workSocket.Shutdown(SocketShutdown.Both);
         connectedClient.workSocket.Close();
+        
+        Log.info("MainThread: Stopping Server on port " + socketPort + "; Closing connection");
 
       }
       catch (Exception e)
@@ -119,6 +113,10 @@ namespace SmartOrderSystem.TCPConnection
 
     public void ReadCallback(IAsyncResult ar)
     {
+
+      if (serverRunning == false)
+        return;
+
       Log.info("ReadCallback: Reading Message");
       String content = String.Empty;
 
@@ -195,15 +193,8 @@ namespace SmartOrderSystem.TCPConnection
 
     public void CloseServer()
     {
-
-      Log.info("TCPInitServer: Command close thread!");
-      connectedClient.workSocket.Shutdown(SocketShutdown.Both);
-      connectedClient.workSocket.Disconnect(true);
-      connectedClient.workSocket.Close();
-      
+      Log.info("TCPServer: Command close server on " + socketPort + "!");
       serverRunning = false;
-      allDone.Set();
-
     }
 
   }

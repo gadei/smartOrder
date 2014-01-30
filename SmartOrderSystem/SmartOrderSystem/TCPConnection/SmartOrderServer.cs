@@ -6,10 +6,24 @@ using System.Threading.Tasks;
 using SmartOrderSystem.Utils;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace SmartOrderSystem.TCPConnection
 {
 
+  class ThreadServerTupel
+  {
+    public Thread thread { get; set; }
+    public TCPServer server { get; set; }
+
+    public ThreadServerTupel(Thread thread, TCPServer server)
+    {
+      this.thread = thread;
+      this.server = server;
+    }
+  }
 
   public class SmartOrderServer
   {
@@ -18,8 +32,9 @@ namespace SmartOrderSystem.TCPConnection
     private TCPInitServer initServer = null;
     private Thread initServerThread = null;
     private ManualResetEvent waitOnServer;
+    private IPAddress wifiIPAdress = null;
 
-    private Dictionary<int, TCPServer> workerServers = null;
+    private Dictionary<int, ThreadServerTupel> workerServers = null;
 
     private static Mutex nextFreePortMutex = new Mutex();
 
@@ -28,13 +43,19 @@ namespace SmartOrderSystem.TCPConnection
     public SmartOrderServer(ManualResetEvent waitOnServer)
     {
       this.waitOnServer = waitOnServer;
-      workerServers = new Dictionary<int, TCPServer>();
+      workerServers = new Dictionary<int, ThreadServerTupel>();
 
       nextFreePortForWorkerServer = TCPInitServer.TCP_INIT_PORT + 1;
 
       initServer = new TCPInitServer(this);
       initServerThread = new Thread(initServer.StartServer);
+
       Log.info("TcpInitServer and Thread created");
+
+      readWIFIIPAdress();
+      if (wifiIPAdress == null)
+        Log.error("No WIFI IP adress found! System won't work properly!");
+
     }
 
     public void runSmartOrderServers() {
@@ -49,7 +70,6 @@ namespace SmartOrderSystem.TCPConnection
       }
 
       Log.info("Closing smartServers main thread");
-     
 
     }
 
@@ -57,9 +77,14 @@ namespace SmartOrderSystem.TCPConnection
 
       Log.info("Closing all smartOder server");
       initServer.CloseServer();
+      initServerThread.Join();
+      Log.info("Init server closed and worker thread finished");
 
-      foreach (TCPServer server in workerServers.Values)
-        server.CloseServer();
+      foreach (ThreadServerTupel tupel in workerServers.Values) {
+        tupel.server.CloseServer();
+        tupel.thread.Join();
+      }
+      Log.info("All worker server closed and worker thread finished");
 
       threadRunning = false;
     }
@@ -81,12 +106,36 @@ namespace SmartOrderSystem.TCPConnection
       server.setMyThread(serverThread);
       Log.info("TcpServer on port " + workerPort + " and Thread created");
 
-      workerServers.Add(workerPort, server);
+      workerServers.Add(workerPort, new ThreadServerTupel(serverThread, server));
 
       Log.info("Starting TcpServer on port " + workerPort + "!");
       serverThread.Start();
 
       waitOnServer.Set();
+    }
+
+    public IPAddress getWIFIIPAdress()
+    {
+      return wifiIPAdress;
+    }
+
+    private void readWIFIIPAdress()
+    {
+      foreach(NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+      {
+        if(ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+        {
+          Console.WriteLine(ni.Name);
+          foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
+          {
+            if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+            {
+              wifiIPAdress = ip.Address;
+            }
+          }
+        }  
+      }
+
     }
 
 
