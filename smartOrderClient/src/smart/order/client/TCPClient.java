@@ -111,7 +111,12 @@ public class TCPClient  extends Thread {
 		connectedToPortNbr = TCP_INIT_PORT;
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "connectToInitServer finished!");
 		
-		return getNewPort(serverMessage);
+		if(threadRunning)
+			return getNewPort(serverMessage);
+		else {
+			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "No new port found for connection");
+			return -1;
+		}
 
 	}
 	
@@ -208,6 +213,9 @@ public class TCPClient  extends Thread {
 		//Init phase! Connect to init server on reserved socket
 		int newPort = connectToInitServer();
 
+		if(newPort == -1)
+			return;
+		
 		//now start on new port
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reopen server connection on new port (" + newPort + ")");
 		connectToNewSocket(newPort);

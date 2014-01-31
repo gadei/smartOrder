@@ -158,16 +158,22 @@ namespace SmartOrderSystem.TCPConnection
       }
     }
 
-    public void SendMsgToClient(String data)
+    protected void SendData(byte[] msgToClient)
     {
-      Send(connectedClient.workSocket, data + Command.EOF);
+      Send(connectedClient.workSocket, msgToClient);
     }
 
-    private void Send(Socket handler, String data)
+    public void SendMsgToClient(String data)
     {
       // Convert the string data to byte data using ASCII encoding.
-      byte[] byteData = Encoding.ASCII.GetBytes(data);
+      byte[] byteData = Encoding.ASCII.GetBytes(data + Command.EOF);
 
+      Send(connectedClient.workSocket, byteData);
+    }
+
+    private void Send(Socket handler, byte[] byteData)
+    {
+      
       // Begin sending the data to the remote device.
       handler.BeginSend(byteData, 0, byteData.Length, 0,
           new AsyncCallback(SendCallback), handler);

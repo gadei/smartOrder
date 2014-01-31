@@ -125,7 +125,6 @@ namespace SmartOrderSystem.TCPConnection
       {
         if(ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
         {
-          Console.WriteLine(ni.Name);
           foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
           {
             if (ip.Address.AddressFamily == AddressFamily.InterNetwork)

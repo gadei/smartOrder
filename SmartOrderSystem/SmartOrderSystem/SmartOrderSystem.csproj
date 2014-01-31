@@ -47,6 +47,7 @@
     <Compile Include="TCPConnection\SmartOrderServer.cs" />
     <Compile Include="TCPConnection\StateObject.cs" />
     <Compile Include="TCPConnection\TCPInitServer.cs" />
+    <Compile Include="TCPConnection\TCPMessenger.cs" />
     <Compile Include="TCPConnection\TCPServer.cs" />
     <Compile Include="Utils\Command.cs" />
     <Compile Include="Utils\Log.cs" />
