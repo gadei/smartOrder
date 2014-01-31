@@ -21,7 +21,7 @@ public class TCPClient  extends Thread {
 	private SmartOrderClient client = null;
 	
 	private final static int TCP_INIT_PORT = 1419;
-	private static String TCP_SERVER_IP = "10.0.0.2";
+	private static String TCP_SERVER_IP = "10.0.0.3";
 	
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
@@ -75,6 +75,8 @@ public class TCPClient  extends Thread {
 		
 		if(errStatus == Error.ERR_OK) 
 			threadRunning = true;
+		else 
+			return -1;
 		
 		while(threadRunning && !tcpSocket.isClosed()) {
 						
