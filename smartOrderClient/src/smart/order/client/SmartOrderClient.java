@@ -2,6 +2,7 @@ package smart.order.client;
 
 import android.app.Activity;
 import smart.order.client.Command;
+import smart.order.client.TCPConnection.TCPClient;
 
 public class SmartOrderClient {
 
@@ -10,7 +11,7 @@ public class SmartOrderClient {
 	private SmartOrderActivity smartOrderActivity = null;
 	private TCPClient client = null;
 	
-	 protected FullscreenActivity getAndroidActivity() {
+	 public FullscreenActivity getAndroidActivity() {
 		 return androidActivity;
 	 }
 	 
@@ -74,7 +75,7 @@ public class SmartOrderClient {
 		return client.clientConnected();
 	}
 	
-	protected Activity getActivity() {
+	public Activity getActivity() {
 		return androidActivity;
 	}
 	

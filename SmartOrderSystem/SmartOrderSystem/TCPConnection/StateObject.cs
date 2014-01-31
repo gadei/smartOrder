@@ -20,5 +20,9 @@ namespace SmartOrderSystem.TCPConnection
     public StringBuilder sb = new StringBuilder();
 
     public int workSocketPort = -1;
+
+    public void renewBuffer() {
+      buffer = new byte[BufferSize];
+    }
   }
 }

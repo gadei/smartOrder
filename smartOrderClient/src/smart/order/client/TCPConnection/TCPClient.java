@@ -1,4 +1,4 @@
-package smart.order.client;
+package smart.order.client.TCPConnection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -12,6 +12,8 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import smart.order.client.Command;
+import smart.order.client.Error;
+import smart.order.client.SmartOrderClient;
 
 
 
@@ -21,7 +23,7 @@ public class TCPClient  extends Thread {
 	private SmartOrderClient client = null;
 	
 	private final static int TCP_INIT_PORT = 1419;
-	private static String TCP_SERVER_IP = "10.0.0.3";
+	private static String TCP_SERVER_IP = "10.0.0.2";
 	
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
@@ -50,9 +52,12 @@ public class TCPClient  extends Thread {
 	public Error sendMessageToServer(String msg) {
 		
 		if(sendBuffer == null)
-			sendBuffer = msg + EOF;
+			sendBuffer = msg + EOF + '\0';
 		else
 			return Error.ERR_UNKNOWN;
+		
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Sending Message to server:\n" + sendBuffer);
+		
 		
 		return Error.ERR_OK;	
 	}
@@ -127,7 +132,7 @@ public class TCPClient  extends Thread {
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "connectToNewSocket started!");
 		
 		errStatus = initConnection(newPort);
-		
+
 		if(errStatus == Error.ERR_OK) 
 			clientRunning = true;
 		
@@ -138,7 +143,7 @@ public class TCPClient  extends Thread {
 			if(sendBuffer != null) {
 				
 				try {
-					outMessage.writeBytes(sendBuffer);	
+					outMessage.writeBytes(sendBuffer);
 			        outMessage.flush();
 				} catch (IOException e) {
 					android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to send message via output stream");
@@ -181,10 +186,9 @@ public class TCPClient  extends Thread {
 	    		System.arraycopy(tmpBuffer, 0, bigData, 0, tmpBuffer.length);
 	    		System.arraycopy(receiveBuffer, 0, bigData, tmpBuffer.length, receivedDataLen);
 	    	}  	
-	    	
-	    	receiveBuffer = new char[RECEIVE_BUFFER_LEN];
 	    }
 	    
+	    receiveBuffer = new char[RECEIVE_BUFFER_LEN];
 		
 	    
 	    if (serverMessage != null) {

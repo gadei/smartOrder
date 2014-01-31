@@ -40,9 +40,6 @@ namespace SmartOrderSystem.TCPConnection
 
       serverRunning = true;
 
-      // Data buffer for incoming data.
-      byte[] bytes = new Byte[1024];
-
       IPEndPoint localEndPoint = new IPEndPoint(smartOrderServer.getWIFIIPAdress(), socketPort);
 
       // Create a TCP/IP socket.
@@ -144,7 +141,8 @@ namespace SmartOrderSystem.TCPConnection
           Log.info("Read" + content.Length + " bytes from socket. \n Data : " + content);
 
           content = content.Replace(Command.EOF, "");
-
+          connectedClient.renewBuffer();
+          state.sb.Clear();
           //restart Listener
           handler.BeginReceive(connectedClient.buffer, 0, StateObject.BufferSize, 0,
             new AsyncCallback(ReadCallback), connectedClient);

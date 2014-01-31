@@ -127,6 +127,14 @@ namespace SmartOrderSystem.TCPConnection
 
       return typ.ToString();
     }
+
+    public byte getByteProps()
+    {
+      byte typ = (byte)msgTyp;
+      typ = (byte)((byte)(typ << 5) & 0xE0);
+
+      return typ;
+    }
   }
 
   public class MsgPreamble
@@ -188,7 +196,7 @@ namespace SmartOrderSystem.TCPConnection
       byte[] msgPreamble = new byte[3];
       byte[] idArray = BitConverter.GetBytes(msgID);
       Array.Copy(idArray, msgPreamble, 2);
-
+      msgPreamble[2] = msgProps.getByteProps();
 
       return msgPreamble;
     }

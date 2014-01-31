@@ -13,7 +13,7 @@ namespace SmartOrderSystem
     {
 
       Console.SetWindowSize(120, 30);
-      Console.WriteLine("Starting SmartOder System!");
+      Console.WriteLine("Starting SmartOder System! ushort" + ushort.MaxValue);
 
       TCPConnection.TCPMessenger messenger = new TCPConnection.TCPMessenger();
 
