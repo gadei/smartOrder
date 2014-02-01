@@ -20,6 +20,7 @@ namespace SmartOrderSystem.TCPConnection
     private Thread myThread = null;
     private StateObject connectedClient = null;
     private TCPMessenger tcpMessenger = null;
+    private Mutex sendMutex = null;
 
     private volatile bool serverRunning = false;
 
@@ -31,6 +32,7 @@ namespace SmartOrderSystem.TCPConnection
       socketPort = startSocketOnPort;
       this.smartOrderServer = smartOrderServer;
       this.tcpMessenger = new TCPMessenger(this);
+      this.sendMutex = new Mutex();
     }
 
     public void setMyThread(Thread myThread) 
@@ -154,33 +156,15 @@ namespace SmartOrderSystem.TCPConnection
 
     protected void SendData(byte[] msgToClient)
     {
-      Send(connectedClient.workSocket, msgToClient);
+
+      sendMutex.WaitOne();
+      int bytesSent = connectedClient.workSocket.Send(msgToClient);
+      sendMutex.ReleaseMutex();
+      if (bytesSent != msgToClient.Length)
+        throw new Exception("Error in TCPServer ... DAMMIT! Should be blocking till all byte were sent");
+
     }
 
-    private void Send(Socket handler, byte[] byteData)
-    {
-      // Begin sending the data to the remote device.
-      handler.BeginSend(byteData, 0, byteData.Length, 0,
-          new AsyncCallback(SendCallback), handler);
-    }
-
-    private void SendCallback(IAsyncResult ar)
-    {
-      try
-      {
-        // Retrieve the socket from the state object.
-        Socket handler = (Socket)ar.AsyncState;
-
-        // Complete sending the data to the remote device.
-        int bytesSent = handler.EndSend(ar);
-        Log.info("Sent " + bytesSent + " bytes to client.");
-
-      }
-      catch (Exception e)
-      {
-        Log.info(e.ToString());
-      }
-    }
 
     public void CloseServer()
     {
