@@ -14,7 +14,7 @@ namespace SmartOrderSystem.TCPConnection
   {
 
     // Size of receive buffer.
-    public const int BUFFER_SIZE = 256;
+    public const int MAX_MSG_SIZE = ushort.MaxValue;
     
     private ushort nextMsgID = 12;
     private Mutex nextMsgIDMutex;
@@ -27,9 +27,16 @@ namespace SmartOrderSystem.TCPConnection
 
     public byte[] prepareSendCmd(string theCommand)
     {
-      MsgPreamble msgPreamble = new MsgPreamble(getNextFreeMessageID(), MsgTyp.CMD);
       byte[] cmdArray = StringToByteArray(theCommand + Command.EOF);
 
+      if (cmdArray.Length + MsgPreamble.MSG_PREAMBLE_SIZE > MAX_MSG_SIZE)
+      {
+        Log.error("Command must not be longer than " + (MAX_MSG_SIZE - MsgPreamble.MSG_PREAMBLE_SIZE) + " bytes");
+        return null;
+      }
+
+      MsgPreamble msgPreamble = new MsgPreamble( (ushort)(cmdArray.Length), getNextFreeMessageID(), MsgTyp.CMD);
+      
       byte[] msgToClient = new byte[cmdArray.Length + MsgPreamble.MSG_PREAMBLE_SIZE];
       Array.Copy(msgPreamble.getBytePreamble(), msgToClient, MsgPreamble.MSG_PREAMBLE_SIZE);
       Array.Copy(cmdArray, 0, msgToClient, MsgPreamble.MSG_PREAMBLE_SIZE, cmdArray.Length);
@@ -142,31 +149,31 @@ namespace SmartOrderSystem.TCPConnection
     }
   }
 
+
   public class MsgPreamble
   {
+    public ushort msgSize { get; set; }
     public ushort msgID { get; set; }
     public MsgProps msgProps { get; set; }
-    public static int MSG_PREAMBLE_SIZE = 3;
+    public static ushort MSG_PREAMBLE_SIZE = 5;
 
-    public MsgPreamble(ushort msgID, MsgProps msgProps)
+    public MsgPreamble(ushort payloadSize, ushort msgID, MsgTyp msgTyp)
     {
-      this.msgID = msgID;
-      this.msgProps = msgProps;
-    }
-
-    public MsgPreamble(ushort msgID, MsgTyp msgTyp)
-    {
+      this.msgSize = (ushort)(payloadSize + MSG_PREAMBLE_SIZE);
       this.msgID = msgID;
       this.msgProps = new MsgProps(msgTyp);
     }
 
     public MsgPreamble(byte[] preamble)
     {
+      //get size
+      msgSize = BitConverter.ToUInt16(preamble, 0);
+
       //get id
-      msgID = BitConverter.ToUInt16(preamble, 0);
+      msgID = BitConverter.ToUInt16(preamble, 2);
 
       //get props
-      msgProps = new MsgProps(preamble[2]);
+      msgProps = new MsgProps(preamble[4]);
 
     }
 
@@ -198,10 +205,14 @@ namespace SmartOrderSystem.TCPConnection
 
     public byte[] getBytePreamble()
     {
-      byte[] msgPreamble = new byte[3];
-      byte[] idArray = BitConverter.GetBytes(msgID);
-      Array.Copy(idArray, msgPreamble, 2);
-      msgPreamble[2] = msgProps.getByteProps();
+      byte[] msgPreamble = new byte[MSG_PREAMBLE_SIZE];
+
+      byte[] sizeArray  = BitConverter.GetBytes(msgSize);
+      byte[] idArray    = BitConverter.GetBytes(msgID);
+
+      Array.Copy(sizeArray, msgPreamble, 2);
+      Array.Copy(idArray, 0, msgPreamble, 2, 2);
+      msgPreamble[4] = msgProps.getByteProps();
 
       return msgPreamble;
     }

@@ -23,7 +23,7 @@ import smart.order.client.SmartOrderClient;
 
 public class TCPClient  extends Thread {
 
-	public static int RECEIVE_BUFFER_LEN = 256;
+	
 	public static final String EOF = "<EOF>";
 	private final static int TCP_INIT_PORT = 1419;
 	private static String TCP_SERVER_IP = "10.0.0.2";
@@ -37,7 +37,6 @@ public class TCPClient  extends Thread {
     private BufferedReader inMessage;
     private InputStream inStream;
 	
-
     private Lock sendDataToServerMutex = null;
     
 	private volatile boolean clientRunning = false;
@@ -47,6 +46,9 @@ public class TCPClient  extends Thread {
 
 	private int receivedDataLen = 0;
 	private int connectedToPortNbr = -1;
+	
+	private int currentMsgSize = 0;
+	byte[] receiveBuffer = null;
 	
 	public Error errStatus = Error.ERR_OK;
 	
@@ -102,19 +104,28 @@ public class TCPClient  extends Thread {
 			try {
 				if(inStream.available() > 0) {
 					
-					//in this while the client listens for the messages sent by the server
-				    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
-				    byte[] receiveBuffer = new byte[RECEIVE_BUFFER_LEN];
-				    
-				    receivedDataLen = inStream.read(receiveBuffer);
-				    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received " + receivedDataLen + " chars. EOF included?");
-				    
-				    byte[] receivedDataArray = new byte[receivedDataLen];
-				    System.arraycopy(receiveBuffer, 0, receivedDataArray, 0, receivedDataLen);
-	
-				    tcpMesseger.ReadMessage(receivedDataArray);				    
+					if(currentMsgSize == 0) {
+						//in this while the client listens for the messages sent by the server
+					    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for a new message...");
+					    receiveBuffer = new byte[TCPMessenger.MAX_MSG_SIZE];
+					    
+					    receivedDataLen = inStream.read(receiveBuffer);
+					    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received " + receivedDataLen + " chars. EOF included?");
+					    
+					    byte[] receivedDataArray = new byte[receivedDataLen];
+					    System.arraycopy(receiveBuffer, 0, receivedDataArray, 0, receivedDataLen);
+					    
+					    if(tcpMesseger.getMsgSize(receivedDataArray) == receivedDataLen)
+					    	tcpMesseger.ReadMessage(receivedDataArray);
+					    else
+					    	currentMsgSize = receivedDataLen;
+					    
+					} else {
+						throw new Exception("NOT IMPLEMENTED YET");
+					}
+
 				}	
-			} catch (IOException e) {
+			} catch (Exception e) {
 				android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to read input stream");
 				e.printStackTrace();
 			}

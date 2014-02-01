@@ -10,6 +10,9 @@ import smart.order.client.orderManagment.OrderSlave;
 public class TCPMessenger {
 
 	private static int USHORT_MAX_VAL = 65535;
+	public static final int MAX_MSG_SIZE = 1024;
+	
+	
 	private int nextMsgID = 1;
 	private Semaphore nextMsgIDMutex;
 	
@@ -26,9 +29,16 @@ public class TCPMessenger {
 	public Error prepareAndSendCmd(String theCommand)
 	{
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Sending #" + theCommand + "# command to server");
+
+		byte[] cmdArray = StringToByteArray(theCommand + TCPClient.EOF);
 		
-		MsgPreamble msgPreamble = new MsgPreamble(getNextFreeMessageID(), MsgTyp.CMD);
-	    byte[] cmdArray = StringToByteArray(theCommand + TCPClient.EOF);
+		if(cmdArray.length + MsgPreamble.MSG_PREAMBLE_SIZE > MAX_MSG_SIZE) {
+			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Command must not be longer than " 
+					+ (MAX_MSG_SIZE - MsgPreamble.MSG_PREAMBLE_SIZE) + " bytes");
+			return Error.ERR_UNKNOWN;
+		}
+		
+		MsgPreamble msgPreamble = new MsgPreamble(cmdArray.length, getNextFreeMessageID(), MsgTyp.CMD);
 	
 	    byte[] msgToClient = new byte[cmdArray.length + MsgPreamble.MSG_PREAMBLE_SIZE];
 	    System.arraycopy(msgPreamble.getBytePreamble(), 0, msgToClient, 0, MsgPreamble.MSG_PREAMBLE_SIZE);
@@ -59,23 +69,37 @@ public class TCPMessenger {
 	  return nextID;
 	}
 	
+	
+	private MsgPreamble getMsgPreamble(byte[] messageFromServer) {
+		
+		byte[] preamble = new byte[MsgPreamble.MSG_PREAMBLE_SIZE];
+	    System.arraycopy(messageFromServer, 0, preamble, 0, MsgPreamble.MSG_PREAMBLE_SIZE);
+	
+	    return new MsgPreamble(preamble);
+	}
+	
+	
+	public int getMsgSize(byte[] messageFromServer) {
 
-	public void ReadMessage(byte[] messageFromClient)
+		return getMsgPreamble(messageFromServer).msgSize;
+	}
+	
+
+	public void ReadMessage(byte[] messageFromServer)
 	{
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reading new message!");
 		
 	    byte[] payload = null;
-	    byte[] preamble = new byte[MsgPreamble.MSG_PREAMBLE_SIZE];
-	    System.arraycopy(messageFromClient, 0, preamble, 0, MsgPreamble.MSG_PREAMBLE_SIZE);
-	
-	    if(messageFromClient.length > MsgPreamble.MSG_PREAMBLE_SIZE) 
+	    MsgPreamble msgPreamble = getMsgPreamble(messageFromServer);
+	    
+	    if(messageFromServer.length > MsgPreamble.MSG_PREAMBLE_SIZE) 
 	    	  {
-	    	  payload = new byte[messageFromClient.length - MsgPreamble.MSG_PREAMBLE_SIZE];
-	    	  System.arraycopy(messageFromClient, MsgPreamble.MSG_PREAMBLE_SIZE, 
-	    			  payload, 0, messageFromClient.length - MsgPreamble.MSG_PREAMBLE_SIZE);
+	    	  payload = new byte[messageFromServer.length - MsgPreamble.MSG_PREAMBLE_SIZE];
+	    	  System.arraycopy(messageFromServer, MsgPreamble.MSG_PREAMBLE_SIZE, 
+	    			  payload, 0, messageFromServer.length - MsgPreamble.MSG_PREAMBLE_SIZE);
 	    	  }
 	
-	    MsgPreamble msgPreamble = new MsgPreamble(preamble);
+	    
 	
 	    switch (msgPreamble.msgProps.msgTyp)
 	    {

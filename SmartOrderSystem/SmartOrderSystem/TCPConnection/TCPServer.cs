@@ -106,7 +106,7 @@ namespace SmartOrderSystem.TCPConnection
       connectedClient = new StateObject();
       connectedClient.workSocket = handler;
 
-      handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
+      handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
           new AsyncCallback(ReadCallback), connectedClient);
 
       Log.info("Client Connected!");
@@ -158,13 +158,13 @@ namespace SmartOrderSystem.TCPConnection
           connectedClient.renewBuffer();
           state.sb.Clear();
           //restart Listener
-          handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
+          handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
             new AsyncCallback(ReadCallback), connectedClient);
         }
         else
         {
           // Not all data received. Get more.
-          handler.BeginReceive(state.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
+          handler.BeginReceive(state.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
           new AsyncCallback(ReadCallback), state);
         }
       }

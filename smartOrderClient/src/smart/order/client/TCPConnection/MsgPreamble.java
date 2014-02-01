@@ -2,9 +2,10 @@ package smart.order.client.TCPConnection;
 
 public class MsgPreamble {
 
+	public int msgSize = 0;
 	public int msgID;
     public MsgProps msgProps;
-    public static int MSG_PREAMBLE_SIZE = 3;
+    public static byte MSG_PREAMBLE_SIZE = 5;
 
     public MsgPreamble(int msgID, MsgProps msgProps)
     {
@@ -12,24 +13,34 @@ public class MsgPreamble {
       this.msgProps = msgProps;
     }
 
-    public MsgPreamble(int msgID, byte msgTyp)
+    public MsgPreamble(int payloadSize, int msgID, byte msgTyp)
     {
+      this.msgSize = payloadSize + MSG_PREAMBLE_SIZE;
       this.msgID = msgID;
       this.msgProps = new MsgProps(msgTyp);
     }
 
     public MsgPreamble(byte[] preamble)
     {
+    	//get size
+		byte[] size = new byte[4];
+		System.arraycopy(preamble, 0, size, 0, 2);
+		size[2] = 0;
+		size[3] = 0;
+		
+		msgSize = byteArrayToInt(size);
+    	
+		
     	//get id
 		byte[] id = new byte[4];
-		System.arraycopy(preamble, 0, id, 0, 2);
+		System.arraycopy(preamble, 2, id, 0, 2);
 		id[2] = 0;
 		id[3] = 0;
 
 		msgID = byteArrayToInt(id);
 
 		//get props
-		msgProps = new MsgProps(preamble[2]);
+		msgProps = new MsgProps(preamble[4]);
 
     }
 
@@ -62,12 +73,14 @@ public class MsgPreamble {
 
     public byte[] getBytePreamble()
     {
-      byte[] msgPreamble = new byte[3];
-      byte[] idArray = intToByteArray(msgID);
+    	
+      byte[] msgPreamble = new byte[MSG_PREAMBLE_SIZE];
+      byte[] sizeArray 	= intToByteArray(msgSize);
+      byte[] idArray 	= intToByteArray(msgID);
       
-      System.arraycopy(idArray, 0, msgPreamble, 0, 2);
-      msgPreamble[2] = msgProps.getByteProps();
-
+      System.arraycopy(sizeArray, 	0, msgPreamble, 0, 2);
+      System.arraycopy(idArray, 	0, msgPreamble, 2, 2);
+      msgPreamble[4] = msgProps.getByteProps();
 
       return msgPreamble;
     }
