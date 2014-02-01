@@ -102,6 +102,7 @@ public class SmartOrderActivity extends Activity {
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Disconnected! Switching back to inital activity");	
 		Intent myIntent = new Intent(this.getApplicationContext(), FullscreenActivity.class);
         startActivityForResult(myIntent, 0);
+        this.finish();
 	}
 
 	

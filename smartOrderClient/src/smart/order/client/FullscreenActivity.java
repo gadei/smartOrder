@@ -60,6 +60,7 @@ public class FullscreenActivity extends Activity {
 			
 			Intent myIntent = new Intent(this.getApplicationContext(), SmartOrderActivity.class);
 	        startActivityForResult(myIntent, 0);
+	        this.finish();
 	        
 		} else {
 			
@@ -79,7 +80,10 @@ public class FullscreenActivity extends Activity {
 	                   }
 	               });
 	        // Create the AlertDialog object and return it
-	        builder.create().show();			
+	        builder.create().show();
+	        
+	        smartOrderClient.disconnectClient();
+	        smartOrderClient.tcpClientClosed();
 		}
 		
 	}
