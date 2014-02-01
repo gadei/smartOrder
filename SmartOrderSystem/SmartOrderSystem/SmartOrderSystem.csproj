@@ -44,6 +44,7 @@
     <Compile Include="PrintService\PrinterInterface.cs" />
     <Compile Include="System.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TCPConnection\ZeroConfig.cs" />
     <Compile Include="TCPConnection\SmartOrderServer.cs" />
     <Compile Include="TCPConnection\StateObject.cs" />
     <Compile Include="TCPConnection\TCPInitServer.cs" />
