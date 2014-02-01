@@ -73,8 +73,7 @@ namespace SmartOrderSystem.TCPConnection
 
           TCPConnection.TCPMessenger messenger = new TCPConnection.TCPMessenger();
 
-          string theMsg = "Das ist ein Teststring";
-          byte[] msg = messenger.prepareSendCmd(theMsg);
+          byte[] msg = messenger.prepareSendCmd(Command.STILL_ALIVE);
           SendData(msg);
 
         }
@@ -107,7 +106,7 @@ namespace SmartOrderSystem.TCPConnection
       connectedClient = new StateObject();
       connectedClient.workSocket = handler;
 
-      handler.BeginReceive(connectedClient.buffer, 0, StateObject.BufferSize, 0,
+      handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
           new AsyncCallback(ReadCallback), connectedClient);
 
       Log.info("Client Connected!");
@@ -153,19 +152,19 @@ namespace SmartOrderSystem.TCPConnection
         {
           // All the data has been read from the 
           // client. Display it on the console.
-          Log.info("Read" + content.Length + " bytes from socket. \n Data : " + content);
+          Log.info("Read " + content.Length + " bytes from socket. \n Data : " + content);
 
           content = content.Replace(Command.EOF, "");
           connectedClient.renewBuffer();
           state.sb.Clear();
           //restart Listener
-          handler.BeginReceive(connectedClient.buffer, 0, StateObject.BufferSize, 0,
+          handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
             new AsyncCallback(ReadCallback), connectedClient);
         }
         else
         {
           // Not all data received. Get more.
-          handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+          handler.BeginReceive(state.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
           new AsyncCallback(ReadCallback), state);
         }
       }

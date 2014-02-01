@@ -2,6 +2,9 @@ package smart.order.client.TCPConnection;
 
 import java.util.concurrent.Semaphore;
 
+import smart.order.client.*;
+import smart.order.client.Error;
+import smart.order.client.orderManagment.OrderSlave;
 
 
 public class TCPMessenger {
@@ -10,22 +13,30 @@ public class TCPMessenger {
 	private int nextMsgID = 1;
 	private Semaphore nextMsgIDMutex;
 	
+	private TCPClient tcpClient = null;
+	private OrderSlave oderSlave = null;
 	
-	public TCPMessenger()
+	public TCPMessenger(TCPClient tcpClient)
 	{
 		nextMsgIDMutex = new Semaphore(1);
+		this.tcpClient = tcpClient;
+		this.oderSlave = new OrderSlave(this);
 	}
 	
-	public byte[] prepareSendCmd(String theCommand)
+	public Error prepareAndSendCmd(String theCommand)
 	{
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Sending #" + theCommand + "# command to server");
+		
 		MsgPreamble msgPreamble = new MsgPreamble(getNextFreeMessageID(), MsgTyp.CMD);
 	    byte[] cmdArray = StringToByteArray(theCommand + TCPClient.EOF);
 	
 	    byte[] msgToClient = new byte[cmdArray.length + MsgPreamble.MSG_PREAMBLE_SIZE];
 	    System.arraycopy(msgPreamble.getBytePreamble(), 0, msgToClient, 0, MsgPreamble.MSG_PREAMBLE_SIZE);
 	    System.arraycopy(cmdArray, 0, msgToClient, MsgPreamble.MSG_PREAMBLE_SIZE, cmdArray.length);
+	    
+	    tcpClient.sendDataToServer(cmdArray);
 
-	  return msgToClient;
+	    return Error.ERR_OK;
 	}
 	
 	private int getNextFreeMessageID()
@@ -48,41 +59,42 @@ public class TCPMessenger {
 	  return nextID;
 	}
 	
-	//TODO: just for testing! change the type to void!
-	public String ReadMessage(byte[] messageFromClient)
+
+	public void ReadMessage(byte[] messageFromClient)
 	{
-	  byte[] payload = null;
-	  byte[] preamble = new byte[MsgPreamble.MSG_PREAMBLE_SIZE];
-	  System.arraycopy(messageFromClient, 0, preamble, 0, MsgPreamble.MSG_PREAMBLE_SIZE);
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reading new message!");
+		
+	    byte[] payload = null;
+	    byte[] preamble = new byte[MsgPreamble.MSG_PREAMBLE_SIZE];
+	    System.arraycopy(messageFromClient, 0, preamble, 0, MsgPreamble.MSG_PREAMBLE_SIZE);
 	
-	  if(messageFromClient.length > MsgPreamble.MSG_PREAMBLE_SIZE) 
-	  {
-	    payload = new byte[messageFromClient.length - MsgPreamble.MSG_PREAMBLE_SIZE];
-	    System.arraycopy(messageFromClient, MsgPreamble.MSG_PREAMBLE_SIZE, 
-	      payload, 0, messageFromClient.length - MsgPreamble.MSG_PREAMBLE_SIZE);
-	  }
+	    if(messageFromClient.length > MsgPreamble.MSG_PREAMBLE_SIZE) 
+	    	  {
+	    	  payload = new byte[messageFromClient.length - MsgPreamble.MSG_PREAMBLE_SIZE];
+	    	  System.arraycopy(messageFromClient, MsgPreamble.MSG_PREAMBLE_SIZE, 
+	    			  payload, 0, messageFromClient.length - MsgPreamble.MSG_PREAMBLE_SIZE);
+	    	  }
 	
-	  MsgPreamble msgPreamble = new MsgPreamble(preamble);
+	    MsgPreamble msgPreamble = new MsgPreamble(preamble);
 	
-	  //TODO: just for testing! remove this var!
-	  String ret = "";
-	
-	  switch (msgPreamble.msgProps.msgTyp)
-	  {
-	    case MsgTyp.CMD:
-	      ret = decodeCmdMessage(payload);
-	      break;
-	  }
-	
-	  return ret;
+	    switch (msgPreamble.msgProps.msgTyp)
+	    {
+	    	  case MsgTyp.CMD:
+	    		  decodeCmdMessage(payload);
+	    		  break;
+	    }
+
 	}
 	
-	//TODO: just for testing! change the type to void!
-	private String decodeCmdMessage(byte[] payload)
+
+	private void decodeCmdMessage(byte[] payload)
 	{
-	  String msg = ByteArrayToString(payload);
-	  msg = msg.replaceAll(TCPClient.EOF, "");
-	  return msg;
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Decoded message header: New Command received!");
+		String cmd = ByteArrayToString(payload);
+		cmd = cmd.replaceAll(TCPClient.EOF, "");
+		
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received #" + cmd + "# command!");
+		oderSlave.decodeCommandString(cmd);
 	}
 	
 	private byte[] StringToByteArray(String str)

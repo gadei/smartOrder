@@ -12,17 +12,15 @@ namespace SmartOrderSystem.TCPConnection
   {
     // Client  socket.
     public Socket workSocket = null;
-    // Size of receive buffer.
-    public const int BufferSize = 1024;
     // Receive buffer.
-    public byte[] buffer = new byte[BufferSize];
+    public byte[] buffer = new byte[TCPMessenger.BUFFER_SIZE];
     // Received data string.
     public StringBuilder sb = new StringBuilder();
 
     public int workSocketPort = -1;
 
     public void renewBuffer() {
-      buffer = new byte[BufferSize];
+      buffer = new byte[TCPMessenger.BUFFER_SIZE];
     }
   }
 }

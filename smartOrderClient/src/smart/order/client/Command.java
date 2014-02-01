@@ -1,27 +1,11 @@
 package smart.order.client;
 
-public enum Command {
+public class Command {
 	
-	STOP_CLIENT(0, "CMD_STOP_CLIENT"),
-	DEBUG_MSG(1, "CMD_DBG_MSG"),
+	public static final String STOP_CLIENT 	= "CMD_STOP_CLIENT";
+	public static final String DEBUG_MSG 	= "CMD_DBG_MSG";
+	public static final String STILL_ALIVE 	= "CMD_STILL_ALIVE";
+	public static final String ACK 			= "CMD_ACK";
+	public static final String RECONNECT 	= "CMD_RECONNECT_ON_NEW_PORT";
 	
-	STILL_ALIVE(10, "CMD_STILL_ALIVE"),
-	ACK(11, "CMD_ACK"),
-	RECONNECT(12, "CMD_RECONNECT_ON_NEW_PORT");
-	
-	private final int code;
-	private final String cmdTag;
-	
-	private Command(int code, String cmdTag) {
-	    this.code = code;
-	    this.cmdTag = cmdTag;
-	}
-	
-	public String cmdTag() {
-		return cmdTag;
-	}
-	
-	public int getCode() {
-		return code;
-	}
 }

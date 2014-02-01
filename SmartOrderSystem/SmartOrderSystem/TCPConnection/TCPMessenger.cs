@@ -12,8 +12,13 @@ namespace SmartOrderSystem.TCPConnection
 
   public class TCPMessenger
   {
+
+    // Size of receive buffer.
+    public const int BUFFER_SIZE = 256;
+    
     private ushort nextMsgID = 12;
     private Mutex nextMsgIDMutex;
+
 
     public TCPMessenger()
     {

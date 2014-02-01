@@ -94,7 +94,7 @@ namespace SmartOrderSystem.TCPConnection
       connectedClient = new StateObject();
       connectedClient.workSocket = handler;
 
-      handler.BeginReceive(connectedClient.buffer, 0, StateObject.BufferSize, 0,
+      handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
           new AsyncCallback(ReadCallback), connectedClient);
 
       Log.info("Client Connected!");
@@ -144,7 +144,7 @@ namespace SmartOrderSystem.TCPConnection
         else
         {
           // Not all data received. Get more.
-          handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+          handler.BeginReceive(state.buffer, 0, TCPMessenger.BUFFER_SIZE, 0,
           new AsyncCallback(ReadCallback), state);
         }
       }

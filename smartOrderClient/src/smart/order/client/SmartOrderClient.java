@@ -52,22 +52,7 @@ public class SmartOrderClient {
 	public void tcpClientClosed() {
 		client = null;		
 	}
-	
-	public Command decodeCommand(String msgFromServer) {
 		
-		if(!msgFromServer.contains("CMD_"))
-			return null;
-		
-		if(msgFromServer.contains(Command.STOP_CLIENT.cmdTag()))
-			return Command.STOP_CLIENT;
-		else if(msgFromServer.contains(Command.DEBUG_MSG.cmdTag()))
-			return Command.DEBUG_MSG;
-		else if(msgFromServer.contains(Command.RECONNECT.cmdTag()))
-			return Command.RECONNECT;
-		
-		return Command.STOP_CLIENT;
-	}
-	
 	public boolean clientConnected()  {
 		if(client == null)
 			return false;
