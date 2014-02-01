@@ -82,6 +82,7 @@ public class FullscreenActivity extends Activity {
 	        // Create the AlertDialog object and return it
 	        builder.create().show();
 	        
+	        //Close TCP Client after unsucessfull attempt to connect
 	        smartOrderClient.disconnectClient();
 	        smartOrderClient.tcpClientClosed();
 		}
