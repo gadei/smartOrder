@@ -10,6 +10,7 @@ public class SmartOrderClient {
 	private FullscreenActivity androidActivity = null;
 	private SmartOrderActivity smartOrderActivity = null;
 	private TCPClient client = null;
+	private String ipAddress = null;
 	
 	 public FullscreenActivity getAndroidActivity() {
 		 return androidActivity;
@@ -64,6 +65,15 @@ public class SmartOrderClient {
 		return androidActivity;
 	}
 	
+	
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ip_address) {
+		this.ipAddress = ip_address;
+	}
+
 	public Error disconnectClient() {
 		
 		if(client != null)
