@@ -90,8 +90,14 @@ public class TCPMessenger {
 	  return str.getBytes();
 	}
 	
-	private String ByteArrayToString(byte[] arr)
+	private String ByteArrayToString(byte[] data)
 	{
-	  return String.valueOf(arr);
+		StringBuilder sb = new StringBuilder(data.length);
+	    for (int i = 0; i < data.length; ++ i) {
+	        if (data[i] < 0) throw new IllegalArgumentException();
+	        sb.append((char) data[i]);
+	    }
+	    return sb.toString();
+
 	}
 }

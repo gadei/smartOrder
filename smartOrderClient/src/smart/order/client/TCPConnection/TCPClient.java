@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -27,6 +28,7 @@ public class TCPClient  extends Thread {
 	
 	private DataOutputStream outMessage;
     private BufferedReader inMessage;
+    private InputStream inStream;
 	
     private volatile Socket tcpSocket = null;
 	private volatile boolean clientRunning = false;
@@ -52,7 +54,7 @@ public class TCPClient  extends Thread {
 	public Error sendMessageToServer(String msg) {
 		
 		if(sendBuffer == null)
-			sendBuffer = msg + EOF + '\0';
+			sendBuffer = msg + EOF;
 		else
 			return Error.ERR_UNKNOWN;
 		
@@ -153,7 +155,7 @@ public class TCPClient  extends Thread {
 			}
 			
 			try {
-				if(inMessage.ready())
+				if(inStream.available() > 0)
 					readMessageFromServer();
 				
 			} catch (IOException e) {
@@ -169,26 +171,43 @@ public class TCPClient  extends Thread {
 		//in this while the client listens for the messages sent by the server
 	    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the message...");
 	    
-	    receivedDataLen = inMessage.read(receiveBuffer);
+	    byte[] receiveBuffer = new byte[RECEIVE_BUFFER_LEN];
+	    
+	    receivedDataLen = inStream.read(receiveBuffer);
 	    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received " + receivedDataLen + " chars. EOF included?");
 	    
-	    char[] receivedDataArray = new char[receivedDataLen];
+	    byte[] receivedDataArray = new byte[receivedDataLen];
 	    System.arraycopy(receiveBuffer, 0, receivedDataArray, 0, receivedDataLen);
-	    String tmpString = String.valueOf(receivedDataArray);
-	    if(tmpString.endsWith(EOF) && bigData == null) { //A Command is received!
-	    	serverMessage = tmpString;
-	    } else {
-	    	if(bigData == null) { 
-	    		bigData = receivedDataArray;
-	    	} else {
-	    		char[] tmpBuffer = bigData;
-	    		bigData = new char[receivedDataLen + tmpBuffer.length];
-	    		System.arraycopy(tmpBuffer, 0, bigData, 0, tmpBuffer.length);
-	    		System.arraycopy(receiveBuffer, 0, bigData, tmpBuffer.length, receivedDataLen);
-	    	}  	
-	    }
+	    //Test TCPMessenger!
 	    
-	    receiveBuffer = new char[RECEIVE_BUFFER_LEN];
+	    TCPMessenger msger = new TCPMessenger();
+	    String msg = msger.ReadMessage(receivedDataArray);
+	    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "The message:\n" + msg);
+	    
+	    byte[] toSend = msger.prepareSendCmd(msg);
+	    outMessage.write(toSend);
+	    outMessage.flush();
+	    
+	    if(true)
+	    	return;
+	    //---------------------
+	    
+	    
+//	    String tmpString = String.valueOf(receivedDataArray);
+//	    if(tmpString.endsWith(EOF) && bigData == null) { //A Command is received!
+//	    	serverMessage = tmpString;
+//	    } else {
+//	    	if(bigData == null) { 
+//	    		bigData = receivedDataArray;
+//	    	} else {
+//	    		char[] tmpBuffer = bigData;
+//	    		bigData = new char[receivedDataLen + tmpBuffer.length];
+//	    		System.arraycopy(tmpBuffer, 0, bigData, 0, tmpBuffer.length);
+//	    		System.arraycopy(receiveBuffer, 0, bigData, tmpBuffer.length, receivedDataLen);
+//	    	}  	
+//	    }
+//	    
+	    this.receiveBuffer = new char[RECEIVE_BUFFER_LEN];
 		
 	    
 	    if (serverMessage != null) {
@@ -265,7 +284,7 @@ public class TCPClient  extends Thread {
             outMessage = new DataOutputStream(tcpSocket.getOutputStream());
             //BufferedReader from smartOrder-Server
             inMessage = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));//
- 
+            inStream = tcpSocket.getInputStream();
             
         } catch (IOException e) {
         	android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Message ERROR");	

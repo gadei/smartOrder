@@ -21,10 +21,12 @@ public class MsgPreamble {
     public MsgPreamble(byte[] preamble)
     {
     	//get id
-		byte[] id = new byte[2];
+		byte[] id = new byte[4];
 		System.arraycopy(preamble, 0, id, 0, 2);
-		String helpStr = String.valueOf(id);
-		msgID = Integer.parseInt(helpStr) & 0xFF;
+		id[2] = 0;
+		id[3] = 0;
+
+		msgID = byteArrayToInt(id);
 
 		//get props
 		msgProps = new MsgProps(preamble[2]);
@@ -61,14 +63,33 @@ public class MsgPreamble {
     public byte[] getBytePreamble()
     {
       byte[] msgPreamble = new byte[3];
-      String id = Integer.toString(msgID);
-      
-      byte[] idArray = id.getBytes();
+      byte[] idArray = intToByteArray(msgID);
       
       System.arraycopy(idArray, 0, msgPreamble, 0, 2);
       msgPreamble[2] = msgProps.getByteProps();
 
 
       return msgPreamble;
+    }
+    
+    
+    private static int byteArrayToInt(byte[] b) 
+    {
+        int value = 0;
+        for (int i = 0; i < 4; i++) {
+            int shift = (4 - 1 - i) * 8;
+            value += (b[3 - i] & 0x000000FF) << shift;
+        }
+        return value;
+    }
+    
+    public static byte[] intToByteArray(int a)
+    {
+        byte[] ret = new byte[4];
+        ret[0] = (byte) (a & 0xFF);   
+        ret[1] = (byte) ((a >> 8) & 0xFF);   
+        ret[2] = (byte) ((a >> 16) & 0xFF);   
+        ret[3] = (byte) ((a >> 24) & 0xFF);
+        return ret;
     }
 }

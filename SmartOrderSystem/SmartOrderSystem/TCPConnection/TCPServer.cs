@@ -68,8 +68,15 @@ namespace SmartOrderSystem.TCPConnection
         while (serverRunning)
         {
           //check connection periodically
-          Thread.Sleep(1000);
-          SendMsgToClient(Command.STILL_ALIVE);
+          Thread.Sleep(3000);
+          //SendMsgToClient(Command.STILL_ALIVE);
+
+          TCPConnection.TCPMessenger messenger = new TCPConnection.TCPMessenger();
+
+          string theMsg = "Das ist ein Teststring";
+          byte[] msg = messenger.prepareSendCmd(theMsg);
+          SendData(msg);
+
         }
 
         connectedClient.workSocket.Shutdown(SocketShutdown.Both);
@@ -127,6 +134,14 @@ namespace SmartOrderSystem.TCPConnection
 
       if (bytesRead > 0)
       {
+
+        //TO TEST MESSENGER:
+        byte[] dataFromClient = new byte[bytesRead];
+        Array.Copy(state.buffer, dataFromClient, bytesRead);
+        TCPMessenger msger = new TCPMessenger();
+        string theClientMsg = msger.ReadMessage(dataFromClient);
+        Log.info("TCPMessenger: Reading Message:\n" + theClientMsg);
+
         // There  might be more data, so store the data received so far.
         state.sb.Append(Encoding.ASCII.GetString(
             state.buffer, 0, bytesRead));

@@ -12,7 +12,7 @@ namespace SmartOrderSystem.TCPConnection
 
   public class TCPMessenger
   {
-    private ushort nextMsgID = 0;
+    private ushort nextMsgID = 12;
     private Mutex nextMsgIDMutex;
 
     public TCPMessenger()
