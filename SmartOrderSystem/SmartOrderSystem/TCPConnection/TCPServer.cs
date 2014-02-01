@@ -14,12 +14,14 @@ namespace SmartOrderSystem.TCPConnection
 
   public class TCPServer
   {
-    public static int socketPort;
-    private volatile bool serverRunning = false;
-    private Thread myThread = null;
+    public int socketPort;
 
-    private StateObject connectedClient = null;
     private SmartOrderServer smartOrderServer = null;
+    private Thread myThread = null;
+    private StateObject connectedClient = null;
+    private TCPMessenger tcpMessenger = null;
+
+    private volatile bool serverRunning = false;
 
     // Thread signal.
     public ManualResetEvent allDone = new ManualResetEvent(false);
@@ -28,6 +30,7 @@ namespace SmartOrderSystem.TCPConnection
     {
       socketPort = startSocketOnPort;
       this.smartOrderServer = smartOrderServer;
+      this.tcpMessenger = new TCPMessenger(this);
     }
 
     public void setMyThread(Thread myThread) 
@@ -70,10 +73,7 @@ namespace SmartOrderSystem.TCPConnection
           //check connection periodically
           Thread.Sleep(3000);
           //SendMsgToClient(Command.STILL_ALIVE);
-
-          TCPConnection.TCPMessenger messenger = new TCPConnection.TCPMessenger();
-
-          byte[] msg = messenger.prepareSendCmd(Command.STILL_ALIVE);
+          byte[] msg = tcpMessenger.prepareSendCmd(Command.STILL_ALIVE);
           SendData(msg);
 
         }
@@ -133,40 +133,22 @@ namespace SmartOrderSystem.TCPConnection
 
       if (bytesRead > 0)
       {
-
-        //TO TEST MESSENGER:
         byte[] dataFromClient = new byte[bytesRead];
         Array.Copy(state.buffer, dataFromClient, bytesRead);
-        TCPMessenger msger = new TCPMessenger();
-        string theClientMsg = msger.ReadMessage(dataFromClient);
-        Log.info("TCPMessenger: Reading Message:\n" + theClientMsg);
 
-        // There  might be more data, so store the data received so far.
-        state.sb.Append(Encoding.ASCII.GetString(
-            state.buffer, 0, bytesRead));
-
-        // Check for end-of-file tag. If it is not there, read 
-        // more data.
-        content = state.sb.ToString();
-        if (content.IndexOf(Command.EOF) > -1)
+        if (tcpMessenger.getMsgSize(dataFromClient) == bytesRead)
         {
-          // All the data has been read from the 
-          // client. Display it on the console.
-          Log.info("Read " + content.Length + " bytes from socket. \n Data : " + content);
-
-          content = content.Replace(Command.EOF, "");
-          connectedClient.renewBuffer();
-          state.sb.Clear();
-          //restart Listener
-          handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
-            new AsyncCallback(ReadCallback), connectedClient);
+          string theClientMsg = tcpMessenger.ReadMessage(dataFromClient);
+          Log.info("TCPMessenger: Reading Message:\n" + theClientMsg);
         }
         else
         {
-          // Not all data received. Get more.
-          handler.BeginReceive(state.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
-          new AsyncCallback(ReadCallback), state);
+          //TODO: Append
+          throw new NotImplementedException();
         }
+
+        handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
+          new AsyncCallback(ReadCallback), connectedClient);
       }
     }
 
@@ -175,17 +157,8 @@ namespace SmartOrderSystem.TCPConnection
       Send(connectedClient.workSocket, msgToClient);
     }
 
-    public void SendMsgToClient(String data)
-    {
-      // Convert the string data to byte data using ASCII encoding.
-      byte[] byteData = Encoding.ASCII.GetBytes(data + Command.EOF);
-
-      Send(connectedClient.workSocket, byteData);
-    }
-
     private void Send(Socket handler, byte[] byteData)
     {
-      
       // Begin sending the data to the remote device.
       handler.BeginSend(byteData, 0, byteData.Length, 0,
           new AsyncCallback(SendCallback), handler);

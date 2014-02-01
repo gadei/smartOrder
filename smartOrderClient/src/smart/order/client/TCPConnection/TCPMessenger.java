@@ -28,7 +28,13 @@ public class TCPMessenger {
 	
 	public Error prepareAndSendCmd(String theCommand)
 	{
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Sending #" + theCommand + "# command to server");
+		return prepareAndSendCmd(theCommand, getNextFreeMessageID());
+	}
+	
+	
+	public Error prepareAndSendCmd(String theCommand, int reqID)
+	{
+		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Sending cmd #" + theCommand + "# with msgID " + reqID + " to server");
 
 		byte[] cmdArray = StringToByteArray(theCommand + TCPClient.EOF);
 		
@@ -38,13 +44,13 @@ public class TCPMessenger {
 			return Error.ERR_UNKNOWN;
 		}
 		
-		MsgPreamble msgPreamble = new MsgPreamble(cmdArray.length, getNextFreeMessageID(), MsgTyp.CMD);
+		MsgPreamble msgPreamble = new MsgPreamble(cmdArray.length, reqID, MsgTyp.CMD);
 	
 	    byte[] msgToClient = new byte[cmdArray.length + MsgPreamble.MSG_PREAMBLE_SIZE];
 	    System.arraycopy(msgPreamble.getBytePreamble(), 0, msgToClient, 0, MsgPreamble.MSG_PREAMBLE_SIZE);
 	    System.arraycopy(cmdArray, 0, msgToClient, MsgPreamble.MSG_PREAMBLE_SIZE, cmdArray.length);
 	    
-	    tcpClient.sendDataToServer(cmdArray);
+	    tcpClient.sendDataToServer(msgToClient);
 
 	    return Error.ERR_OK;
 	}
@@ -87,10 +93,11 @@ public class TCPMessenger {
 
 	public void ReadMessage(byte[] messageFromServer)
 	{
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reading new message!");
-		
+
 	    byte[] payload = null;
 	    MsgPreamble msgPreamble = getMsgPreamble(messageFromServer);
+	    
+	    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Reading new message with id " + msgPreamble.msgID);
 	    
 	    if(messageFromServer.length > MsgPreamble.MSG_PREAMBLE_SIZE) 
 	    	  {
@@ -104,21 +111,21 @@ public class TCPMessenger {
 	    switch (msgPreamble.msgProps.msgTyp)
 	    {
 	    	  case MsgTyp.CMD:
-	    		  decodeCmdMessage(payload);
+	    		  decodeCmdMessage(payload, msgPreamble.msgID);
 	    		  break;
 	    }
 
 	}
 	
 
-	private void decodeCmdMessage(byte[] payload)
+	private void decodeCmdMessage(byte[] payload, int reqID)
 	{
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Decoded message header: New Command received!");
 		String cmd = ByteArrayToString(payload);
 		cmd = cmd.replaceAll(TCPClient.EOF, "");
 		
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received #" + cmd + "# command!");
-		oderSlave.decodeCommandString(cmd);
+		oderSlave.decodeCommandString(cmd, reqID);
 	}
 	
 	private byte[] StringToByteArray(String str)

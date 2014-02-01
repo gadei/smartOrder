@@ -18,10 +18,11 @@ namespace SmartOrderSystem.TCPConnection
     
     private ushort nextMsgID = 12;
     private Mutex nextMsgIDMutex;
+    private TCPServer tcpServer;
 
-
-    public TCPMessenger()
+    public TCPMessenger(TCPServer tcpServer)
     {
+      this.tcpServer = tcpServer;
       nextMsgIDMutex = new Mutex();
     }
 
@@ -41,6 +42,8 @@ namespace SmartOrderSystem.TCPConnection
       Array.Copy(msgPreamble.getBytePreamble(), msgToClient, MsgPreamble.MSG_PREAMBLE_SIZE);
       Array.Copy(cmdArray, 0, msgToClient, MsgPreamble.MSG_PREAMBLE_SIZE, cmdArray.Length);
 
+      Log.info("Preparing msg with id " + msgPreamble.msgID + " from server to client on port " + tcpServer.socketPort);
+
       return msgToClient;
     }
 
@@ -58,12 +61,26 @@ namespace SmartOrderSystem.TCPConnection
       return nextID;
     }
 
+    private MsgPreamble getMsgPreamble(byte[] messageFromClient)
+    {
+      byte[] preamble = new byte[MsgPreamble.MSG_PREAMBLE_SIZE];
+      Array.Copy(messageFromClient, preamble, MsgPreamble.MSG_PREAMBLE_SIZE);
+
+      return new MsgPreamble(preamble);
+    }
+
+    public ushort getMsgSize(byte[] messageFromClient) {
+      return getMsgPreamble(messageFromClient).msgSize;
+    }
+
     //TODO: just for testing! change the type to void!
     public string ReadMessage(byte[] messageFromClient)
     {
       byte[] payload = null;
-      byte[] preamble = new byte[MsgPreamble.MSG_PREAMBLE_SIZE];
-      Array.Copy(messageFromClient, preamble, MsgPreamble.MSG_PREAMBLE_SIZE);
+
+      MsgPreamble msgPreamble = getMsgPreamble(messageFromClient);
+
+      Log.info("Received msg with id " + msgPreamble.msgID + " from client on port " + tcpServer.socketPort);
 
       if(messageFromClient.Length > MsgPreamble.MSG_PREAMBLE_SIZE) 
       {
@@ -72,7 +89,6 @@ namespace SmartOrderSystem.TCPConnection
           payload, 0, messageFromClient.Length - MsgPreamble.MSG_PREAMBLE_SIZE);
       }
 
-      MsgPreamble msgPreamble = new MsgPreamble(preamble);
 
       //TODO: just for testing! remove this var!
       String ret = "";

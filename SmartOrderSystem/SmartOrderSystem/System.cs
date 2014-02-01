@@ -15,12 +15,12 @@ namespace SmartOrderSystem
       Console.SetWindowSize(120, 30);
       Console.WriteLine("Starting SmartOder System! ushort" + ushort.MaxValue);
 
-      TCPConnection.TCPMessenger messenger = new TCPConnection.TCPMessenger();
+      //TCPConnection.TCPMessenger messenger = new TCPConnection.TCPMessenger();
 
-      string theMsg = "Das ist ein Teststring";
-      byte[] msg = messenger.prepareSendCmd(theMsg);
-      string ret = messenger.ReadMessage(msg);
-      Console.WriteLine("Testen des Messengers:\nDer Teststring=#" + theMsg + "#\nDie Antwort=#" + ret + "#");
+      //string theMsg = "Das ist ein Teststring";
+      //byte[] msg = messenger.prepareSendCmd(theMsg);
+      //string ret = messenger.ReadMessage(msg);
+      //Console.WriteLine("Testen des Messengers:\nDer Teststring=#" + theMsg + "#\nDie Antwort=#" + ret + "#");
 
 
 

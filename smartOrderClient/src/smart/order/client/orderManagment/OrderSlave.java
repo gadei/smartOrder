@@ -11,16 +11,16 @@ public class OrderSlave {
 		this.tcpMessenger = tcpMessenger;
 	}
 	
-	public void decodeCommandString(String command) {
+	public void decodeCommandString(String command, int reqID) {
 		
 		if(command.compareTo(Command.STILL_ALIVE) == 0)
-			newStillAliveCommand();
+			newStillAliveCommand(reqID);
 	}
 	
-	private void newStillAliveCommand() {
+	private void newStillAliveCommand(int reqID) {
 		
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received Still alive command - sending ACK to server");	
-		tcpMessenger.prepareAndSendCmd(Command.ACK);
+		tcpMessenger.prepareAndSendCmd(Command.ACK, reqID);
 	}
 	
 }
