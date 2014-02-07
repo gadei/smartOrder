@@ -29,8 +29,12 @@ namespace SmartOrderSystem.TCPConnection
 
     public void StartServer()
     {
-
       serverRunning = true;
+
+      //Start worker for automatic connection
+      ZeroConfig zero = new ZeroConfig(this.smartOrderServer);
+      Thread workerZero = new Thread(zero.startListener);
+      workerZero.Start();
 
       // Data buffer for incoming data.
       byte[] bytes = new Byte[1024];

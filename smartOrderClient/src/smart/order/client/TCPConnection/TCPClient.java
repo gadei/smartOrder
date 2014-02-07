@@ -25,9 +25,7 @@ public class TCPClient  extends Thread {
 
 	
 	public static final String EOF = "<EOF>";
-	private final static int TCP_INIT_PORT = 1419;
-	private static String TCP_SERVER_IP = "10.0.0.2";
-	
+	private final static int TCP_INIT_PORT = 1419;	
 	
 	private SmartOrderClient client = null;
 	private TCPMessenger tcpMesseger = null;
@@ -135,12 +133,28 @@ public class TCPClient  extends Thread {
 		connectedToPortNbr = -1;
 	}
 
+	private void getServerIP()
+	{
+		ZeroConfig zero = new ZeroConfig();
+		zero.start();
+		try 
+		{
+			zero.join();
+		} 
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 
 	@Override
-	public void run() {
+	public void run() 
+	{
 		super.run();
 		
 		//Init phase! Connect to init server on reserved socket
+		getServerIP();
+		
 		int newPort = connectToInitServer();
 
 		if(newPort == -1)
@@ -224,12 +238,12 @@ public class TCPClient  extends Thread {
         
 		try {	
 			//here you must put your computer's IP address.
-			serverAddr = InetAddress.getByName(TCP_SERVER_IP);
+			serverAddr = InetAddress.getByName(client.getIpAddress());
 	        //create a socket to make the connection with the server
 	        tcpSocket = new Socket(serverAddr, portToConnectTo);
 
 		} catch (Exception e) {
-			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR --- Cannot connect to server at " + TCP_SERVER_IP);	
+			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR --- Cannot connect to server at " + client.getIpAddress());	
 			e.printStackTrace();
 			return Error.ERR_TCP_CONNECTION;
 		}
