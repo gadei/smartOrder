@@ -47,6 +47,7 @@ namespace SmartOrderSystem.TCPConnection
       return msgToClient;
     }
 
+
     private ushort getNextFreeMessageID()
     {
       ushort nextID = 0;

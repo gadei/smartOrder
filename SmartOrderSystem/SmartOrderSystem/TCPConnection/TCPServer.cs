@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using SmartOrderSystem.Utils;
-
+using System.Web.Script.Serialization;
 
 namespace SmartOrderSystem.TCPConnection
 {
@@ -75,7 +75,23 @@ namespace SmartOrderSystem.TCPConnection
           //check connection periodically
           Thread.Sleep(3000);
           //SendMsgToClient(Command.STILL_ALIVE);
-          byte[] msg = tcpMessenger.prepareSendCmd(Command.STILL_ALIVE);
+          //byte[] msg = tcpMessenger.prepareSendCmd(Command.STILL_ALIVE);
+
+          //Set up Person object...
+          Orders.Beer beer1 = new Orders.Beer(2.30f, 1);
+          Orders.Beer beer2 = new Orders.Beer(3.30f, 2);
+          Orders.Beer beer3 = new Orders.Beer(4.30f, 3);
+
+          List<Orders.Drinks> ordera = new List<Orders.Drinks>();
+          ordera.Add(beer1);
+          ordera.Add(beer2);
+          ordera.Add(beer3);
+
+          var serializer = new JavaScriptSerializer();
+          var serializedResult = serializer.Serialize(beer1);
+          //var serializedResult = serializer.Serialize(ordera);
+
+          byte[] msg = tcpMessenger.prepareSendCmd(serializedResult);
           SendData(msg);
 
         }

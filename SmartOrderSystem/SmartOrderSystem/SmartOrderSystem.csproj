@@ -34,6 +34,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Orders\Beer.cs" />
+    <Compile Include="Orders\Drinks.cs" />
+    <Compile Include="Orders\Food.cs" />
+    <Compile Include="Orders\Order.cs" />
+    <Compile Include="Orders\Pizza.cs" />
     <Compile Include="PrintService\PrinterInterface.cs" />
     <Compile Include="System.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -52,6 +59,7 @@
     <Compile Include="TCPConnection\TCPServer.cs" />
     <Compile Include="Utils\Command.cs" />
     <Compile Include="Utils\Log.cs" />
+    <Compile Include="Orders\Serializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

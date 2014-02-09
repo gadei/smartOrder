@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace SmartOrderSystem.TCPConnection
 {
     class ZeroConfig
