@@ -38,10 +38,14 @@ public class ZeroConfig extends Thread
 				DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);    
 				UDP_packet.receive(incoming);
 				String message = new String(incoming.getData(), 0, incoming.getLength(), "UTF-8");
-				if (message.equals("smart")) 
+				android.util.Log.d("  ==> ZeroConfig <==", "Received message: " + message);
+				if (message.startsWith("smart")) 
 				{
 					run = true;
-					client.setIpAddress(incoming.getAddress().toString().substring(1));
+					String theIPFromServer = message.split(" ")[1];
+					android.util.Log.d("  ==> ZeroConfig <==", "Received corrcet key: " 
+							+ message + "! Setting new Server adress: " + theIPFromServer);
+					client.setIpAddress(theIPFromServer);
 				}                  
 			}               
 

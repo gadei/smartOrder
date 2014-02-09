@@ -18,6 +18,8 @@ namespace SmartOrderSystem.TCPConnection
     private volatile bool serverRunning = false;
     private StateObject connectedClient = null;
     private SmartOrderServer smartOrderServer = null;
+    private ZeroConfig zero = null;
+    private Thread zeroThread = null;
 
     // Thread signal.
     public ManualResetEvent allDone = new ManualResetEvent(false);
@@ -32,9 +34,9 @@ namespace SmartOrderSystem.TCPConnection
       serverRunning = true;
 
       //Start worker for automatic connection
-      ZeroConfig zero = new ZeroConfig(this.smartOrderServer);
-      Thread workerZero = new Thread(zero.startListener);
-      workerZero.Start();
+      zero = new ZeroConfig(this.smartOrderServer);
+      zeroThread = new Thread(zero.startListener);
+      zeroThread.Start();
 
       // Data buffer for incoming data.
       byte[] bytes = new Byte[1024];
@@ -186,6 +188,8 @@ namespace SmartOrderSystem.TCPConnection
 
       Log.info("TCPInitServer: Command close thread!");
       serverRunning = false;
+      zero.close();
+      zeroThread.Join();
       allDone.Set();
  
     }
