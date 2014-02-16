@@ -40,7 +40,7 @@ public class OrderWizard {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(R.string.order_wizard_main)
-        .setItems(buildMenu.getFoodItems(), new DialogInterface.OnClickListener() {
+        .setItems(buildMenu.getFoodItemsStringArray(), new DialogInterface.OnClickListener() {
         	
             public void onClick(DialogInterface dialog, int which) {
             //TODO: Make this more dynamic
@@ -63,7 +63,7 @@ public static AlertDialog.Builder getOrderWizardDrink(final SmartOrderActivity a
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(R.string.order_wizard_main)
-        .setItems(buildMenu.getDrinkItems(), new DialogInterface.OnClickListener() {
+        .setItems(buildMenu.getDrinkItemsStringArray(), new DialogInterface.OnClickListener() {
         	
             public void onClick(DialogInterface dialog, int which) {
             //TODO: Make this more dynamic
