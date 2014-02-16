@@ -19,6 +19,11 @@
             "id": 4,
             "name": "Steak",
             "price": 90
+        },
+        {
+        	"id": 14,
+        	"name": "Toast",
+        	"price": 5
         }
     ],
     "drink": [

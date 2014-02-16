@@ -5,6 +5,7 @@ public abstract class Menu
 	protected int id;
 	protected String name = null;
 	protected double price;
+	protected int quantity = 1;
 	
 	public int getId()
 	{
@@ -12,10 +13,18 @@ public abstract class Menu
 	}
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 	public double getPrice()
 	{
-		return price;
+		return this.price;
+	}
+	public int getQuantity()
+	{
+		return this.quantity;
+	}
+	public void increaseQuantity()
+	{
+		this.quantity++;
 	}
 }

@@ -1,34 +1,31 @@
 package smart.order.client.order;
 
-import java.lang.reflect.Type;
 import java.util.Vector;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import smart.order.client.Error;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 public class Order
 {
 	private Vector<Food> foodItems = new Vector<Food>();
 	private Vector<Drink> drinkItems = new Vector<Drink>();
 	
-	private Vector<Vector> orderItems = new Vector<Vector>();
-	
 	private int table = 0;
+	private int orderId = 0;
 	
-	private Gson gson = new Gson();
-	private String jsonSerialization = null;
+	private JSONObject jsonObject = new JSONObject();
 	
-	public Order(int table)
+	public Order(int table, int orderId)
 	{
 		this.table = table;
+		this.orderId = orderId;
+		
 		
 		//Testobjects --> Ignore
 		Food food = new Food(1, "ESSEN!!!!", 12f);
-		Food food2 = new Food(1, "ESSEN!!!!", 12f);
-		Food food1 = new Food(1, "ESSEN!!!!", 12f);
+		Food food2 = new Food(3, "ESSEN!!!!", 12f);
+		Food food1 = new Food(4, "ESSEN!!!!", 12f);
 		
 		Drink drink = new Drink(1, "TRINKEN!!!!", 12f);
 		
@@ -38,28 +35,45 @@ public class Order
 		drinkItems.add(drink);
 		//End Testobjects
 	}
-	
+		
 
-	public String toJson()
-	{
-		if(!foodItems.isEmpty())
+	public String toJson() throws JSONException
+	{		
+		JSONArray jArrayFood = new JSONArray();
+		for(int i = 0; i < foodItems.size(); i++)
 		{
-			orderItems.add(foodItems);
-		}
-		if(!drinkItems.isEmpty())
-		{
-			orderItems.add(drinkItems);
-		}
-		
-		if(!orderItems.isEmpty())
-		{	
-			jsonSerialization = gson.toJson(orderItems);
+			JSONObject styleJSON = new JSONObject();
 			
-			//create valid Json
-			jsonSerialization = "{\"table\":" + table + ",\"order\":" + jsonSerialization + "}";
-		}
+			styleJSON.put("id", foodItems.elementAt(i).getId());
+			styleJSON.put("id", foodItems.elementAt(i).getId());
+			styleJSON.put("name", foodItems.elementAt(i).getName());
+			styleJSON.put("price", foodItems.elementAt(i).getPrice());
+			styleJSON.put("quantity", foodItems.elementAt(i).getQuantity());	
 		
-		return jsonSerialization;
+			jArrayFood.put(styleJSON);
+		}		
+
+		JSONArray jArrayDrink = new JSONArray();
+		for(int i = 0; i < drinkItems.size(); i++)
+		{
+			JSONObject styleJSON = new JSONObject();
+			
+			styleJSON.put("id", drinkItems.elementAt(i).getId());
+			styleJSON.put("id", drinkItems.elementAt(i).getId());
+			styleJSON.put("name", drinkItems.elementAt(i).getName());
+			styleJSON.put("price", drinkItems.elementAt(i).getPrice());
+			styleJSON.put("quantity", drinkItems.elementAt(i).getQuantity());	
+		
+			jArrayDrink.put(styleJSON);
+		}		
+		
+		jsonObject.put("table", table);
+		jsonObject.put("oderID", orderId);
+		
+		jsonObject.put("drink", jArrayDrink);
+		jsonObject.put("food", jArrayFood);
+		
+		return jsonObject.toString();
 	}
 	
 	

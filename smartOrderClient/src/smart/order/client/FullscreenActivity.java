@@ -1,5 +1,7 @@
 package smart.order.client;
 
+import org.json.JSONException;
+
 import smart.order.client.R;
 import smart.order.client.R.id;
 import smart.order.client.R.layout;
@@ -230,8 +232,15 @@ public class FullscreenActivity extends Activity {
 			}
 		});
 		
-		Order order = new Order(1);
-		order.toJson();
+		Order order = new Order(1,1);
+		try
+		{
+			order.toJson();
+		} 
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
