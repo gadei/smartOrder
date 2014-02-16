@@ -1,5 +1,7 @@
 package smart.order.client;
 
+import org.json.JSONException;
+
 import smart.order.client.R;
 import smart.order.client.R.id;
 import smart.order.client.R.layout;
@@ -25,12 +27,13 @@ public class SmartOrderActivity extends Activity {
 
 	private boolean insideViewActive = true;
 	private SmartOrderClient smartOrderClient = null;
+	private BuildMenu buildMenu = null;
 	
 	public void tableButtonClicked(View v) {
 		
 		Log.d("  ==> SMART_ORDER_CLIENT <==", "Table Button pressed: " + v.getId());
 		
-		 AlertDialog.Builder builder = OrderWizard.getOrderWizardMain(this, v.getId());
+		 AlertDialog.Builder builder = OrderWizard.getOrderWizardMain(this, v.getId(), buildMenu);
 		 builder.create().show();
         
 		switch(v.getId()){
@@ -134,6 +137,8 @@ public class SmartOrderActivity extends Activity {
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls_smartOrder);
 		final View contentView = findViewById(R.id.fullscreen_content_smartOrder);
+
+		buildMenu = new BuildMenu(this);
 
 		// Set up the user interaction to manually show or hide the system UI.
 		contentView.setOnLongClickListener(new View.OnLongClickListener() {

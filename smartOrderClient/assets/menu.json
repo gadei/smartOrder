@@ -1,0 +1,41 @@
+{
+	"food": [
+        {
+            "id": 1,
+            "name": "Pizza Margaritha",
+            "price": 12
+        },
+        {
+            "id": 2,
+            "name": "Pizza Salami",
+            "price": 15
+        },
+        {
+            "id": 3,
+            "name": "Wiener Schnitzel",
+            "price": 23
+        },
+        {
+            "id": 4,
+            "name": "Steak",
+            "price": 90
+        }
+    ],
+    "drink": [
+        {
+            "id": 5,
+            "name": "Bier",
+            "price": 3
+        },
+        {
+            "id": 6,
+            "name": "Radler",
+            "price": 3
+        },
+        {
+            "id": 7,
+            "name": "Wein",
+            "price": 3
+        }
+    ]
+}
