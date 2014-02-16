@@ -45,7 +45,7 @@ namespace SmartOrderSystem.TCPConnection
       this.waitOnServer = waitOnServer;
       workerServers = new Dictionary<int, ThreadServerTupel>();
 
-      nextFreePortForWorkerServer = TCPInitServer.TCP_INIT_PORT + 1;
+      nextFreePortForWorkerServer = TCPInitServer.UDP_PORT + 1;
 
       initServer = new TCPInitServer(this);
       initServerThread = new Thread(initServer.StartServer);
