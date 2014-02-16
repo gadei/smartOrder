@@ -4,7 +4,7 @@ public abstract class Menu
 {	
 	protected int id;
 	protected String name = null;
-	protected float price;
+	protected double price;
 	
 	public int getId()
 	{
@@ -14,7 +14,7 @@ public abstract class Menu
 	{
 		return name;
 	}
-	public float getPrice()
+	public double getPrice()
 	{
 		return price;
 	}

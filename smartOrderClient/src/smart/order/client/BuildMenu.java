@@ -2,32 +2,35 @@ package smart.order.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Vector;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import smart.order.client.order.Drink;
+import smart.order.client.order.Food;
+
 public class BuildMenu
 {
 	private SmartOrderActivity activity = null;
 	private String json = null;
-	private JSONObject jObject = null;
-	
-	private JSONArray jArrayFood = null;
-	private JSONArray jArrayDrink = null;
 	
 	private String[] foodItemsStringArray = null;
 	private String[] drinkItemsStringArray = null;
+	
+	private Vector<Food> foodItemsVector = new Vector<Food>();
+	private Vector<Drink> drinkItemsVector = new Vector<Drink>();
 	
 	public BuildMenu(SmartOrderActivity activity)
 	{
 		this.activity = activity;
 		
 		loadJSONFromAsset();
-		getMenuStringArray();
+		getMenuArrays();
 	}
 	
-	private String loadJSONFromAsset() 
+	private void loadJSONFromAsset() 
 	{
         try 
         {
@@ -42,28 +45,25 @@ public class BuildMenu
             is.close();
 
             json = new String(buffer, "UTF-8");
-
-
         }
         catch (IOException ex) 
         {
             ex.printStackTrace();
-            return null;
         }
-        return json;
     }
 	
-	private void getMenuStringArray()
+	private void getMenuArrays()
 	{
+		JSONArray jArrayFood = null;
+		JSONArray jArrayDrink = null;
+		JSONObject jObject = null;
+		
 		try
 		{
 			jObject = new JSONObject(json);
 			
 			jArrayFood = jObject.getJSONArray("food");
 			jArrayDrink = jObject.getJSONArray("drink");
-			
-			foodItemsStringArray = new String[jArrayFood.length()];
-			drinkItemsStringArray = new String[jArrayDrink.length()];
 		} 
 		catch (JSONException e)
 		{
@@ -71,15 +71,14 @@ public class BuildMenu
 		}
 		
 		
-		
 		for (int i=0; i < jArrayFood.length(); i++)
 		{
 		    try {
 		        JSONObject oneObject = jArrayFood.getJSONObject(i);
-		        // Pulling items from the array
-		        foodItemsStringArray[i] = oneObject.getString("name");
-		        foodItemsStringArray[i] = oneObject.getInt("id") + " - " + foodItemsStringArray[i];
-		    } catch (JSONException e) {
+		        
+		        foodItemsVector.add(new Food(oneObject.getInt("id"), oneObject.getString("name"), oneObject.getDouble("price")));
+		    } 
+		    catch (JSONException e) {
 		    }
 		}
 		
@@ -87,9 +86,8 @@ public class BuildMenu
 		{
 		    try {
 		        JSONObject oneObject = jArrayDrink.getJSONObject(i);
-		        // Pulling items from the array
-		        drinkItemsStringArray[i] = oneObject.getString("name");
-		        drinkItemsStringArray[i] = oneObject.getInt("id") + " - " + drinkItemsStringArray[i];
+		        
+		        drinkItemsVector.add(new Drink(oneObject.getInt("id"), oneObject.getString("name"), oneObject.getDouble("price")));
 		    } catch (JSONException e) {
 		    }
 		}
@@ -97,30 +95,19 @@ public class BuildMenu
 	
 	public double getPriceFromId(int id)
 	{
-		for (int i=0; i < jArrayFood.length(); i++)
+		for(int i = 0; i < drinkItemsVector.size(); i++)
 		{
-		    try {
-		        JSONObject oneObject = jArrayFood.getJSONObject(i);
-
-		        if(id == oneObject.getInt("id"))
-		        {
-		        	return oneObject.getDouble("price");
-		        }
-		    } catch (JSONException e) {
-		    }
+			if(drinkItemsVector.elementAt(i).getId() == id)
+			{
+				return drinkItemsVector.elementAt(i).getPrice();
+			}
 		}
-		
-		for (int i=0; i < jArrayDrink.length(); i++)
+		for(int i = 0; i < foodItemsVector.size(); i++)
 		{
-		    try {
-		        JSONObject oneObject = jArrayDrink.getJSONObject(i);
-		        
-		        if(id == oneObject.getInt("id"))
-		        {
-		        	return oneObject.getDouble("price");
-		        }
-		    } catch (JSONException e) {
-		    }
+			if(foodItemsVector.elementAt(i).getId() == id)
+			{
+				return foodItemsVector.elementAt(i).getPrice();
+			}
 		}
 		
 		return -1;
@@ -128,30 +115,19 @@ public class BuildMenu
 	
 	public String getNameFromId(int id)
 	{
-		for (int i=0; i < jArrayFood.length(); i++)
+		for(int i = 0; i < drinkItemsVector.size(); i++)
 		{
-		    try {
-		        JSONObject oneObject = jArrayFood.getJSONObject(i);
-
-		        if(id == oneObject.getInt("id"))
-		        {
-		        	return oneObject.getString("name");
-		        }
-		    } catch (JSONException e) {
-		    }
+			if(drinkItemsVector.elementAt(i).getId() == id)
+			{
+				return drinkItemsVector.elementAt(i).getName();
+			}
 		}
-		
-		for (int i=0; i < jArrayDrink.length(); i++)
+		for(int i = 0; i < foodItemsVector.size(); i++)
 		{
-		    try {
-		        JSONObject oneObject = jArrayDrink.getJSONObject(i);
-		        
-		        if(id == oneObject.getInt("id"))
-		        {
-		        	return oneObject.getString("name");
-		        }
-		    } catch (JSONException e) {
-		    }
+			if(foodItemsVector.elementAt(i).getId() == id)
+			{
+				return foodItemsVector.elementAt(i).getName();
+			}
 		}
 		
 		return null;
@@ -159,10 +135,30 @@ public class BuildMenu
 	
 	public String[] getDrinkItemsStringArray()
 	{
+		if(drinkItemsStringArray == null)
+		{
+			drinkItemsStringArray = new String[drinkItemsVector.size()];
+			
+			for(int i = 0; i < drinkItemsVector.size(); i++)
+			{
+				drinkItemsStringArray[i] = drinkItemsVector.elementAt(i).getId() + " - " + drinkItemsVector.elementAt(i).getName();
+			}
+		}
+		
 		return drinkItemsStringArray;
 	}
+	
 	public String[] getFoodItemsStringArray()
 	{
+		if(foodItemsStringArray == null)
+		{
+			foodItemsStringArray = new String[foodItemsVector.size()];
+			
+			for(int i = 0; i < foodItemsVector.size(); i++)
+			{
+				foodItemsStringArray[i] = foodItemsVector.elementAt(i).getId() + " - " + foodItemsVector.elementAt(i).getName();
+			}
+		}
 		return foodItemsStringArray;
 	}
 }
