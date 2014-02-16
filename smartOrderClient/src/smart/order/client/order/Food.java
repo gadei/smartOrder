@@ -8,4 +8,5 @@ public class Food extends Menu
 		this.name = name;
 		this.price = price;
 	}
+	
 }
