@@ -78,6 +78,7 @@ public class BuildMenu
 		        JSONObject oneObject = jArrayFood.getJSONObject(i);
 		        // Pulling items from the array
 		        foodItems[i] = oneObject.getString("name");
+		        foodItems[i] = oneObject.getInt("id") + " - " + foodItems[i];
 		    } catch (JSONException e) {
 		    }
 		}
@@ -88,6 +89,7 @@ public class BuildMenu
 		        JSONObject oneObject = jArrayDrink.getJSONObject(i);
 		        // Pulling items from the array
 		        drinkItems[i] = oneObject.getString("name");
+		        drinkItems[i] = oneObject.getInt("id") + " - " + drinkItems[i];
 		    } catch (JSONException e) {
 		    }
 		}
