@@ -24,12 +24,17 @@
         	"id": 14,
         	"name": "Toast",
         	"price": 5
+        },
+        {
+        	"id": 16,
+        	"name": "Burger",
+        	"price": 13
         }
     ],
     "drink": [
         {
             "id": 5,
-            "name": "Bier",
+            "name": "Bier 0.5",
             "price": 3
         },
         {
@@ -41,6 +46,11 @@
             "id": 7,
             "name": "Wein",
             "price": 3
+        },
+        {
+            "id": 5,
+            "name": "Bier 0.3",
+            "price": 3.5
         }
     ]
 }
