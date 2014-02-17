@@ -13,6 +13,8 @@ import smart.order.client.order.Food;
 
 public class BuildMenu
 {
+	private static BuildMenu instance = null;
+	
 	private SmartOrderActivity activity = null;
 	private String json = null;
 	
@@ -22,13 +24,22 @@ public class BuildMenu
 	private Vector<Food> foodItemsVector = new Vector<Food>();
 	private Vector<Drink> drinkItemsVector = new Vector<Drink>();
 	
-	public BuildMenu(SmartOrderActivity activity)
+	private BuildMenu(SmartOrderActivity activity)
 	{
 		this.activity = activity;
 		
 		loadJSONFromAsset();
 		getMenuArrays();
 	}
+	public static BuildMenu getInstance(SmartOrderActivity activity)
+	{
+		if(instance == null)
+		{
+			instance = new BuildMenu(activity);
+		}
+		return instance;
+	}
+	
 	
 	private void loadJSONFromAsset() 
 	{

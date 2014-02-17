@@ -33,7 +33,7 @@ public class Order
 		foodItems.add(food1);
 		foodItems.add(food2);
 		drinkItems.add(drink);
-		//End Testobjects
+		//End Testobject
 	}
 		
 
@@ -44,7 +44,6 @@ public class Order
 		{
 			JSONObject styleJSON = new JSONObject();
 			
-			styleJSON.put("id", foodItems.elementAt(i).getId());
 			styleJSON.put("id", foodItems.elementAt(i).getId());
 			styleJSON.put("name", foodItems.elementAt(i).getName());
 			styleJSON.put("price", foodItems.elementAt(i).getPrice());
@@ -58,7 +57,6 @@ public class Order
 		{
 			JSONObject styleJSON = new JSONObject();
 			
-			styleJSON.put("id", drinkItems.elementAt(i).getId());
 			styleJSON.put("id", drinkItems.elementAt(i).getId());
 			styleJSON.put("name", drinkItems.elementAt(i).getName());
 			styleJSON.put("price", drinkItems.elementAt(i).getPrice());
