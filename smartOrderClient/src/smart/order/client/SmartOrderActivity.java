@@ -6,6 +6,7 @@ import org.apache.http.impl.cookie.RFC2109DomainHandler;
 import org.json.JSONException;
 
 import smart.order.client.R;
+import smart.order.client.GUI.OrderActivity.OrderActivity;
 import smart.order.client.R.id;
 import smart.order.client.R.layout;
 import smart.order.client.database.FoodDrinkItems;

@@ -1,7 +1,10 @@
-package smart.order.client;
+package smart.order.client.GUI.OrderActivity;
 
 import java.util.ArrayList;
 
+import smart.order.client.R;
+import smart.order.client.R.id;
+import smart.order.client.R.layout;
 import smart.order.client.database.AddOrder;
 import smart.order.client.database.FoodDrinkItems;
 import smart.order.client.database.GetFood;

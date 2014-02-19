@@ -1,5 +1,7 @@
-package smart.order.client;
+package smart.order.client.GUI.OrderActivity;
 
+import smart.order.client.R;
+import smart.order.client.R.layout;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ListFragment;

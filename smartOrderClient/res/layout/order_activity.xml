@@ -10,14 +10,14 @@
         android:layout_weight="1"
         android:layout_height="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize"
-        class="smart.order.client.OrderFragmentList" ></fragment>
+        class="smart.order.client.GUI.OrderActivity.OrderFragmentList" ></fragment>
 
     <fragment
         android:id="@+id/detailFragment"
         android:layout_width="0dp"
         android:layout_weight="2"
-        android:layout_height="match_parent"
-        class="smart.order.client.OrderFragmentDetail" >
+        android:layout_height="match_parent" 
+        class="smart.order.client.GUI.OrderActivity.OrderFragmentDetail">
         <!-- Preview: layout=@layout/details -->
     </fragment>
 
