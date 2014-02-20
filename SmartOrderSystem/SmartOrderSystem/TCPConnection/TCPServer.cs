@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Threading;
 using SmartOrderSystem.Utils;
 using System.Web.Script.Serialization;
-using SmartOrderSystem.Database;
 
 namespace SmartOrderSystem.TCPConnection
 {
@@ -70,10 +69,6 @@ namespace SmartOrderSystem.TCPConnection
         Log.info("MainThread: Waiting for Client to connect on worker socket");
         allDone.WaitOne();
         Log.info("MainThread: Client connected to worker socket");
-
-        GetFood food = new GetFood();
-        byte[] byte_food = tcpMessenger.prepareSendCmd(food.getJsonMenu());
-        SendData(byte_food);
 
         while (serverRunning)
         {
