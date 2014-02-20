@@ -1,9 +1,12 @@
 package smart.order.client;
 
+import org.json.JSONException;
+
 import smart.order.client.R;
 import smart.order.client.R.id;
 import smart.order.client.R.layout;
 import smart.order.client.R.string;
+import smart.order.client.order.Order;
 import smart.order.client.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -158,6 +161,7 @@ public class FullscreenActivity extends Activity {
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
+		
 
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
@@ -227,6 +231,16 @@ public class FullscreenActivity extends Activity {
 				connectToServer();
 			}
 		});
+		
+		Order order = new Order(1,1);
+		try
+		{
+			order.toJson();
+		} 
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
