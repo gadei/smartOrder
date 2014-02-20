@@ -69,8 +69,9 @@ public class SmartOrderClient {
 	public String getIpAddress() {
 		return ipAddress;
 	}
+	
 
-	public void setIpAddress(String ip_address) {
+	public void setIpAddressAndPort(String ip_address) {
 		this.ipAddress = ip_address;
 	}
 
