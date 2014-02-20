@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 using SmartOrderSystem.Orders;
 using System.Web.Script.Serialization;
+using SmartOrderSystem.Database;
 
 namespace SmartOrderSystem
 {
@@ -26,7 +27,8 @@ namespace SmartOrderSystem
       //string ret = messenger.ReadMessage(msg);
       //Console.WriteLine("Testen des Messengers:\nDer Teststring=#" + theMsg + "#\nDie Antwort=#" + ret + "#");
 
-
+      GetFood hallo = new GetFood();
+      hallo.getJsonMenu();
 
       //Set up Person object...
       Orders.Beer beer1 = new Orders.Beer(2.30f, 1);

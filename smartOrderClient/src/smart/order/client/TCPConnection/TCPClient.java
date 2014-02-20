@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
@@ -13,6 +15,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
+import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import smart.order.client.Command;
@@ -26,6 +29,7 @@ public class TCPClient  extends Thread {
 	
 	public static final String EOF = "<EOF>";
 	private final static int TCP_INIT_PORT = 1419;	
+	private static final int UDP_PORT = 1418;
 	
 	private SmartOrderClient client = null;
 	private TCPMessenger tcpMesseger = null;
@@ -132,29 +136,14 @@ public class TCPClient  extends Thread {
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Leaving connectToNewSocket!");
 		connectedToPortNbr = -1;
 	}
-
-	private void getServerIP()
-	{
-		ZeroConfig zero = new ZeroConfig();
-		zero.start();
-		try 
-		{
-			zero.join();
-		} 
-		catch (InterruptedException e) 
-		{
-			e.printStackTrace();
-		}
-	}
+	
 
 	@Override
 	public void run() 
 	{
 		super.run();
 		
-		//Init phase! Connect to init server on reserved socket
-		getServerIP();
-		
+		//Init phase! Connect to init server on reserved socket	
 		int newPort = connectToInitServer();
 
 		if(newPort == -1)
@@ -168,64 +157,68 @@ public class TCPClient  extends Thread {
 		clientRunning = false;
 		client.tcpClientClosed();
 	}
-	
+
 	private int connectToInitServer() {
 		
-		errStatus = initConnection(TCP_INIT_PORT);
-		
-		if(errStatus == Error.ERR_OK) 
-			threadRunning = true;
-		else 
-			return -1;
-		
-		while(threadRunning && !tcpSocket.isClosed()) {
-						
-			try {
-				if(inMessage.ready()) {	
-					//in this while the client listens for the messages sent by the server
-				    android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Waiting for the new port...");
-					serverMessage = inMessage.readLine();
-				    
-				    if (serverMessage != null) {
-				    	android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received message: #" + serverMessage + "#");
+		DatagramSocket UDP_packet;
+		String thePortFromServer = "-1";
+				
+		try
+		{
+			UDP_packet = new DatagramSocket(UDP_PORT);
 
-				    	if(serverMessage.startsWith(Command.RECONNECT)) {
-				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received command: #Reconnect to port " + getNewPort(serverMessage) + "#");
-				    		outMessage.writeBytes(Command.ACK + EOF);	
-					        outMessage.flush();
-				    		tcpSocket.close();
-				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Sent ACK to end handshake");			    		
-				    	} else if(serverMessage.startsWith(Command.DEBUG_MSG)) {
-				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Received debug message: #" + serverMessage + "#");
-				    	} else {
-				    		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "!!Unknown command! Closing thread! #" + serverMessage + "#");
-				    		threadRunning = false;
-				    	}
-				    }  
-				}
-			} catch (IOException e) {
-				android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "Failed to read input stream");
-				e.printStackTrace();
-			}
+			UDP_packet.setBroadcast(true);
+			byte[] b = "order".getBytes("UTF-8");
+			DatagramPacket outgoing = new DatagramPacket(b, b.length, getBroadcastAddress(client.getAndroidActivity()), UDP_PORT);                  
+			UDP_packet.send(outgoing);
+
+			boolean run = false;
+			while (!run) {  
+				android.util.Log.d("  ==> ZeroConfig <==", "Scanning IP Addresses");
+				byte[] buffer = new byte[1024];
+				DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);    
+				UDP_packet.receive(incoming);
+				String message = new String(incoming.getData(), 0, incoming.getLength(), "UTF-8");
+				android.util.Log.d("  ==> ZeroConfig <==", "Received message: " + message);
+				if (message.startsWith("smart")) 
+				{
+					run = true;
+					String theIPFromServer = message.split(" ")[1];
+					thePortFromServer = message.split(" ")[2];
+					android.util.Log.d("  ==> ZeroConfig <==", "Received corrcet key: " 
+							+ message + "! Setting new Server adress: " + theIPFromServer + 
+							" ");
+					client.setIpAddressAndPort(theIPFromServer);
+					threadRunning = true;
+				}                  
+			}               
+
+			UDP_packet.close();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
 		}
 		
-		connectedToPortNbr = TCP_INIT_PORT;
-		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "connectToInitServer finished!");
+		return Integer.parseInt(thePortFromServer);
 		
-		if(threadRunning)
-			return getNewPort(serverMessage);
-		else {
-			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "No new port found for connection");
-			return -1;
-		}
-
 	}
 	
-	
-	private int getNewPort(String serverMsg) {
-		String tmpString = serverMsg.split(" ")[4];
-				
-		return Integer.parseInt(tmpString);
+	private InetAddress getBroadcastAddress(Context context) throws IOException 
+	{
+		WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		DhcpInfo dhcp = wifi.getDhcpInfo();
+		if (dhcp == null) 
+		{
+			return null;
+		}
+		int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
+		byte[] quads = new byte[4];
+
+		for (int k = 0; k < 4; k++)
+			quads[k] = (byte) ((broadcast >> k * 8) & 0xFF);
+
+		return InetAddress.getByAddress(quads);
 	}
 	
 	
