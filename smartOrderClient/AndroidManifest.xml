@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
     
     <uses-permission android:name="android.permission.READ_PHONE_STATE"> </uses-permission>
 		<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"> </uses-permission>
@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity android:name="SmartOrderActivity"></activity>
-        <activity android:name="OrderActivity"></activity>
+        <activity android:name=".GUI.OrderActivity.OrderActivity"></activity>
     </application>
 
 </manifest>

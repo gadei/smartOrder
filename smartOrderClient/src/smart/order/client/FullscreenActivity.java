@@ -6,6 +6,7 @@ import smart.order.client.R;
 import smart.order.client.R.id;
 import smart.order.client.R.layout;
 import smart.order.client.R.string;
+import smart.order.client.database.GetFood;
 import smart.order.client.order.Order;
 import smart.order.client.util.SystemUiHider;
 import android.annotation.TargetApi;

@@ -63,9 +63,13 @@ public class SmartOrderClient {
 	
 	public Activity getActivity() {
 		return androidActivity;
+	}	
+	
+	public SmartOrderActivity getSmartOrderActivity()
+	{
+		return smartOrderActivity;
 	}
-	
-	
+
 	public String getIpAddress() {
 		return ipAddress;
 	}
