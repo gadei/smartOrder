@@ -7,6 +7,7 @@ public enum Error {
 	ERR_TCP_CLIENT(2, "TCP-Client error."),
 	ERR_TCP_CONNECTION(3, "TCP-connection error."),
 	ERR_MSG_QUEUE_FULL(12, "Send buffer full"),
+	ERR_NO_ORDER(20, "No Order entered"),
 
 	ERR_UNKNOWN(99, "An unknown error occurred.");
 
