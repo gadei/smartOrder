@@ -4,8 +4,7 @@
 /smartOrderClient/.settings/
 /smartOrderClient/lint.xml
 /smartOrderClient/gen/
-/SmartOrderSystem/bin/
-/SmartOrderSystem/obj/
-/SmartOrderSystem//
+/SmartOrderSystem/SmartOrderSystem/bin/
+/SmartOrderSystem/SmartOrderSystem/obj/
 /.metadata/
 *.suo
