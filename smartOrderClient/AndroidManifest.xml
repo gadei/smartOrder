@@ -21,7 +21,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="smart.order.client.FullscreenActivity"
+            android:name="smart.order.client.GUI.Main.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="SmartOrderActivity"></activity>
+        <activity android:name=".GUI.Main.SmartOrderActivity"></activity>
         <activity android:name=".GUI.OrderActivity.OrderActivity"></activity>
     </application>
 

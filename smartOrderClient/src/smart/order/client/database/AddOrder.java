@@ -19,7 +19,7 @@ public class AddOrder extends AsyncTask<String, String, String> {
 	private ProgressDialog pDialog = null;
 	private JSONParser jsonParser = new JSONParser();
 	
-	private static String url_create_order = "http://" + SmartOrderClient.getInstance(null).getIpAddress() + "/smartorder/createOrder.php";
+	private static String url_create_order = "http://" + SmartOrderClient.getInstance().getIpAddress() + "/smartorder/createOrder.php";
 	
 	private static final String TAG_SUCCESS = "success";
 	
@@ -28,7 +28,7 @@ public class AddOrder extends AsyncTask<String, String, String> {
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		pDialog = new ProgressDialog(SmartOrderClient.getInstance(null).getSmartOrderActivity());
+		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getSmartOrderActivity());
 		pDialog.setMessage("Bestellung aufgeben...");
 		pDialog.setIndeterminate(false);
 		pDialog.setCancelable(false);
@@ -84,12 +84,12 @@ public class AddOrder extends AsyncTask<String, String, String> {
 		
 		if(success == 1)
 		{
-		Toast.makeText(SmartOrderClient.getInstance(null).getSmartOrderActivity().getApplicationContext(), "Erfolgreich!",
+		Toast.makeText(SmartOrderClient.getInstance().getSmartOrderActivity().getApplicationContext(), "Erfolgreich!",
 				   Toast.LENGTH_LONG).show();
 		}
 		else
 		{
-			Toast.makeText(SmartOrderClient.getInstance(null).getSmartOrderActivity().getApplicationContext(), "Fehler!",
+			Toast.makeText(SmartOrderClient.getInstance().getSmartOrderActivity().getApplicationContext(), "Fehler!",
 					   Toast.LENGTH_LONG).show();
 		}
 	}

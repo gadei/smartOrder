@@ -1,56 +1,27 @@
-package smart.order.client;
-
-import java.util.concurrent.Executor;
-
-import org.apache.http.impl.cookie.RFC2109DomainHandler;
-import org.json.JSONException;
+package smart.order.client.GUI.Main;
 
 import smart.order.client.R;
+import smart.order.client.SmartOrderClient;
 import smart.order.client.GUI.OrderActivity.OrderActivity;
-import smart.order.client.R.id;
-import smart.order.client.R.layout;
-import smart.order.client.database.FoodDrinkItems;
 import smart.order.client.database.GetDrink;
 import smart.order.client.database.GetFood;
 import smart.order.client.util.SystemUiHider;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.opengl.Visibility;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 public class SmartOrderActivity extends Activity {
 
 	private boolean insideViewActive = true;
 	private SmartOrderClient smartOrderClient = null;
-	private BuildMenu buildMenu = null;
 
 	public void tableButtonClicked(View v) {
 
 		Log.d("  ==> SMART_ORDER_CLIENT <==", "Table Button pressed: " + v.getId());
-
-		/*AlertDialog.Builder builder = OrderWizard.getOrderWizardMain(this, v.getId(), buildMenu);
-		 builder.create().show();
-
-		switch(v.getId()){
-	       case R.id.Tisch1: 
-
-	    	   break;
-		}*/
-
-		int a = v.getId();
 
 		Intent intent = new Intent(this, OrderActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -145,15 +116,14 @@ public class SmartOrderActivity extends Activity {
 	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) 
+	{
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.smart_order_activity);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls_smartOrder);
 		final View contentView = findViewById(R.id.fullscreen_content_smartOrder);
-
-		buildMenu = BuildMenu.getInstance(this);
 
 		// Set up the user interaction to manually show or hide the system UI.
 		contentView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -195,8 +165,8 @@ public class SmartOrderActivity extends Activity {
 		setVisivilityOfAllElemts(outsideFrame, View.GONE);
 		insideViewActive = true;
 
-		smartOrderClient = SmartOrderClient.getInstance(null);
-		smartOrderClient.setSmartOrderActivity(this);  
+		smartOrderClient = SmartOrderClient.getInstance();
+		smartOrderClient.setSmartOrderActivity(this);
 
 		getMenuFromDB();        
 	}

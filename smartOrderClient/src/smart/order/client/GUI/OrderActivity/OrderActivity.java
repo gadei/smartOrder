@@ -3,18 +3,11 @@ package smart.order.client.GUI.OrderActivity;
 import java.util.ArrayList;
 
 import smart.order.client.R;
-import smart.order.client.R.id;
-import smart.order.client.R.layout;
-import smart.order.client.database.AddOrder;
+import smart.order.client.SmartOrderClient;
 import smart.order.client.database.FoodDrinkItems;
-import smart.order.client.database.GetFood;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,6 +16,7 @@ public class OrderActivity extends Activity{
 
 	private String[] drink = FoodDrinkItems.drinkStringArray;
 	private String[] food = FoodDrinkItems.foodStringArray;
+	private SmartOrderClient smartOrderClient = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -30,6 +24,9 @@ public class OrderActivity extends Activity{
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.order_activity);
+		
+		smartOrderClient  = SmartOrderClient.getInstance();
+		smartOrderClient.setOrderActivity(this);
 
 		setTableId();
 

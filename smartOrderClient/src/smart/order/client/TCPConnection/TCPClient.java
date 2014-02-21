@@ -169,7 +169,7 @@ public class TCPClient  extends Thread {
 
 			UDP_packet.setBroadcast(true);
 			byte[] b = "order".getBytes("UTF-8");
-			DatagramPacket outgoing = new DatagramPacket(b, b.length, getBroadcastAddress(client.getAndroidActivity()), UDP_PORT);                  
+			DatagramPacket outgoing = new DatagramPacket(b, b.length, getBroadcastAddress(client.getFullscreenActivity()), UDP_PORT);                  
 			UDP_packet.send(outgoing);
 
 			boolean run = false;
@@ -188,7 +188,7 @@ public class TCPClient  extends Thread {
 					android.util.Log.d("  ==> ZeroConfig <==", "Received corrcet key: " 
 							+ message + "! Setting new Server adress: " + theIPFromServer + 
 							" ");
-					client.setIpAddressAndPort(theIPFromServer);
+					client.setIpAddress(theIPFromServer);
 					threadRunning = true;
 				}                  
 			}               
@@ -226,7 +226,7 @@ public class TCPClient  extends Thread {
 
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Try to init connection on port " + portToConnectTo);	
 		
-		client.getAndroidActivity().peep();
+		client.getFullscreenActivity().peep();
         InetAddress serverAddr;
         
 		try {	

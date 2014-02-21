@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 public class GetFood extends AsyncTask<String, String, String> 
 {
-	private static String url_food = "http://" + SmartOrderClient.getInstance(null).getIpAddress() + "/smartorder/getFood.php";
+	private static String url_food = "http://" + SmartOrderClient.getInstance().getIpAddress() + "/smartorder/getFood.php";
 	private ProgressDialog pDialog = null;
 
 	private static final String TAG_SUCCESS = "success";
@@ -50,8 +50,8 @@ public class GetFood extends AsyncTask<String, String, String>
 	protected void onPreExecute() 
 	{
 		super.onPreExecute();
-		pDialog = new ProgressDialog(SmartOrderClient.getInstance(null).getSmartOrderActivity());
-		pDialog.setMessage("Lade Essen von Datenbank...");
+		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getSmartOrderActivity());
+		pDialog.setMessage("Lade Essen/Drinken von Datenbank...");
 		pDialog.setIndeterminate(false);
 		pDialog.setCancelable(false);
 		pDialog.show();
@@ -143,7 +143,7 @@ public class GetFood extends AsyncTask<String, String, String>
 		
 		if(FoodDrinkItems.foodItemsVector == null)
         {
-        	SmartOrderClient.getInstance(null).getSmartOrderActivity().disconnectFromServer();
+        	SmartOrderClient.getInstance().getSmartOrderActivity().disconnectFromServer();
         }
 	}
 

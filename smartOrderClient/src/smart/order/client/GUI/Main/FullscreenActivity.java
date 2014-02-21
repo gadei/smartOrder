@@ -1,8 +1,9 @@
-package smart.order.client;
+package smart.order.client.GUI.Main;
 
 import org.json.JSONException;
 
 import smart.order.client.R;
+import smart.order.client.SmartOrderClient;
 import smart.order.client.R.id;
 import smart.order.client.R.layout;
 import smart.order.client.R.string;
@@ -42,7 +43,8 @@ public class FullscreenActivity extends Activity {
 	    StrictMode.setThreadPolicy(policy);
 	    
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Starting client and connecting to server");	
-		smartOrderClient = SmartOrderClient.getInstance(this);
+		smartOrderClient = SmartOrderClient.getInstance();
+		smartOrderClient.setFullscreenActivity(this);
 		smartOrderClient.initConnection();	
 		
 		int timeToConnection = 0;
