@@ -29,16 +29,6 @@ public class SmartOrderActivity extends Activity {
 		startActivity(intent);
 	}
 
-	public void orderDrinks(int tableNbr) {
-		Log.d("  ==> SMART_ORDER_CLIENT <==", "Order drinks for table: " + tableNbr);
-	}
-
-	public void orderFood(int tableNbr) {
-		Log.d("  ==> SMART_ORDER_CLIENT <==", "Order food for table: " + tableNbr);
-	}
-
-
-
 	public void changeInOutsideButtonClicked(View v) {
 		final FrameLayout insideFrame = (FrameLayout) findViewById(R.id.inside_frame);
 		final FrameLayout outsideFrame = (FrameLayout) findViewById(R.id.outside_frame);
