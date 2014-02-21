@@ -23,9 +23,9 @@ import android.util.Log;
 
 public class JSONParser {
 
-    static InputStream is = null;
-    static JSONObject jObj = null;
-    static String json = "";
+    private InputStream is = null;
+    private JSONObject jObj = null;
+    private String json = "";
 
     // constructor
     public JSONParser() {
@@ -95,6 +95,5 @@ public class JSONParser {
 
         // return JSON String
         return jObj;
-
     }
 }

@@ -145,28 +145,32 @@ namespace SmartOrderSystem.TCPConnection
       StateObject state = (StateObject)ar.AsyncState;
       Socket handler = state.workSocket;
 
-      // Read data from the client socket. 
-      int bytesRead = handler.EndReceive(ar);
-
-      if (bytesRead > 0)
+      try
       {
-        byte[] dataFromClient = new byte[bytesRead];
-        Array.Copy(state.buffer, dataFromClient, bytesRead);
+          // Read data from the client socket. 
+          int bytesRead = handler.EndReceive(ar);
 
-        if (tcpMessenger.getMsgSize(dataFromClient) == bytesRead)
-        {
-          string theClientMsg = tcpMessenger.ReadMessage(dataFromClient);
-          Log.info("TCPMessenger: Reading Message:\n" + theClientMsg);
-        }
-        else
-        {
-          //TODO: Append
-          throw new NotImplementedException();
-        }
+          if (bytesRead > 0)
+          {
+              byte[] dataFromClient = new byte[bytesRead];
+              Array.Copy(state.buffer, dataFromClient, bytesRead);
 
-        handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
-          new AsyncCallback(ReadCallback), connectedClient);
+              if (tcpMessenger.getMsgSize(dataFromClient) == bytesRead)
+              {
+                  string theClientMsg = tcpMessenger.ReadMessage(dataFromClient);
+                  Log.info("TCPMessenger: Reading Message:\n" + theClientMsg);
+              }
+              else
+              {
+                  //TODO: Append
+                  throw new NotImplementedException();
+              }
+
+              handler.BeginReceive(connectedClient.buffer, 0, TCPMessenger.MAX_MSG_SIZE, 0,
+                new AsyncCallback(ReadCallback), connectedClient);
+          }
       }
+      catch {}
     }
 
     protected void SendData(byte[] msgToClient)

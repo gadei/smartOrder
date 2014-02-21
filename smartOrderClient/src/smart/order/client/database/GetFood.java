@@ -10,11 +10,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import smart.order.client.R;
 import smart.order.client.SmartOrderClient;
 import smart.order.client.order.Food;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,10 +45,10 @@ public class GetFood extends AsyncTask<String, String, String>
 	private JSONArray food = null;
 
 	private ArrayList<HashMap<String, String>> foodList = new ArrayList<HashMap<String,String>>();
-	
+
 	private String[] foodArray = null;
 	private Vector<Food> foodVector = null;
-	
+
 	@Override
 	protected void onPreExecute() 
 	{
@@ -62,14 +65,15 @@ public class GetFood extends AsyncTask<String, String, String>
 	{
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// getting JSON string from URL
-		JSONObject json = jParser.makeHttpRequest(url_food, "GET", params);
-
-		// Check your log cat for JSON reponse
-		Log.d("Food: ", json.toString());
 
 		try 
-		{
+		{		
+			// getting JSON string from URL
+			JSONObject json = jParser.makeHttpRequest(url_food, "GET", params);
+
+			// Check your log cat for JSON reponse
+			Log.d("Food: ", json.toString());
+
 			// Checking for SUCCESS TAG
 			int success = json.getInt(TAG_SUCCESS);
 
@@ -101,17 +105,17 @@ public class GetFood extends AsyncTask<String, String, String>
 				}
 			} 
 		} 
-		catch (JSONException e) 
+		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	private void createStringArray()
 	{
 		foodArray = new String[foodList.size()];
-		
+
 		for(int i = 0; i < foodList.size(); i++)
 		{
 			foodArray[i] = foodList.get(i).get(TAG_NAME);
@@ -120,7 +124,7 @@ public class GetFood extends AsyncTask<String, String, String>
 	private void createFoodVector()
 	{
 		foodVector = new Vector<Food>();
-		
+
 		for(int i = 0; i < foodList.size(); i++)
 		{
 			foodVector.add(new Food(Integer.parseInt(foodList.get(i).get(TAG_ID)), foodList.get(i).get(TAG_NAME), Double.parseDouble(foodList.get(i).get(TAG_PRICE))));
@@ -134,17 +138,23 @@ public class GetFood extends AsyncTask<String, String, String>
 	{
 		createStringArray();
 		createFoodVector();
-		
+
 		FoodDrinkItems.foodList = foodList;
 		FoodDrinkItems.foodStringArray = foodArray;
 		FoodDrinkItems.foodItemsVector = foodVector;
-		
-		pDialog.dismiss();
-		
-		if(FoodDrinkItems.foodItemsVector == null)
-        {
-        	SmartOrderClient.getInstance().getSmartOrderActivity().disconnectFromServer();
-        }
+
+		if(pDialog != null)
+		{
+			if(pDialog.isShowing())
+			{
+				pDialog.dismiss();
+			}
+		}
+
+		if(FoodDrinkItems.foodItemsVector == null || FoodDrinkItems.foodItemsVector.isEmpty())
+		{
+			SmartOrderClient.getInstance().getSmartOrderActivity().noDatabaseConnection();
+		}
 	}
 
 }

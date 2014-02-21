@@ -20,20 +20,6 @@ public class Order
 	{
 		this.table = table;
 		this.orderId = orderId;
-		
-		
-		//Testobjects --> Ignore
-		Food food = new Food(1, "ESSEN!!!!", 12f);
-		Food food2 = new Food(3, "ESSEN!!!!", 12f);
-		Food food1 = new Food(4, "ESSEN!!!!", 12f);
-		
-		Drink drink = new Drink(1, "TRINKEN!!!!", 12f);
-		
-		foodItems.add(food);
-		foodItems.add(food1);
-		foodItems.add(food2);
-		drinkItems.add(drink);
-		//End Testobject
 	}
 		
 

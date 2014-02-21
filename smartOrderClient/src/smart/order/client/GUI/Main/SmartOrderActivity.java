@@ -7,17 +7,24 @@ import smart.order.client.database.GetDrink;
 import smart.order.client.database.GetFood;
 import smart.order.client.util.SystemUiHider;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 public class SmartOrderActivity extends Activity {
 
 	private boolean insideViewActive = true;
 	private SmartOrderClient smartOrderClient = null;
+	private GetFood getFood;
+	private GetDrink getDrink;
 
 	public void tableButtonClicked(View v) {
 
@@ -62,9 +69,40 @@ public class SmartOrderActivity extends Activity {
 		}
 	}
 
+	public void noDatabaseConnection()
+	{
+		if(getDrink != null && getFood != null)
+		{
+			if(getDrink.getStatus() == AsyncTask.Status.RUNNING)
+			{
+				getDrink.cancel(true);
+			}
+			if(getFood.getStatus() == AsyncTask.Status.RUNNING)
+			{
+				getFood.cancel(true);
+			}
+		}
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog alert = builder.create();
+		
+		alert.setMessage("Kann nicht mit Datenbank verbinden!");
+		alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Abbrechen", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Cancel");
 
-	public void disconnectFromServer() {
+				disconnectFromServer();
+			}
+		});
+		alert.setCancelable(false);
+		alert.setCanceledOnTouchOutside(false);
 
+		alert.show();
+	}
+
+
+	public void disconnectFromServer() 
+	{
 		android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "Disconnecting client-server...");	
 		smartOrderClient.disconnectClient();
 
@@ -158,13 +196,17 @@ public class SmartOrderActivity extends Activity {
 		smartOrderClient = SmartOrderClient.getInstance();
 		smartOrderClient.setSmartOrderActivity(this);
 
-		getMenuFromDB();        
+		getMenuFromDB();     
+
 	}
 
 	private void getMenuFromDB()
 	{
-		new GetFood().execute();
-		new GetDrink().execute();
+		getFood = new GetFood();
+		getDrink = new GetDrink();
+
+		getFood.execute();
+		getDrink.execute();
 	}
 
 }

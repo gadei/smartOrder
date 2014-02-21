@@ -65,9 +65,8 @@ public class FullscreenActivity extends Activity {
 			android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "SUCCESS - Client started and connected to server");	
 			
 			Intent myIntent = new Intent(this.getApplicationContext(), SmartOrderActivity.class);
-	        startActivityForResult(myIntent, 0);
+	        startActivityForResult(myIntent, 0);	
 	        this.finish();
-	        
 		} else {
 			
 			android.util.Log.e("  ==> SMART_ORDER_CLIENT <==", "ERROR - Failed to connect to the server");

@@ -14,8 +14,10 @@ import smart.order.client.SmartOrderClient;
 import smart.order.client.order.Drink;
 import smart.order.client.order.Food;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,12 +45,12 @@ public class GetDrink extends AsyncTask<String, String, String>
 	private JSONArray drink = null;
 
 	private ArrayList<HashMap<String, String>> drinkList = new ArrayList<HashMap<String,String>>();
-	
+
 	private String[] drinkArray = null;
 	private Vector<Drink> drinkVector = null;
-	
+
 	@Override
-	protected void onPreExecute() 
+	protected void onPreExecute()
 	{
 		super.onPreExecute();
 		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getSmartOrderActivity());
@@ -64,13 +66,15 @@ public class GetDrink extends AsyncTask<String, String, String>
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		// getting JSON string from URL
-		JSONObject json = jParser.makeHttpRequest(url_drink, "GET", params);
-
-		// Check your log cat for JSON reponse
-		Log.d("Drink: ", json.toString());
 
 		try 
 		{
+			JSONObject json = jParser.makeHttpRequest(url_drink, "GET", params);
+
+			// Check your log cat for JSON reponse
+			Log.d("Drink: ", json.toString());
+
+
 			// Checking for SUCCESS TAG
 			int success = json.getInt(TAG_SUCCESS);
 
@@ -102,17 +106,17 @@ public class GetDrink extends AsyncTask<String, String, String>
 				}
 			} 
 		} 
-		catch (JSONException e) 
+		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	private void createStringArray()
 	{
 		drinkArray = new String[drinkList.size()];
-		
+
 		for(int i = 0; i < drinkList.size(); i++)
 		{
 			drinkArray[i] = drinkList.get(i).get(TAG_NAME);
@@ -121,31 +125,34 @@ public class GetDrink extends AsyncTask<String, String, String>
 	private void createDrinkVector()
 	{
 		drinkVector = new Vector<Drink>();
-		
+
 		for(int i = 0; i < drinkList.size(); i++)
 		{
 			drinkVector.add(new Drink(Integer.parseInt(drinkList.get(i).get(TAG_ID)), drinkList.get(i).get(TAG_NAME), Double.parseDouble(drinkList.get(i).get(TAG_PRICE))));
 		}
 	}
 
-	/**
-	 * After completing background task Dismiss the progress dialog
-	 * **/
 	protected void onPostExecute(String file_url) 
 	{		
 		createStringArray();
 		createDrinkVector();
-		
+
 		FoodDrinkItems.drinkList = drinkList;
 		FoodDrinkItems.drinkStringArray = drinkArray;
 		FoodDrinkItems.drinkItemsVector = drinkVector;
-		
-		pDialog.dismiss();
-		
-		if(FoodDrinkItems.drinkItemsVector == null)
-        {
-        	SmartOrderClient.getInstance().getSmartOrderActivity().disconnectFromServer();
-        }
+
+		if(pDialog != null)
+		{
+			if(pDialog.isShowing())
+			{
+				pDialog.dismiss();
+			}
+		}
+
+		if(FoodDrinkItems.drinkItemsVector == null || FoodDrinkItems.drinkItemsVector.isEmpty())
+		{
+			SmartOrderClient.getInstance().getSmartOrderActivity().noDatabaseConnection();
+		}
 	}
 
 }
