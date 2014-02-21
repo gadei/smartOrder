@@ -5,7 +5,7 @@
     android:orientation="horizontal" >
 
     <fragment
-        android:id="@+id/listFragment"
+        android:id="@+id/listFragment_orderActivity"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
@@ -13,7 +13,7 @@
         class="smart.order.client.GUI.OrderActivity.OrderFragmentList" ></fragment>
 
     <fragment
-        android:id="@+id/detailFragment"
+        android:id="@+id/detailFragment_orderActivity"
         android:layout_width="0dp"
         android:layout_weight="2"
         android:layout_height="match_parent" 

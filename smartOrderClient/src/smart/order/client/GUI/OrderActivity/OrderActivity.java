@@ -38,7 +38,7 @@ public class OrderActivity extends Activity{
 	{
 		if(food != null)
 		{
-			ListView listView = (ListView) findViewById(R.id.listView1);
+			ListView listView = (ListView) findViewById(R.id.listFood_OrderFragmentList);
 			final ArrayList<String> list = new ArrayList<String>();
 			for (int i = 0; i < food.length; ++i) 
 			{
@@ -54,7 +54,7 @@ public class OrderActivity extends Activity{
 	{
 		if(drink != null)
 		{
-			ListView listView = (ListView) findViewById(R.id.listView2);
+			ListView listView = (ListView) findViewById(R.id.listDrink_OrderFragmentList);
 			final ArrayList<String> list = new ArrayList<String>();
 			for (int i = 0; i < drink.length; ++i) 
 			{
@@ -77,7 +77,7 @@ public class OrderActivity extends Activity{
 		}
 
 
-		TextView text = (TextView) findViewById(R.id.textView1);
+		TextView text = (TextView) findViewById(R.id.table_OrderFragmentDetail);
 		text.setText("Tisch " + tableId);
 	}
 

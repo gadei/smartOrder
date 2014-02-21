@@ -6,28 +6,28 @@
     android:weightSum="100">
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/food_OrderFragmentList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ESSEN"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/listFood_OrderFragmentList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
         android:layout_weight="50">
     </ListView>
     
         <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/drink_OrderFragmentList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TRINKEN"
         android:textAppearance="?android:attr/textAppearanceLarge" />
         
     <ListView
-        android:id="@+id/listView2"
+        android:id="@+id/listDrink_OrderFragmentList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
         android:layout_weight="50">
