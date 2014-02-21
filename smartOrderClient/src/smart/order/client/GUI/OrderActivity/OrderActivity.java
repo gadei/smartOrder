@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import smart.order.client.R;
 import smart.order.client.SmartOrderClient;
-import smart.order.client.database.FoodDrinkItems;
+import smart.order.client.database.MenuItems;
+import smart.order.client.order.Drink;
+import smart.order.client.order.Food;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -14,8 +16,6 @@ import android.widget.TextView;
 
 public class OrderActivity extends Activity{
 
-	private String[] drink = FoodDrinkItems.drinkStringArray;
-	private String[] food = FoodDrinkItems.foodStringArray;
 	private SmartOrderClient smartOrderClient = null;
 
 	@Override
@@ -23,7 +23,7 @@ public class OrderActivity extends Activity{
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.order_activity);
+		setContentView(R.layout.orderactivity__order_activity);
 		
 		smartOrderClient  = SmartOrderClient.getInstance();
 		smartOrderClient.setOrderActivity(this);
@@ -36,35 +36,17 @@ public class OrderActivity extends Activity{
 
 	private void createListViewFood()
 	{
-		if(food != null)
-		{
-			ListView listView = (ListView) findViewById(R.id.listFood_OrderFragmentList);
-			final ArrayList<String> list = new ArrayList<String>();
-			for (int i = 0; i < food.length; ++i) 
-			{
-				list.add(food[i]);
-			}
-
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-					android.R.layout.simple_list_item_1, list);
-			listView.setAdapter(adapter);
-		}
+		ListView listView = (ListView) findViewById(R.id.listFood_OrderFragmentList);
+		
+		OrderListViewAdapter<Food> orderListViewAdapter = new OrderListViewAdapter<Food>(this, new ArrayList<Food>(MenuItems.foodItemsVector));
+		listView.setAdapter(orderListViewAdapter);		
 	}
 	private void createListViewDrink()
 	{
-		if(drink != null)
-		{
-			ListView listView = (ListView) findViewById(R.id.listDrink_OrderFragmentList);
-			final ArrayList<String> list = new ArrayList<String>();
-			for (int i = 0; i < drink.length; ++i) 
-			{
-				list.add(drink[i]);
-			}
-
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-					android.R.layout.simple_list_item_1, list);
-			listView.setAdapter(adapter);
-		}
+		ListView listView = (ListView) findViewById(R.id.listDrink_OrderFragmentList);
+		
+		OrderListViewAdapter<Drink> orderListViewAdapter = new OrderListViewAdapter<Drink>(this, new ArrayList<Drink>(MenuItems.drinkItemsVector));
+		listView.setAdapter(orderListViewAdapter);
 	}
 
 	private void setTableId()

@@ -2,6 +2,7 @@ package smart.order.client.database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -14,7 +15,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class AddOrder extends AsyncTask<String, String, String> {
+public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 
 	private ProgressDialog pDialog = null;
 	private JSONParser jsonParser = new JSONParser();
@@ -38,13 +39,18 @@ public class AddOrder extends AsyncTask<String, String, String> {
 	/**
 	 * Creating product
 	 * */
-	protected String doInBackground(String... args) 
+	protected String doInBackground(Map<String, String>... args) 
 	{
-		int table = 1;
-		int order_id = 1;
-		int status = 1;
-		String food = "1,4,3,2";
-		String drink = "2,3,2";
+		if(args.length > 1)
+		{
+			return null;
+		}
+		
+		int table = Integer.valueOf(args[0].get("table"));
+		int order_id = Integer.valueOf(args[0].get("order_id"));
+		int status = Integer.valueOf(args[0].get("status"));;
+		String food = args[0].get("food");
+		String drink = args[0].get("drink");
 
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();

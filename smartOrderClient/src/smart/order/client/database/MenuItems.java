@@ -7,7 +7,7 @@ import java.util.Vector;
 import smart.order.client.order.Drink;
 import smart.order.client.order.Food;
 
-public class FoodDrinkItems
+public class MenuItems
 {
 	public static String[] foodStringArray = null;
 	public static String[] drinkStringArray = null;

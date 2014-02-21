@@ -86,7 +86,7 @@ public class SmartOrderActivity extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		AlertDialog alert = builder.create();
 		
-		alert.setMessage("Kann nicht mit Datenbank verbinden!");
+		alert.setMessage("Verbindung mit Datenbank nicht möglich!");
 		alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Abbrechen", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				android.util.Log.d("  ==> SMART_ORDER_CLIENT <==", "User: Cancel");
@@ -148,7 +148,7 @@ public class SmartOrderActivity extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.smart_order_activity);
+		setContentView(R.layout.main__smart_order_activity);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls_smartOrder);
 		final View contentView = findViewById(R.id.fullscreen_content_smartOrder);

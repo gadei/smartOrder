@@ -137,9 +137,9 @@ public class GetDrink extends AsyncTask<String, String, String>
 		createStringArray();
 		createDrinkVector();
 
-		FoodDrinkItems.drinkList = drinkList;
-		FoodDrinkItems.drinkStringArray = drinkArray;
-		FoodDrinkItems.drinkItemsVector = drinkVector;
+		MenuItems.drinkList = drinkList;
+		MenuItems.drinkStringArray = drinkArray;
+		MenuItems.drinkItemsVector = drinkVector;
 
 		if(pDialog != null)
 		{
@@ -149,7 +149,7 @@ public class GetDrink extends AsyncTask<String, String, String>
 			}
 		}
 
-		if(FoodDrinkItems.drinkItemsVector == null || FoodDrinkItems.drinkItemsVector.isEmpty())
+		if(MenuItems.drinkItemsVector == null || MenuItems.drinkItemsVector.isEmpty())
 		{
 			SmartOrderClient.getInstance().getSmartOrderActivity().noDatabaseConnection();
 		}
