@@ -1,6 +1,11 @@
 /.project
 /smartOrderServer/bin/
 /smartOrderClient/bin/
+/smartOrderClient/.settings/
+/smartOrderClient/lint.xml
+/smartOrderClient/gen/
 /smartOrderSystem/bin/
 /smartOrderSystem/obj/
+/smartOrderSystem//
 /.metadata/
+*.suo
