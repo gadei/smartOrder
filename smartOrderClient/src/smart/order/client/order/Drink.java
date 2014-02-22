@@ -8,4 +8,9 @@ public class Drink extends Menu
 		this.name = name;
 		this.price = price;
 	}
+	
+	public Drink(Drink drink)
+	{
+		this(drink.getId(), drink.getName(), drink.getPrice());
+	}
 }

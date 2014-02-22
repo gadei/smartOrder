@@ -3,8 +3,10 @@ package smart.order.client.GUI.OrderActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import smart.order.client.R;
+import smart.order.client.order.Drink;
 import smart.order.client.order.Food;
 import smart.order.client.order.Menu;
 
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 public class OrderExpendableListViewAdapter extends BaseExpandableListAdapter
@@ -23,8 +26,6 @@ public class OrderExpendableListViewAdapter extends BaseExpandableListAdapter
 
 	private List<?> listDataHeader;
 	private HashMap<String, List<Menu>> listDataChild;
-
-	private int id = 0;
 
 	public OrderExpendableListViewAdapter(Context context, List<?> listDataHeader,
 			HashMap<String, List<Menu>> listDataChild)
@@ -64,8 +65,17 @@ public class OrderExpendableListViewAdapter extends BaseExpandableListAdapter
 		
 		TextView price = (TextView)convertView.findViewById(R.id.custom_adapter_order_list_price);
 		price.setText(((Menu) menu).getPrice() + " €");
-
-		id = ((Menu) menu).getId();
+		
+		convertView.setTag(R.id.TAG_ID,((Menu) menu).getId());
+		
+		if(menu.getClass() == Food.class)
+		{
+			convertView.setTag(R.id.TAG_MENU, "food");
+		}
+		if(menu.getClass() == Drink.class)
+		{
+			convertView.setTag(R.id.TAG_MENU, "drink");
+		}
 		
         return convertView;
     }
@@ -119,10 +129,5 @@ public class OrderExpendableListViewAdapter extends BaseExpandableListAdapter
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
-    
-    public int getId()
-	{
-		return this.id;
-	}
 
 }

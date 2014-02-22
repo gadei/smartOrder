@@ -16,10 +16,9 @@ public class Order
 	
 	private JSONObject jsonObject = new JSONObject();
 	
-	public Order(int table, int orderId)
+	public Order(int table)
 	{
 		this.table = table;
-		this.orderId = orderId;
 	}
 		
 
@@ -61,6 +60,18 @@ public class Order
 	}
 	
 	
+	
+	public Vector<Food> getFoodItems()
+	{
+		return foodItems;
+	}
+
+	public Vector<Drink> getDrinkItems()
+	{
+		return drinkItems;
+	}
+
+
 	public void setTable(int table)
 	{
 		this.table = table;

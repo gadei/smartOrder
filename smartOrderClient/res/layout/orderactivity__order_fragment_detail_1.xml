@@ -23,6 +23,12 @@
             android:gravity="center_vertical|center_horizontal|right"
             android:text="Neue Bestellung" />
 
+        <Button
+            android:id="@+id/cancelOrder_OrderFragmentDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bestellung abbrechen" />
+
     </LinearLayout>
 
     <TextView

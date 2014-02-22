@@ -30,5 +30,7 @@
     </string-array>
     <string name="SmartOrderActivity_view_inside">0</string>
     <string name="SmartOrderActivity_view_outside">2</string>
+    <item format="integer" type="id" name="TAG_ID">1</item>
+    <item format="integer" type="id" name="TAG_MENU">2</item>
 
 </resources>

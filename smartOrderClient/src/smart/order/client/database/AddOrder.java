@@ -29,7 +29,7 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getSmartOrderActivity());
+		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getOrderActivity());
 		pDialog.setMessage("Bestellung aufgeben...");
 		pDialog.setIndeterminate(false);
 		pDialog.setCancelable(false);
@@ -47,7 +47,6 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 		}
 		
 		int table = Integer.valueOf(args[0].get("table"));
-		int order_id = Integer.valueOf(args[0].get("order_id"));
 		int status = Integer.valueOf(args[0].get("status"));;
 		String food = args[0].get("food");
 		String drink = args[0].get("drink");
@@ -55,7 +54,6 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("table_nr", String.valueOf(table)));
-		params.add(new BasicNameValuePair("order_id", String.valueOf(order_id)));
 		params.add(new BasicNameValuePair("status", String.valueOf(status)));
 		params.add(new BasicNameValuePair("food", food));
 		params.add(new BasicNameValuePair("drink", drink));
@@ -63,10 +61,9 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 		// getting JSON Object
 		// Note that create product url accepts POST method
 		JSONObject json = jsonParser.makeHttpRequest(url_create_order,
-				"POST", params);
+				"GET", params);
 
 		// check log cat fro response
-		Log.d("Create Response", json.toString());
 
 		// check for success tag
 
@@ -90,12 +87,12 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 		
 		if(success == 1)
 		{
-		Toast.makeText(SmartOrderClient.getInstance().getSmartOrderActivity().getApplicationContext(), "Erfolgreich!",
+		Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Erfolgreich!",
 				   Toast.LENGTH_LONG).show();
 		}
 		else
 		{
-			Toast.makeText(SmartOrderClient.getInstance().getSmartOrderActivity().getApplicationContext(), "Fehler!",
+			Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Fehler!",
 					   Toast.LENGTH_LONG).show();
 		}
 	}

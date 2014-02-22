@@ -2,13 +2,12 @@
 $response = array();
 
 // check for required fields
-if (isset($_POST['order_id']) && isset($_POST['table_nr']) && isset($_POST['status'])) 
+if (isset($_GET['table_nr']) && ($_GET['status'])) 
 {
-	$order_id = $_POST['order_id'];
-    $table = $_POST['table_nr'];
-    $status = $_POST['status'];
-    $food = $_POST['food'];
-    $drink = $_POST['drink'];
+    $table_nr = $_GET['table_nr'];
+    $status = $_GET['status'];
+    $food = $_GET['food'];
+    $drink = $_GET['drink'];
 
     // include db connect class
     require_once __DIR__ . '/dbConnect.php';
@@ -17,7 +16,7 @@ if (isset($_POST['order_id']) && isset($_POST['table_nr']) && isset($_POST['stat
     $db = new DB_CONNECT();
 
     // mysql inserting a new row
-    $result = mysql_query("INSERT INTO `order`(order_id, table_nr, food, drink, status) VALUES('$order_id', '$table_nr', '$food', '$drink', '$status')");
+    $result = mysql_query("INSERT INTO `order`(table_nr, food, drink, status) VALUES('$table_nr', '$food', '$drink', '$status')");
 
     // check if row inserted or not
     if ($result) {

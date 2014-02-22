@@ -234,15 +234,6 @@ public class FullscreenActivity extends Activity {
 			}
 		});
 		
-		Order order = new Order(1,1);
-		try
-		{
-			order.toJson();
-		} 
-		catch (JSONException e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	@Override

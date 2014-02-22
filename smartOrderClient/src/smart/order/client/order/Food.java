@@ -13,6 +13,11 @@ public class Food extends Menu
 		this.price = price;
 	}
 	
+	public Food(Food food)
+	{
+		this(food.getId(), food.getName(), food.getPrice());
+	}
+	
 	public Vector<String> getIngredients()
 	{
 		return this.ingredients;
