@@ -1,11 +1,15 @@
 package smart.order.client;
 
+import java.util.Vector;
+
 import android.app.Activity;
 import smart.order.client.Command;
 import smart.order.client.GUI.Main.FullscreenActivity;
 import smart.order.client.GUI.Main.SmartOrderActivity;
 import smart.order.client.GUI.OrderActivity.OrderActivity;
 import smart.order.client.TCPConnection.TCPClient;
+import smart.order.client.order.Drink;
+import smart.order.client.order.Food;
 
 public class SmartOrderClient {
 
@@ -13,8 +17,12 @@ public class SmartOrderClient {
 	private FullscreenActivity fullscreenActivity = null;
 	private SmartOrderActivity smartOrderActivity = null;
 	private OrderActivity orderActivity = null;
+	
 	private TCPClient client = null;
 	private String ipAddress = null;
+	
+	private Vector<Food> food = null;
+	private Vector<Drink> drink = null;
 
 
 	private SmartOrderClient() 
@@ -71,11 +79,26 @@ public class SmartOrderClient {
 	{
 		this.orderActivity = orderActivity;
 	}
-	
-	
-	
-	
-	
+
+	public Vector<Food> getFood()
+	{
+		return food;
+	}
+
+	public void setFood(Vector<Food> food)
+	{
+		this.food = food;
+	}
+
+	public Vector<Drink> getDrink()
+	{
+		return drink;
+	}
+
+	public void setDrink(Vector<Drink> drink)
+	{
+		this.drink = drink;
+	}
 
 	public void initConnection() 
 	{

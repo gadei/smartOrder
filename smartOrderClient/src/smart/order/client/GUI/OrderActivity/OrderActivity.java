@@ -1,22 +1,24 @@
 package smart.order.client.GUI.OrderActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import smart.order.client.R;
 import smart.order.client.SmartOrderClient;
-import smart.order.client.database.MenuItems;
-import smart.order.client.order.Drink;
-import smart.order.client.order.Food;
+import smart.order.client.order.Menu;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 public class OrderActivity extends Activity{
 
 	private SmartOrderClient smartOrderClient = null;
+	
+	private static final String TAG_FOOD = "Speisen";
+	private static final String TAG_DRINK = "Getränke";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -30,23 +32,28 @@ public class OrderActivity extends Activity{
 
 		setTableId();
 
-		createListViewFood();
-		createListViewDrink();
+		createListView();
 	}
 
-	private void createListViewFood()
+	private void createListView()
 	{
-		ListView listView = (ListView) findViewById(R.id.listFood_OrderFragmentList);
+		ExpandableListView listView = (ExpandableListView)findViewById(R.id.expendable_OrderFragmentList);
 		
-		OrderListViewAdapter<Food> orderListViewAdapter = new OrderListViewAdapter<Food>(this, new ArrayList<Food>(MenuItems.foodItemsVector));
-		listView.setAdapter(orderListViewAdapter);		
-	}
-	private void createListViewDrink()
-	{
-		ListView listView = (ListView) findViewById(R.id.listDrink_OrderFragmentList);
+		ArrayList<String> listDataHeader = new ArrayList<String>();
+		HashMap<String, List<Menu>> listDataChild = new HashMap<String, List<Menu>>();
 		
-		OrderListViewAdapter<Drink> orderListViewAdapter = new OrderListViewAdapter<Drink>(this, new ArrayList<Drink>(MenuItems.drinkItemsVector));
-		listView.setAdapter(orderListViewAdapter);
+		listDataHeader.add(TAG_FOOD);
+		listDataHeader.add(TAG_DRINK);
+		
+		List<Menu> food = new ArrayList<Menu>(SmartOrderClient.getInstance().getFood());
+		List<Menu> drink = new ArrayList<Menu>(SmartOrderClient.getInstance().getDrink());
+		
+		listDataChild.put(listDataHeader.get(0), food);
+		listDataChild.put(listDataHeader.get(1), drink);
+		
+		OrderExpendableListViewAdapter listAdapter = new OrderExpendableListViewAdapter(this, listDataHeader, listDataChild);
+		
+		listView.setAdapter(listAdapter);
 	}
 
 	private void setTableId()

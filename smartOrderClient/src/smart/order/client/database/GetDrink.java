@@ -54,7 +54,7 @@ public class GetDrink extends AsyncTask<String, String, String>
 	{
 		super.onPreExecute();
 		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getSmartOrderActivity());
-		pDialog.setMessage("Lade Essen/Drinken von Datenbank...");
+		pDialog.setMessage("Lade Speisen/Getränke von Datenbank...");
 		pDialog.setIndeterminate(false);
 		pDialog.setCancelable(false);
 		pDialog.show();
@@ -113,15 +113,6 @@ public class GetDrink extends AsyncTask<String, String, String>
 		return null;
 	}
 
-	private void createStringArray()
-	{
-		drinkArray = new String[drinkList.size()];
-
-		for(int i = 0; i < drinkList.size(); i++)
-		{
-			drinkArray[i] = drinkList.get(i).get(TAG_NAME);
-		}
-	}
 	private void createDrinkVector()
 	{
 		drinkVector = new Vector<Drink>();
@@ -134,12 +125,9 @@ public class GetDrink extends AsyncTask<String, String, String>
 
 	protected void onPostExecute(String file_url) 
 	{		
-		createStringArray();
 		createDrinkVector();
 
-		MenuItems.drinkList = drinkList;
-		MenuItems.drinkStringArray = drinkArray;
-		MenuItems.drinkItemsVector = drinkVector;
+		SmartOrderClient.getInstance().setDrink(drinkVector);
 
 		if(pDialog != null)
 		{
@@ -149,7 +137,7 @@ public class GetDrink extends AsyncTask<String, String, String>
 			}
 		}
 
-		if(MenuItems.drinkItemsVector == null || MenuItems.drinkItemsVector.isEmpty())
+		if(SmartOrderClient.getInstance().getDrink() == null || SmartOrderClient.getInstance().getDrink().isEmpty())
 		{
 			SmartOrderClient.getInstance().getSmartOrderActivity().noDatabaseConnection();
 		}

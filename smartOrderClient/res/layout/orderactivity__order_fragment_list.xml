@@ -5,7 +5,13 @@
     android:orientation="vertical" 
     android:weightSum="100">
 
-    <TextView
+     <ExpandableListView
+                android:id="@+id/expendable_OrderFragmentList"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"/>
+    
+    
+<!--    <TextView
         android:id="@+id/food_OrderFragmentList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +25,7 @@
         android:layout_weight="50">
     </ListView>
     
-        <TextView
+         <TextView
         android:id="@+id/drink_OrderFragmentList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,6 +37,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
         android:layout_weight="50">
-    </ListView>
+    </ListView> --> 
 
 </LinearLayout> 

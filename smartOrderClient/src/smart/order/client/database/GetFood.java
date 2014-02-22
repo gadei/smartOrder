@@ -54,7 +54,7 @@ public class GetFood extends AsyncTask<String, String, String>
 	{
 		super.onPreExecute();
 		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getSmartOrderActivity());
-		pDialog.setMessage("Lade Essen/Drinken von Datenbank...");
+		pDialog.setMessage("Lade Speisen/Getränke von Datenbank...");
 		pDialog.setIndeterminate(false);
 		pDialog.setCancelable(false);
 		pDialog.show();
@@ -136,12 +136,9 @@ public class GetFood extends AsyncTask<String, String, String>
 	 * **/
 	protected void onPostExecute(String file_url) 
 	{
-		createStringArray();
 		createFoodVector();
 
-		MenuItems.foodList = foodList;
-		MenuItems.foodStringArray = foodArray;
-		MenuItems.foodItemsVector = foodVector;
+		SmartOrderClient.getInstance().setFood(foodVector);
 
 		if(pDialog != null)
 		{
@@ -151,7 +148,7 @@ public class GetFood extends AsyncTask<String, String, String>
 			}
 		}
 
-		if(MenuItems.foodItemsVector == null || MenuItems.foodItemsVector.isEmpty())
+		if(SmartOrderClient.getInstance().getFood() == null || SmartOrderClient.getInstance().getFood().isEmpty())
 		{
 			SmartOrderClient.getInstance().getSmartOrderActivity().noDatabaseConnection();
 		}

@@ -73,7 +73,7 @@ namespace SmartOrderSystem
 
       waitOnServer.WaitOne();
 
-      Thread.Sleep(10000000);
+      Thread.Sleep(100000000);
 
       servers.closeSmartOrderServers();
       serversThread.Join();
