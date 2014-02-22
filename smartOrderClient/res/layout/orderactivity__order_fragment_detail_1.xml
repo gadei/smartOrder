@@ -42,7 +42,7 @@
         android:textSize="30dip" />
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/list2_OrderFragmentDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >

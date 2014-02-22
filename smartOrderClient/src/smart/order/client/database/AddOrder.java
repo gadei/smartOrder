@@ -85,15 +85,15 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 	{
 		pDialog.dismiss();
 		
-		if(success == 1)
+		if(success != 1)
 		{
-		Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Erfolgreich!",
-				   Toast.LENGTH_LONG).show();
+			Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Fehler!",
+					   Toast.LENGTH_SHORT).show();
 		}
 		else
 		{
-			Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Fehler!",
-					   Toast.LENGTH_LONG).show();
+			Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Gesendet!",
+					   Toast.LENGTH_SHORT).show();
 		}
 	}
 

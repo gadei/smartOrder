@@ -34,6 +34,8 @@ public class OrderActivity extends Activity{
 
 	private Order order = null;
 	private int tableId = 0;
+	
+	private ManageClicks click = new ManageClicks();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -77,7 +79,7 @@ public class OrderActivity extends Activity{
 			public boolean onChildClick(ExpandableListView arg0, View v,
 					int groupPosition, int childPosition, long id)
 			{
-				ManageClicks.addItemToOrder(order, v);
+				click.addItemToOrder(order, v);
 
 				return false;
 			}
@@ -108,12 +110,12 @@ public class OrderActivity extends Activity{
 				{
 					order = new Order(tableId);
 					Toast.makeText(getApplicationContext(), "Neue Bestellung erstellt. Jetzt Speisen/Getränke hinzufügen!",
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_SHORT).show();
 				}
 				else
 				{
 					Toast.makeText(getApplicationContext(), "Aktuelle Bestellung zuerst abschließen.",
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -124,7 +126,7 @@ public class OrderActivity extends Activity{
 			@Override
 			public void onClick(View v)
 			{
-				ManageClicks.sendOrder(order);
+				click.sendOrder(order);
 				order = null;
 			}
 		});
@@ -136,8 +138,9 @@ public class OrderActivity extends Activity{
 			public void onClick(View v)
 			{
 				order = null;
+				click.cancel();
 				Toast.makeText(getApplicationContext(), "Bestellung abgebrochen!",
-						Toast.LENGTH_LONG).show();
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
