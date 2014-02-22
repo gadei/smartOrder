@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class OrderFragmentDetail extends Fragment {
+public class OrderFragmentDetail2 extends Fragment {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.orderactivity__order_fragment_detail,
+    View view = inflater.inflate(R.layout.orderactivity__order_fragment_detail_2,
         container, false);
     
     return view;
