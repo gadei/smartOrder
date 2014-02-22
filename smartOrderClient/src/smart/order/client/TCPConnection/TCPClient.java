@@ -9,7 +9,9 @@ import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketOptions;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -160,24 +162,29 @@ public class TCPClient  extends Thread {
 
 	private int connectToInitServer() {
 		
-		DatagramSocket UDP_packet;
+		DatagramSocket udpPacket = null;
 		String thePortFromServer = "-1";
-				
+		
 		try
 		{
-			UDP_packet = new DatagramSocket(UDP_PORT);
+			if (udpPacket == null) 
+			{
+			    udpPacket = new DatagramSocket(null);
+			    udpPacket.setReuseAddress(true);
+			    udpPacket.setBroadcast(true);
+			    udpPacket.bind(new InetSocketAddress(UDP_PORT));
+			}
 
-			UDP_packet.setBroadcast(true);
 			byte[] b = "order".getBytes("UTF-8");
-			DatagramPacket outgoing = new DatagramPacket(b, b.length, getBroadcastAddress(client.getFullscreenActivity()), UDP_PORT);                  
-			UDP_packet.send(outgoing);
-
+			DatagramPacket outgoing = new DatagramPacket(b, b.length, getBroadcastAddress(client.getFullscreenActivity()), UDP_PORT);   
+			udpPacket.send(outgoing);
+			
 			boolean run = false;
 			while (!run) {  
 				android.util.Log.d("  ==> ZeroConfig <==", "Scanning IP Addresses");
 				byte[] buffer = new byte[1024];
 				DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);    
-				UDP_packet.receive(incoming);
+				udpPacket.receive(incoming);
 				String message = new String(incoming.getData(), 0, incoming.getLength(), "UTF-8");
 				android.util.Log.d("  ==> ZeroConfig <==", "Received message: " + message);
 				if (message.startsWith("smart")) 
@@ -193,7 +200,7 @@ public class TCPClient  extends Thread {
 				}                  
 			}               
 
-			UDP_packet.close();
+			udpPacket.close();
 		}
 		catch (Exception e) 
 		{
