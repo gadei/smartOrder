@@ -26,17 +26,18 @@ public class SmartOrderActivity extends Activity {
 	private GetFood getFood;
 	private GetDrink getDrink;
 
-	public void tableButtonClicked(View v) {
-
-		Log.d("  ==> SMART_ORDER_CLIENT <==", "Table Button pressed: " + v.getId());
+	public void tableButtonClicked(View v) 
+	{
+		Log.d("  ==> SMART_ORDER_CLIENT <==", "Table Button pressed: " + v.getTag());
 
 		Intent intent = new Intent(this, OrderActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-		intent.putExtra("table", v.getId());
+		intent.putExtra("table", String.valueOf(v.getTag()));
 		startActivity(intent);
 	}
 
-	public void changeInOutsideButtonClicked(View v) {
+	public void changeInOutsideButtonClicked(View v) 
+	{
 		final FrameLayout insideFrame = (FrameLayout) findViewById(R.id.inside_frame);
 		final FrameLayout outsideFrame = (FrameLayout) findViewById(R.id.outside_frame);
 

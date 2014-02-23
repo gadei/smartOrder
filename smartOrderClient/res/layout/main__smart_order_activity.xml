@@ -80,6 +80,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="25dp"
                     android:onClick="tableButtonClicked"
+                    android:tag="1"
                     android:text="Tisch1"
                     android:textSize="15sp" />
 
@@ -90,6 +91,7 @@
                     android:layout_gravity="right|bottom"
                     android:onClick="tableButtonClicked"
                     android:text="Tisch2"
+                    android:tag="2"
                     android:textSize="15sp" />
 
             </LinearLayout>
@@ -106,7 +108,8 @@
                     android:layout_width="173dp"
                     android:layout_height="138dp"
                     android:onClick="tableButtonClicked"
-                    android:text="Bar" />
+                    android:text="Bar"
+                    android:tag="69" />
 
             </LinearLayout>
 
@@ -125,6 +128,7 @@
                     android:layout_marginRight="5dp"
                     android:onClick="tableButtonClicked"
                     android:text="Tisch5"
+                    android:tag="5"
                     android:textSize="15sp" />
 
                 <Button
@@ -135,6 +139,7 @@
                     android:layout_marginRight="5dp"
                     android:onClick="tableButtonClicked"
                     android:text="Tisch4"
+                    android:tag="4"
                     android:textSize="15sp" />
 
                 <Button
@@ -145,6 +150,7 @@
                     android:layout_marginRight="5dp"
                     android:onClick="tableButtonClicked"
                     android:text="Tisch3"
+                    android:tag="3"
                     android:textSize="15sp" />
 
             </LinearLayout>

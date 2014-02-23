@@ -1,4 +1,4 @@
-package smart.order.client.GUI.OrderActivity;
+package smart.order.client.GUI.OrderActivity.Adapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

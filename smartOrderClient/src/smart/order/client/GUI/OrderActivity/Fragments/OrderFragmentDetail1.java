@@ -1,4 +1,4 @@
-package smart.order.client.GUI.OrderActivity;
+package smart.order.client.GUI.OrderActivity.Fragments;
 
 import smart.order.client.R;
 import smart.order.client.R.layout;

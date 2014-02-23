@@ -8,6 +8,8 @@ import java.util.Vector;
 
 import smart.order.client.R;
 import smart.order.client.SmartOrderClient;
+import smart.order.client.GUI.OrderActivity.Adapter.OrderExpendableListViewAdapter;
+import smart.order.client.GUI.OrderActivity.Adapter.OrderListViewAdapter;
 import smart.order.client.database.GetOpenOrders;
 import smart.order.client.order.Drink;
 import smart.order.client.order.Food;
@@ -40,8 +42,8 @@ public class OrderActivity extends Activity
 	private Order order = null;
 	private int tableId = 0;
 
-	private ArrayAdapter<String> orderListAdapter;
-	private ArrayList<String> orderListData = new ArrayList<String>();
+	private OrderListViewAdapter orderListAdapter;
+	private ArrayList<Menu> orderListData = new ArrayList<Menu>();
 
 	private ArrayAdapter<String> openOrderListAdapter;
 	private ArrayList<String> openOrderListData = new ArrayList<String>();
@@ -99,7 +101,7 @@ public class OrderActivity extends Activity
 				if(order != null)
 				{
 					Menu menuItem = order.addClickedItemToOrder(view);
-					orderListData.add(menuItem.getName());
+					orderListData.add(menuItem);
 					orderListAdapter.notifyDataSetChanged();
 				}
 				else
@@ -118,8 +120,7 @@ public class OrderActivity extends Activity
 		OrderActivity activity = SmartOrderClient.getInstance().getOrderActivity();
 		ListView list = (ListView)activity.findViewById(R.id.list2_OrderFragmentDetail);
 
-		orderListAdapter = new ArrayAdapter<String>(SmartOrderClient.getInstance().getOrderActivity(),
-				android.R.layout.simple_list_item_1, orderListData);
+		orderListAdapter = new OrderListViewAdapter(SmartOrderClient.getInstance().getOrderActivity(), orderListData);
 
 		list.setAdapter(orderListAdapter);
 	}
@@ -216,7 +217,7 @@ public class OrderActivity extends Activity
 		Bundle table = getIntent().getExtras();
 		if(table != null)
 		{
-			tableId = table.getInt("table");
+			tableId = Integer.valueOf(table.getString("table"));
 		}
 
 		TextView text = (TextView) findViewById(R.id.table_OrderFragmentDetail);
@@ -236,5 +237,14 @@ public class OrderActivity extends Activity
 			openOrderListData.add("Bestellungs ID: " + openOrderArrayList.get(i).get("order_id"));
 		}
 		openOrderListAdapter.notifyDataSetChanged();
+	}
+	
+	public ArrayList<Menu> getOrderListData()
+	{
+		return orderListData;
+	}
+	public Order getOrder()
+	{
+		return order;
 	}
 } 

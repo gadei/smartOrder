@@ -143,12 +143,10 @@ public class Order
 	{
 		return foodItems;
 	}
-
 	public Vector<Drink> getDrinkItems()
 	{
 		return drinkItems;
 	}
-
 	public void setTable(int table)
 	{
 		this.table = table;
@@ -164,5 +162,28 @@ public class Order
 	public void addDrinkToOrder(Drink drinkItem)
 	{
 		this.drinkItems.addElement(drinkItem);
+	}
+	
+	public void removeFood(int id)
+	{
+		for(int i = 0; i < foodItems.size(); i++)
+		{
+			if(foodItems.elementAt(i).getId() == id)
+			{
+				foodItems.remove(i);
+				return;
+			}
+		}
+	}
+	public void removeDrink(int id)
+	{
+		for(int i = 0; i < drinkItems.size(); i++)
+		{
+			if(drinkItems.elementAt(i).getId() == id)
+			{
+				drinkItems.remove(i);
+				return;
+			}
+		}
 	}
 }
