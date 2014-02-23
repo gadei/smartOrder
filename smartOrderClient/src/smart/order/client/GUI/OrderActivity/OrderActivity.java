@@ -15,27 +15,30 @@ import smart.order.client.order.Order;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class OrderActivity extends Activity{
-
+public class OrderActivity extends Activity
+{
 	private SmartOrderClient smartOrderClient = null;
 
 	private static final String TAG_FOOD = "Speisen";
 	private static final String TAG_DRINK = "Getränke";
 
-	private OrderExpendableListViewAdapter listAdapter = null;
 
 	private Order order = null;
 	private int tableId = 0;
-	
-	private ManageClicks click = new ManageClicks();
+
+	private ArrayAdapter<String> orderListAdapter;
+	private ArrayList<String> orderListData = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -49,11 +52,15 @@ public class OrderActivity extends Activity{
 
 		setTableId();
 
-		createListView();
-		setButtons();
+		createListViewMenu();
+		createListViewOrder();
+
+		setButtonNewOrder();
+		setButtonCancelOrder();
+		setButtonFinishOrder();
 	}
 
-	private void createListView()
+	private void createListViewMenu()
 	{
 		ExpandableListView listView = (ExpandableListView)findViewById(R.id.expendable_OrderFragmentList);
 
@@ -69,36 +76,45 @@ public class OrderActivity extends Activity{
 		listDataChild.put(listDataHeader.get(0), food);
 		listDataChild.put(listDataHeader.get(1), drink);
 
-		listAdapter = new OrderExpendableListViewAdapter(this, listDataHeader, listDataChild);
+		OrderExpendableListViewAdapter listAdapter = new OrderExpendableListViewAdapter(this, listDataHeader, listDataChild);
 
 		listView.setAdapter(listAdapter);
 
 		listView.setOnChildClickListener(new OnChildClickListener() 
 		{
 			@Override
-			public boolean onChildClick(ExpandableListView arg0, View v,
+			public boolean onChildClick(ExpandableListView arg0, View view,
 					int groupPosition, int childPosition, long id)
 			{
-				click.addItemToOrder(order, v);
+				if(order != null)
+				{
+					Menu menuItem = order.addClickedItemToOrder(view);
+					orderListData.add(menuItem.getName());
+					orderListAdapter.notifyDataSetChanged();
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Zuerst neue Bestellung erstellen!",
+							Toast.LENGTH_SHORT).show();
+				}
 
 				return false;
 			}
 		});
 	}
 
-	private void setTableId()
+	private void createListViewOrder()
 	{
-		Bundle table = getIntent().getExtras();
-		if(table != null)
-		{
-			tableId = table.getInt("table");
-		}
+		OrderActivity activity = SmartOrderClient.getInstance().getOrderActivity();
+		ListView list = (ListView)activity.findViewById(R.id.list2_OrderFragmentDetail);
 
-		TextView text = (TextView) findViewById(R.id.table_OrderFragmentDetail);
-		text.setText("Tisch " + tableId);
+		orderListAdapter = new ArrayAdapter<String>(SmartOrderClient.getInstance().getOrderActivity(),
+				android.R.layout.simple_list_item_1, orderListData);
+
+		list.setAdapter(orderListAdapter);
 	}
 
-	private void setButtons()
+	private void setButtonNewOrder()
 	{
 		Button button1 = (Button)findViewById(R.id.newOrder_OrderFragmentDetail);
 		button1.setOnClickListener(new View.OnClickListener()
@@ -119,30 +135,69 @@ public class OrderActivity extends Activity{
 				}
 			}
 		});
+	}
 
+
+	private void setButtonFinishOrder()
+	{
 		Button button2 = (Button)findViewById(R.id.buttonSend_OrderFragmentDetail);
 		button2.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
-				click.sendOrder(order);
-				order = null;
+				if(order != null)
+				{
+					order.sendOrder();
+					order = null;
+					orderListData.clear();
+					orderListAdapter.notifyDataSetChanged();
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Zuerst neue Bestellung erstellen!",
+							Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
+	}
 
+	private void setButtonCancelOrder()
+	{
 		Button button3 = (Button)findViewById(R.id.cancelOrder_OrderFragmentDetail);
 		button3.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
+				if(order != null)
+				{
 				order = null;
-				click.cancel();
+				orderListData.clear();
+				orderListAdapter.notifyDataSetChanged();
+
 				Toast.makeText(getApplicationContext(), "Bestellung abgebrochen!",
 						Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Es wurde noch keine Bestellung erstellt",
+							Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
+	}
+
+	private void setTableId()
+	{
+		Bundle table = getIntent().getExtras();
+		if(table != null)
+		{
+			tableId = table.getInt("table");
+		}
+
+		TextView text = (TextView) findViewById(R.id.table_OrderFragmentDetail);
+		text.setText("Tisch " + tableId);
 	}
 
 } 
