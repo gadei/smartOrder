@@ -32,7 +32,6 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getOrderActivity());
 		pDialog.setMessage("Bestellung aufgeben...");
 		pDialog.setIndeterminate(false);
-		pDialog.setCancelable(false);
 		pDialog.show();
 	}
 
@@ -41,7 +40,7 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 	 * */
 	protected String doInBackground(Map<String, String>... args) 
 	{
-		if(args.length > 1)
+		if(args.length != 1)
 		{
 			return null;
 		}

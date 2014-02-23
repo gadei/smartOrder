@@ -85,7 +85,8 @@ public class GetDrink extends AsyncTask<String, String, String>
 				drink = json.getJSONArray(TAG_DRINK);
 
 				// looping through All Products
-				for (int i = 0; i < drink.length(); i++) {
+				for (int i = 0; i < drink.length(); i++) 
+				{
 					JSONObject c = drink.getJSONObject(i);
 
 					// Storing each json item in variable

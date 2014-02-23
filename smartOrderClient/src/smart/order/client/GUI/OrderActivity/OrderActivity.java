@@ -8,11 +8,13 @@ import java.util.Vector;
 
 import smart.order.client.R;
 import smart.order.client.SmartOrderClient;
+import smart.order.client.database.GetOpenOrders;
 import smart.order.client.order.Drink;
 import smart.order.client.order.Food;
 import smart.order.client.order.Menu;
 import smart.order.client.order.Order;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.MenuItem;
@@ -33,12 +35,17 @@ public class OrderActivity extends Activity
 	private static final String TAG_FOOD = "Speisen";
 	private static final String TAG_DRINK = "Getränke";
 
+	private ArrayList<HashMap<String, String>> openOrderArrayList = null;
 
 	private Order order = null;
 	private int tableId = 0;
 
 	private ArrayAdapter<String> orderListAdapter;
 	private ArrayList<String> orderListData = new ArrayList<String>();
+
+	private ArrayAdapter<String> openOrderListAdapter;
+	private ArrayList<String> openOrderListData = new ArrayList<String>();
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -52,8 +59,11 @@ public class OrderActivity extends Activity
 
 		setTableId();
 
+		new GetOpenOrders().execute(tableId);
+		
 		createListViewMenu();
 		createListViewOrder();
+		createListViewOpenOrder();
 
 		setButtonNewOrder();
 		setButtonCancelOrder();
@@ -114,6 +124,17 @@ public class OrderActivity extends Activity
 		list.setAdapter(orderListAdapter);
 	}
 
+	private void createListViewOpenOrder()
+	{
+		OrderActivity activity = SmartOrderClient.getInstance().getOrderActivity();
+		ListView list = (ListView)activity.findViewById(R.id.orderFragmentDetail_listView2);
+
+		openOrderListAdapter = new ArrayAdapter<String>(SmartOrderClient.getInstance().getOrderActivity(),
+				android.R.layout.simple_list_item_1, openOrderListData);
+
+		list.setAdapter(openOrderListAdapter);
+	}
+
 	private void setButtonNewOrder()
 	{
 		Button button1 = (Button)findViewById(R.id.newOrder_OrderFragmentDetail);
@@ -152,6 +173,8 @@ public class OrderActivity extends Activity
 					order = null;
 					orderListData.clear();
 					orderListAdapter.notifyDataSetChanged();
+
+					new GetOpenOrders().execute(tableId);	
 				}
 				else
 				{
@@ -172,12 +195,12 @@ public class OrderActivity extends Activity
 			{
 				if(order != null)
 				{
-				order = null;
-				orderListData.clear();
-				orderListAdapter.notifyDataSetChanged();
+					order = null;
+					orderListData.clear();
+					orderListAdapter.notifyDataSetChanged();
 
-				Toast.makeText(getApplicationContext(), "Bestellung abgebrochen!",
-						Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), "Bestellung abgebrochen!",
+							Toast.LENGTH_SHORT).show();
 				}
 				else
 				{
@@ -200,4 +223,18 @@ public class OrderActivity extends Activity
 		text.setText("Tisch " + tableId);
 	}
 
+	public void setOpenOrderList(ArrayList<HashMap<String, String>> openOrderList)
+	{
+		this.openOrderArrayList = openOrderList;
+	}
+	
+	public void updateOpenOrderList()
+	{
+		openOrderListData.clear();
+		for(int i = 0; i < openOrderArrayList.size(); i++)
+		{
+			openOrderListData.add("Bestellungs ID: " + openOrderArrayList.get(i).get("order_id"));
+		}
+		openOrderListAdapter.notifyDataSetChanged();
+	}
 } 
