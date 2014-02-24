@@ -94,6 +94,8 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 			Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Gesendet!",
 					   Toast.LENGTH_SHORT).show();
 		}
+		
+		new GetOpenOrders().execute(SmartOrderClient.getInstance().getOrderActivity().getTableId());
 	}
 
 }

@@ -174,8 +174,6 @@ public class OrderActivity extends Activity
 					order = null;
 					orderListData.clear();
 					orderListAdapter.notifyDataSetChanged();
-
-					new GetOpenOrders().execute(tableId);	
 				}
 				else
 				{
@@ -247,4 +245,11 @@ public class OrderActivity extends Activity
 	{
 		return order;
 	}
+
+	public int getTableId()
+	{
+		return tableId;
+	}
+	
+	
 } 
