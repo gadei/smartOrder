@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 19, 2014 at 11:40 AM
+-- Generation Time: Feb 26, 2014 at 04:00 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -79,14 +79,15 @@ INSERT INTO `food` (`food_id`, `name`, `price`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `order` (
-  `order_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL AUTO_INCREMENT,
   `table_nr` int(11) NOT NULL,
   `food` varchar(150) DEFAULT NULL,
   `drink` varchar(150) DEFAULT NULL,
   `status` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `price_sum` double DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
