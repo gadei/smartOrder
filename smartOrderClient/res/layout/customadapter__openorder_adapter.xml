@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:padding="6dip" >
+
+    <TextView
+        android:id="@+id/openorder_list_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|top"
+        android:text="Title"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/openorder_list_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="price"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

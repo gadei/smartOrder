@@ -12,15 +12,14 @@ import org.json.JSONObject;
 import smart.order.client.SmartOrderClient;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
-public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
+public class UpdateOrderStatus extends AsyncTask<String, String, String> {
 
 	private ProgressDialog pDialog = null;
 	private JSONParser jsonParser = new JSONParser();
 	
-	private static String url_create_order = "http://" + SmartOrderClient.getInstance().getIpAddress() + "/smartorder/createOrder.php";
+	private static String url_create_order = "http://" + SmartOrderClient.getInstance().getIpAddress() + "/smartorder/updateOrderStatus.php";
 	
 	private static final String TAG_SUCCESS = "success";
 	
@@ -29,8 +28,8 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getOrderActivity());
-		pDialog.setMessage("Bestellung aufgeben...");
+		pDialog = new ProgressDialog(SmartOrderClient.getInstance().getOpenOrderActivity());
+		pDialog.setMessage("Bestellung abschlieﬂen...");
 		pDialog.setIndeterminate(false);
 		pDialog.show();
 	}
@@ -38,26 +37,18 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 	/**
 	 * Creating product
 	 * */
-	protected String doInBackground(Map<String, String>... args) 
+	protected String doInBackground(String... args) 
 	{
 		if(args.length != 1)
 		{
 			return null;
 		}
 		
-		int table = Integer.valueOf(args[0].get("table"));
-		int status = Integer.valueOf(args[0].get("status"));;
-		String food = args[0].get("food");
-		String drink = args[0].get("drink");
-		double priceSum = Double.valueOf(args[0].get("price"));
+		int orderId = Integer.valueOf(args[0]);
 
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("table_nr", String.valueOf(table)));
-		params.add(new BasicNameValuePair("status", String.valueOf(status)));
-		params.add(new BasicNameValuePair("food", food));
-		params.add(new BasicNameValuePair("drink", drink));
-		params.add(new BasicNameValuePair("price_sum", String.valueOf(priceSum)));
+		params.add(new BasicNameValuePair("order_id", String.valueOf(orderId)));
 
 		// getting JSON Object
 		// Note that create product url accepts POST method
@@ -86,17 +77,7 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 	{
 		pDialog.dismiss();
 		
-		if(success != 1)
-		{
-			Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Fehler!",
-					   Toast.LENGTH_SHORT).show();
-		}
-		else
-		{
-			Toast.makeText(SmartOrderClient.getInstance().getOrderActivity().getApplicationContext(), "Gesendet!",
-					   Toast.LENGTH_SHORT).show();
-		}
-		
+		SmartOrderClient.getInstance().getOpenOrderActivity().finish();
 		new GetOpenOrders().execute(SmartOrderClient.getInstance().getOrderActivity().getTableId());
 	}
 

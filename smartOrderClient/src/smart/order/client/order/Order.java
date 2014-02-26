@@ -133,6 +133,7 @@ public class Order
 
 		map.put("food", food);
 		map.put("drink", drink);
+		map.put("price", String.valueOf(getSum()));
 
 		new AddOrder().execute(map);
 	}
@@ -175,6 +176,21 @@ public class Order
 			}
 		}
 	}
+	
+	public double getSum()
+	{
+		double sum = 0;
+		for(int i = 0; i < foodItems.size(); i++)
+		{
+			sum += foodItems.elementAt(i).getPrice();
+		}
+		for(int i = 0; i < drinkItems.size(); i++)
+		{
+			sum += drinkItems.elementAt(i).getPrice();
+		}
+		return sum;
+	}
+	
 	public void removeDrink(int id)
 	{
 		for(int i = 0; i < drinkItems.size(); i++)

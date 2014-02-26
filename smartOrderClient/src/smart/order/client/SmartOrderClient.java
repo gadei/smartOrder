@@ -6,6 +6,7 @@ import android.app.Activity;
 import smart.order.client.Command;
 import smart.order.client.GUI.Main.FullscreenActivity;
 import smart.order.client.GUI.Main.SmartOrderActivity;
+import smart.order.client.GUI.OpenOrderActivity.OpenOrderActivity;
 import smart.order.client.GUI.OrderActivity.OrderActivity;
 import smart.order.client.TCPConnection.TCPClient;
 import smart.order.client.order.Drink;
@@ -17,6 +18,7 @@ public class SmartOrderClient {
 	private FullscreenActivity fullscreenActivity = null;
 	private SmartOrderActivity smartOrderActivity = null;
 	private OrderActivity orderActivity = null;
+	private OpenOrderActivity openOrderActivity = null;
 	
 	private TCPClient client = null;
 	private String ipAddress = null;
@@ -79,6 +81,16 @@ public class SmartOrderClient {
 	{
 		this.orderActivity = orderActivity;
 	}
+	
+	public OpenOrderActivity getOpenOrderActivity()
+	{
+		return openOrderActivity;
+	}
+
+	public void setOpenOrderActivity(OpenOrderActivity openOrderActivity)
+	{
+		this.openOrderActivity = openOrderActivity;
+	}
 
 	public Vector<Food> getFood()
 	{
@@ -139,5 +151,6 @@ public class SmartOrderClient {
 
 		return Error.ERR_OK;
 	}
+
 
 }

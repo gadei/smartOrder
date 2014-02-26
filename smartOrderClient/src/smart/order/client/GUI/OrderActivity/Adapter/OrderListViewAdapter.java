@@ -70,12 +70,14 @@ public class OrderListViewAdapter extends ArrayAdapter<Menu>
 					SmartOrderClient.getInstance().getOrderActivity().getOrder().removeFood(id);
 					SmartOrderClient.getInstance().getOrderActivity().getOrderListData().remove(position);
 					OrderListViewAdapter.this.notifyDataSetChanged();
+					SmartOrderClient.getInstance().getOrderActivity().setTxtSum();
 				}
 				else if(values.get(position).getClass() == Drink.class)
 				{
 					SmartOrderClient.getInstance().getOrderActivity().getOrder().removeDrink(id);
 					SmartOrderClient.getInstance().getOrderActivity().getOrderListData().remove(position);
 					OrderListViewAdapter.this.notifyDataSetChanged();
+					SmartOrderClient.getInstance().getOrderActivity().setTxtSum();
 				}
 			}
 		});

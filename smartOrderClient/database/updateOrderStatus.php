@@ -2,13 +2,10 @@
 $response = array();
 
 // check for required fields
-if (isset($_GET['table_nr']) && ($_GET['status'])) 
+if (isset($_GET['order_id']))
 {
-    $table_nr = $_GET['table_nr'];
-    $status = $_GET['status'];
-    $food = $_GET['food'];
-    $drink = $_GET['drink'];
-	$price_sum = $_GET['price_sum'];
+    $order_id = $_GET['order_id'];
+	$STATUS = 0;
 
     // include db connect class
     require_once __DIR__ . '/dbConnect.php';
@@ -16,14 +13,12 @@ if (isset($_GET['table_nr']) && ($_GET['status']))
     // connecting to db
     $db = new DB_CONNECT();
 
-    // mysql inserting a new row
-    $result = mysql_query("INSERT INTO `order`(table_nr, food, drink, status, price_sum) VALUES('$table_nr', '$food', '$drink', '$status', '$price_sum')");
+    $result = mysql_query("UPDATE `order` SET status=$STATUS WHERE order_id=$order_id");
 
-    // check if row inserted or not
     if ($result) {
         // successfully inserted into database
         $response["success"] = 1;
-        $response["message"] = "Product successfully created.";
+        $response["message"] = "Product successfully updated.";
 
         // echoing JSON response
         echo json_encode($response);

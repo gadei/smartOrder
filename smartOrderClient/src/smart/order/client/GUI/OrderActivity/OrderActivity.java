@@ -1,5 +1,7 @@
 package smart.order.client.GUI.OrderActivity;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Vector;
 
 import smart.order.client.R;
 import smart.order.client.SmartOrderClient;
+import smart.order.client.GUI.OpenOrderActivity.OpenOrderActivity;
 import smart.order.client.GUI.OrderActivity.Adapter.OrderExpendableListViewAdapter;
 import smart.order.client.GUI.OrderActivity.Adapter.OrderListViewAdapter;
 import smart.order.client.database.GetOpenOrders;
@@ -19,6 +22,7 @@ import smart.order.client.order.Order;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,6 +52,7 @@ public class OrderActivity extends Activity
 	private ArrayAdapter<String> openOrderListAdapter;
 	private ArrayList<String> openOrderListData = new ArrayList<String>();
 
+	private TextView sum = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -62,7 +67,7 @@ public class OrderActivity extends Activity
 		setTableId();
 
 		new GetOpenOrders().execute(tableId);
-		
+
 		createListViewMenu();
 		createListViewOrder();
 		createListViewOpenOrder();
@@ -70,6 +75,26 @@ public class OrderActivity extends Activity
 		setButtonNewOrder();
 		setButtonCancelOrder();
 		setButtonFinishOrder();
+
+		setTxtSum();
+	}
+
+	public void setTxtSum()
+	{
+		if(sum == null)
+		{
+			sum = (TextView)findViewById(R.id.sum_orderactivity);
+		}
+
+		if(order != null)
+		{
+			NumberFormat format = new DecimalFormat("0.00");
+			sum.setText(format.format(order.getSum()) + " €");
+		}
+		else
+		{
+			sum.setText("0.00 €");
+		}
 	}
 
 	private void createListViewMenu()
@@ -103,6 +128,7 @@ public class OrderActivity extends Activity
 					Menu menuItem = order.addClickedItemToOrder(view);
 					orderListData.add(menuItem);
 					orderListAdapter.notifyDataSetChanged();
+					setTxtSum();
 				}
 				else
 				{
@@ -128,12 +154,37 @@ public class OrderActivity extends Activity
 	private void createListViewOpenOrder()
 	{
 		OrderActivity activity = SmartOrderClient.getInstance().getOrderActivity();
-		ListView list = (ListView)activity.findViewById(R.id.orderFragmentDetail_listView2);
+		final ListView list = (ListView)activity.findViewById(R.id.orderFragmentDetail_listView2);
 
 		openOrderListAdapter = new ArrayAdapter<String>(SmartOrderClient.getInstance().getOrderActivity(),
 				android.R.layout.simple_list_item_1, openOrderListData);
 
 		list.setAdapter(openOrderListAdapter);
+
+		list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		{
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View view,
+					int pos, long arg3)
+			{
+				String selectedFromList = (list.getItemAtPosition(pos).toString());
+				String[] parts = selectedFromList.split(" ");
+
+				for(int i = 0; i < openOrderArrayList.size(); i++)
+				{
+					if(Integer.valueOf(openOrderArrayList.get(i).get("order_id")) == Integer.valueOf(parts[2]))
+					{
+						Intent intent= new Intent(OrderActivity.this, OpenOrderActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						intent.putExtra("order_id", Integer.valueOf(parts[2]));
+						startActivity(intent);
+						return;
+					}
+				}
+
+			}
+		});
 	}
 
 	private void setButtonNewOrder()
@@ -174,6 +225,7 @@ public class OrderActivity extends Activity
 					order = null;
 					orderListData.clear();
 					orderListAdapter.notifyDataSetChanged();
+					setTxtSum();
 				}
 				else
 				{
@@ -197,6 +249,7 @@ public class OrderActivity extends Activity
 					order = null;
 					orderListData.clear();
 					orderListAdapter.notifyDataSetChanged();
+					setTxtSum();
 
 					Toast.makeText(getApplicationContext(), "Bestellung abgebrochen!",
 							Toast.LENGTH_SHORT).show();
@@ -226,7 +279,7 @@ public class OrderActivity extends Activity
 	{
 		this.openOrderArrayList = openOrderList;
 	}
-	
+
 	public void updateOpenOrderList()
 	{
 		openOrderListData.clear();
@@ -236,7 +289,7 @@ public class OrderActivity extends Activity
 		}
 		openOrderListAdapter.notifyDataSetChanged();
 	}
-	
+
 	public ArrayList<Menu> getOrderListData()
 	{
 		return orderListData;
@@ -250,6 +303,11 @@ public class OrderActivity extends Activity
 	{
 		return tableId;
 	}
-	
-	
+
+	public ArrayList<HashMap<String, String>> getOpenOrderArrayList()
+	{
+		return openOrderArrayList;
+	}
+
+
 } 

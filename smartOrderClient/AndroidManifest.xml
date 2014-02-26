@@ -41,6 +41,8 @@
         </activity>
         <activity android:name=".GUI.OrderActivity.OrderActivity" >
         </activity>
+        <activity android:name=".GUI.OpenOrderActivity.OpenOrderActivity" >
+        </activity>
     </application>
 
 </manifest>
