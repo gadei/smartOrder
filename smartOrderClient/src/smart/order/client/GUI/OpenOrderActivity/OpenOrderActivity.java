@@ -76,49 +76,43 @@ public class OpenOrderActivity extends Activity
 		list.setAdapter(openOrderListAdapter);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void createMenuArray()
 	{
-		ArrayList<HashMap<String, String>> data = SmartOrderClient.getInstance().getOrderActivity().getOpenOrderArrayList();
+		ArrayList<HashMap<String, Object>> data = SmartOrderClient.getInstance().getOrderActivity().getOpenOrderArrayList();
 
 		for(int i = 0; i < data.size(); i++)
 		{
-			if(Integer.valueOf(data.get(i).get("order_id")) == orderId)
+			if(Integer.valueOf((String) data.get(i).get("order_id")) == orderId)
 			{
-				Vector<Drink> drink = SmartOrderClient.getInstance().getDrink();
-				if(data.get(i).get("drink").length() > 0)
-				{
-					String[] drinkStringArray = data.get(i).get("drink").split(",");
+				Vector<Integer> orderFood = (Vector<Integer>) data.get(i).get("order_food");
+				Vector<Integer> orderDrink = (Vector<Integer>) data.get(i).get("order_drink");
 
-					for(int j = 0; j < drinkStringArray.length ; j++)
+				Vector<Drink> drink = SmartOrderClient.getInstance().getDrink();
+				Vector<Food> food = SmartOrderClient.getInstance().getFood();
+				for(int l = 0; l < food.size(); l++)
+				{
+					for(int j = 0; j < orderFood.size(); j++)
 					{
-						for(int l = 0; l < drink.size(); l++)
+						if(food.elementAt(l).getId() == orderFood.elementAt(j))
 						{
-							if(drink.elementAt(l).getId() == Integer.valueOf(drinkStringArray[j]))
-							{
-								menuVector.add(new Drink(drink.elementAt(l)));
-							}
+							menuVector.add(new Food(food.elementAt(l)));
 						}
 					}
 				}
-
-				Vector<Food> food = SmartOrderClient.getInstance().getFood();
-				if(data.get(i).get("food").length() > 0)
+				for(int l = 0; l < drink.size(); l++)
 				{
-					String[] foodStringArray = data.get(i).get("food").split(",");
-
-					for(int j = 0; j < foodStringArray.length ; j++)
+					for(int j = 0; j < orderDrink.size(); j++)
 					{
-						for(int l = 0; l < food.size(); l++)
+						if(drink.elementAt(l).getId() == orderDrink.elementAt(j))
 						{
-							if(food.elementAt(l).getId() == Integer.valueOf(foodStringArray[j]))
-							{
-								menuVector.add(new Food(food.elementAt(l)));
-							}
+							menuVector.add(new Drink(drink.elementAt(l)));
 						}
 					}
 				}
 			}
 		}
+
 	}
 
 	private void getSum()

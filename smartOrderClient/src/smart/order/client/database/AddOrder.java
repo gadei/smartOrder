@@ -45,19 +45,19 @@ public class AddOrder extends AsyncTask<Map<String, String>, String, String> {
 			return null;
 		}
 		
-		int table = Integer.valueOf(args[0].get("table"));
-		int status = Integer.valueOf(args[0].get("status"));;
-		String food = args[0].get("food");
-		String drink = args[0].get("drink");
-		double priceSum = Double.valueOf(args[0].get("price"));
+		int order_table = Integer.valueOf(args[0].get("order_table"));
+		int order_status = Integer.valueOf(args[0].get("order_status"));;
+		String order_food = args[0].get("order_food");
+		String order_drink = args[0].get("order_drink");
+		double order_price = Double.valueOf(args[0].get("order_price"));
 
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("table_nr", String.valueOf(table)));
-		params.add(new BasicNameValuePair("status", String.valueOf(status)));
-		params.add(new BasicNameValuePair("food", food));
-		params.add(new BasicNameValuePair("drink", drink));
-		params.add(new BasicNameValuePair("price_sum", String.valueOf(priceSum)));
+		params.add(new BasicNameValuePair("order_table", String.valueOf(order_table)));
+		params.add(new BasicNameValuePair("order_status", String.valueOf(order_status)));
+		params.add(new BasicNameValuePair("order_food", order_food));
+		params.add(new BasicNameValuePair("order_drink", order_drink));
+		params.add(new BasicNameValuePair("order_price", String.valueOf(order_price)));
 
 		// getting JSON Object
 		// Note that create product url accepts POST method

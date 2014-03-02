@@ -8,22 +8,24 @@ require_once __DIR__ . '/dbConnect.php';
  
 // connecting to db
 $db = new DB_CONNECT();
+$con = $db->connect();
  
 // get all products from products table
-$result = mysql_query("SELECT * FROM food") or die(mysql_error());
+$result = $con->query("SELECT * FROM food") or die(mysql_error());
  
 // check for empty result
-if (mysql_num_rows($result) > 0) {
+if ($result->num_rows > 0) 
+{
     // looping through all results
     // products node
     $response["food"] = array();
  
-    while ($row = mysql_fetch_array($result)) {
+    while ($row = $result->fetch_array()) {
         // temp user array
         $food = array();
         $food["food_id"] = $row["food_id"];
-        $food["name"] = $row["name"];
-        $food["price"] = $row["price"];
+        $food["food_name"] = $row["food_name"];
+        $food["food_price"] = $row["food_price"];
         
         // push single product into final response array
         array_push($response["food"], $food);

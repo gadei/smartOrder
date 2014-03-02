@@ -41,7 +41,7 @@ public class OrderActivity extends Activity
 	private static final String TAG_FOOD = "Speisen";
 	private static final String TAG_DRINK = "Getränke";
 
-	private ArrayList<HashMap<String, String>> openOrderArrayList = null;
+	private ArrayList<HashMap<String, Object>> openOrderArrayList = null;
 
 	private Order order = null;
 	private int tableId = 0;
@@ -173,7 +173,7 @@ public class OrderActivity extends Activity
 
 				for(int i = 0; i < openOrderArrayList.size(); i++)
 				{
-					if(Integer.valueOf(openOrderArrayList.get(i).get("order_id")) == Integer.valueOf(parts[2]))
+					if(Integer.valueOf((String) openOrderArrayList.get(i).get("order_id")) == Integer.valueOf(parts[2]))
 					{
 						Intent intent= new Intent(OrderActivity.this, OpenOrderActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -221,11 +221,19 @@ public class OrderActivity extends Activity
 			{
 				if(order != null)
 				{
-					order.sendOrder();
-					order = null;
-					orderListData.clear();
-					orderListAdapter.notifyDataSetChanged();
-					setTxtSum();
+					if(!order.getDrinkItems().isEmpty() || !order.getFoodItems().isEmpty())
+					{
+						order.sendOrder();
+						order = null;
+						orderListData.clear();
+						orderListAdapter.notifyDataSetChanged();
+						setTxtSum();
+					}
+					else
+					{
+						Toast.makeText(getApplicationContext(), "Es wurde noch nichts bestellt!",
+								Toast.LENGTH_SHORT).show();
+					}
 				}
 				else
 				{
@@ -275,7 +283,7 @@ public class OrderActivity extends Activity
 		text.setText("Tisch " + tableId);
 	}
 
-	public void setOpenOrderList(ArrayList<HashMap<String, String>> openOrderList)
+	public void setOpenOrderList(ArrayList<HashMap<String, Object>> openOrderList)
 	{
 		this.openOrderArrayList = openOrderList;
 	}
@@ -304,7 +312,7 @@ public class OrderActivity extends Activity
 		return tableId;
 	}
 
-	public ArrayList<HashMap<String, String>> getOpenOrderArrayList()
+	public ArrayList<HashMap<String, Object>> getOpenOrderArrayList()
 	{
 		return openOrderArrayList;
 	}

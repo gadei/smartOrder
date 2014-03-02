@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 26, 2014 at 04:00 PM
+-- Generation Time: Mar 02, 2014 at 10:47 AM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -30,8 +30,8 @@ USE `smartorder`;
 
 CREATE TABLE IF NOT EXISTS `drink` (
   `drink_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `price` double NOT NULL,
+  `drink_name` varchar(100) NOT NULL,
+  `drink_price` double NOT NULL,
   PRIMARY KEY (`drink_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `drink` (
 -- Dumping data for table `drink`
 --
 
-INSERT INTO `drink` (`drink_id`, `name`, `price`) VALUES
+INSERT INTO `drink` (`drink_id`, `drink_name`, `drink_price`) VALUES
 (1, 'Bier 0.5l', 3.6),
 (2, 'Spritzer', 2.65),
 (3, 'Coca Cola 0.5l', 3.2),
@@ -55,8 +55,8 @@ INSERT INTO `drink` (`drink_id`, `name`, `price`) VALUES
 
 CREATE TABLE IF NOT EXISTS `food` (
   `food_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `price` double NOT NULL,
+  `food_name` varchar(100) NOT NULL,
+  `food_price` double NOT NULL,
   PRIMARY KEY (`food_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `food` (
 -- Dumping data for table `food`
 --
 
-INSERT INTO `food` (`food_id`, `name`, `price`) VALUES
+INSERT INTO `food` (`food_id`, `food_name`, `food_price`) VALUES
 (1, 'Toast', 3.9),
 (2, 'Wiener Schnitzel', 8.9),
 (3, 'Schweinsbraten', 9.1),
@@ -80,14 +80,27 @@ INSERT INTO `food` (`food_id`, `name`, `price`) VALUES
 
 CREATE TABLE IF NOT EXISTS `order` (
   `order_id` int(11) NOT NULL AUTO_INCREMENT,
-  `table_nr` int(11) NOT NULL,
-  `food` varchar(150) DEFAULT NULL,
-  `drink` varchar(150) DEFAULT NULL,
-  `status` int(11) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `price_sum` double DEFAULT NULL,
+  `order_table` int(11) NOT NULL,
+  `order_status` int(11) NOT NULL,
+  `order_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `order_price` double DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=84 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orderitems`
+--
+
+CREATE TABLE IF NOT EXISTS `orderitems` (
+  `order_id` int(11) NOT NULL,
+  `food_id` int(11) DEFAULT NULL,
+  `drink_id` int(11) DEFAULT NULL,
+  `orderitems_payed` tinyint(1) NOT NULL,
+  `orderitems_id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`orderitems_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=76 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -3,6 +3,7 @@ package smart.order.client.database;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,15 +23,15 @@ public class GetOpenOrders extends AsyncTask<Integer, String, ArrayList<HashMap<
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_ORDER = "order";
 	private static final String TAG_ID = "order_id";
-	private static final String TAG_DRINK = "drink";
-	private static final String TAG_FOOD = "food";
-	private static final String TAG_TABLE = "table_nr";
-	private static final String TAG_STATUS = "status";
-	private static final String TAG_TIMESTAMP = "timestamp";
+	private static final String TAG_DRINK = "order_drink";
+	private static final String TAG_FOOD = "order_food";
+	private static final String TAG_TABLE = "order_table";
+	private static final String TAG_STATUS = "order_status";
+	private static final String TAG_TIMESTAMP = "order_timestamp";
 
 	private JSONParser jParser = new JSONParser();
 	private JSONArray order;
-	private ArrayList<HashMap<String, String>> orderList = new ArrayList<HashMap<String,String>>();
+	private ArrayList<HashMap<String, Object>> orderList = new ArrayList<HashMap<String,Object>>();
 
 
 	@Override
@@ -51,10 +52,10 @@ public class GetOpenOrders extends AsyncTask<Integer, String, ArrayList<HashMap<
 			return null;
 		}
 		
-		int table_nr = args[0];
+		int table = args[0];
 		// Building Parameters
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("table_nr", String.valueOf(table_nr)));
+		params.add(new BasicNameValuePair("order_table", String.valueOf(table)));
 		// getting JSON string from URL
 
 		try 
@@ -78,23 +79,34 @@ public class GetOpenOrders extends AsyncTask<Integer, String, ArrayList<HashMap<
 					JSONObject c = order.getJSONObject(i);
 
 					// Storing each json item in variable
-					String status = c.getString(TAG_STATUS);
-					String table = c.getString(TAG_TABLE);
-					String food = c.getString(TAG_FOOD);
-					String drink = c.getString(TAG_DRINK);
-					String timestamp = c.getString(TAG_TIMESTAMP);
+					String order_status = c.getString(TAG_STATUS);
+					String order_table = c.getString(TAG_TABLE);
+					String order_timestamp = c.getString(TAG_TIMESTAMP);
 					String order_id = c.getString(TAG_ID);
-
+					JSONArray jArrayDrink = c.getJSONArray(TAG_DRINK);
+					JSONArray jArrayFood = c.getJSONArray(TAG_FOOD);
+					
+					Vector<Integer> order_drink = new Vector<Integer>();
+					Vector<Integer> order_food = new Vector<Integer>();
+					for(int j = 0; j < jArrayDrink.length(); j++)
+					{
+						order_drink.add(jArrayDrink.getInt(j));
+					}
+					for(int j = 0; j < jArrayFood.length(); j++)
+					{
+						order_food.add(jArrayFood.getInt(j));
+					}
+					
 					// creating new HashMap
-					HashMap<String, String> map = new HashMap<String, String>();
+					HashMap<String, Object> map = new HashMap<String, Object>();
 
 					// adding each child node to HashMap key => value
-					map.put(TAG_STATUS, status);
-					map.put(TAG_TABLE, table);
-					map.put(TAG_FOOD, food);
-					map.put(TAG_DRINK, drink);
-					map.put(TAG_TIMESTAMP, timestamp);
+					map.put(TAG_STATUS, order_status);
+					map.put(TAG_TABLE, order_table);
+					map.put(TAG_TIMESTAMP, order_timestamp);
 					map.put(TAG_ID, order_id);
+					map.put(TAG_FOOD, order_food);
+					map.put(TAG_DRINK, order_drink);
 
 					// adding HashList to ArrayList
 					orderList.add(map);

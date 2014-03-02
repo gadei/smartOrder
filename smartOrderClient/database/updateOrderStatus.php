@@ -12,20 +12,24 @@ if (isset($_GET['order_id']))
 
     // connecting to db
     $db = new DB_CONNECT();
+	$con = $db->connect();
 
-    $result = mysql_query("UPDATE `order` SET status=$STATUS WHERE order_id=$order_id");
+    $result = $con->query("UPDATE `order` SET order_status=$STATUS WHERE order_id=$order_id");
 
-    if ($result) {
+    if ($result) 
+	{
         // successfully inserted into database
         $response["success"] = 1;
         $response["message"] = "Product successfully updated.";
 
         // echoing JSON response
         echo json_encode($response);
-    } else {
+    } 
+	else 
+	{
         // failed to insert row
         $response["success"] = 0;
-        $response["message"] = "Oops! An error occurred. $table, $order_id, $food, $drink, $status";
+        $response["message"] = "Oops! An error occurred.";
 
         // echoing JSON response
         echo json_encode($response);

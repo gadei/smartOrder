@@ -152,5 +152,9 @@ public class SmartOrderClient {
 		return Error.ERR_OK;
 	}
 
+	public TCPClient getClient()
+	{
+		return client;
+	}
 
 }

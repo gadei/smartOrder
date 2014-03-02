@@ -38,8 +38,8 @@ public class GetDrink extends AsyncTask<String, String, String>
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_DRINK = "drink";
 	private static final String TAG_ID = "drink_id";
-	private static final String TAG_NAME = "name";
-	private static final String TAG_PRICE = "price";
+	private static final String TAG_NAME = "drink_name";
+	private static final String TAG_PRICE = "drink_price";
 
 	private JSONParser jParser = new JSONParser();
 	private JSONArray drink = null;
@@ -90,17 +90,17 @@ public class GetDrink extends AsyncTask<String, String, String>
 					JSONObject c = drink.getJSONObject(i);
 
 					// Storing each json item in variable
-					String id = c.getString(TAG_ID);
-					String name = c.getString(TAG_NAME);
-					String price = c.getString(TAG_PRICE);
+					String drink_id = c.getString(TAG_ID);
+					String drink_name = c.getString(TAG_NAME);
+					String drink_price = c.getString(TAG_PRICE);
 
 					// creating new HashMap
 					HashMap<String, String> map = new HashMap<String, String>();
 
 					// adding each child node to HashMap key => value
-					map.put(TAG_ID, id);
-					map.put(TAG_NAME, name);
-					map.put(TAG_PRICE, price);
+					map.put(TAG_ID, drink_id);
+					map.put(TAG_NAME, drink_name);
+					map.put(TAG_PRICE, drink_price);
 
 					// adding HashList to ArrayList
 					drinkList.add(map);

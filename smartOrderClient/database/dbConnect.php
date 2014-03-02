@@ -1,6 +1,8 @@
 <?php
 class DB_CONNECT {
  
+	private $con;
+ 
     // constructor
     function __construct() {
         $this->connect();
@@ -19,21 +21,23 @@ class DB_CONNECT {
         require_once __DIR__ . '/dbConfig.php';
  
         // Connecting to mysql database
-        $con = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysql_error());
+        $this->con = new mysqli(DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE) or die(mysql_error());
  
-        // Selecing database
-        $db = mysql_select_db(DB_DATABASE) or die(mysql_error()) or die(mysql_error());
+		if ($this->con->connect_error) 
+		{
+			die('Connect Error (' . $this->con->connect_errno . ') '. $this->con->connect_error);
+		}
  
         // returing connection cursor
-        return $con;
+        return $this->con;
     }
  
     /**
      * Function to close db connection
      */
-    function close() {
-        // closing db connection
-        mysql_close();
+    function close() 
+	{
+        $this->con->close();
     }
  
 }

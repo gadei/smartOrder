@@ -1,5 +1,7 @@
 package smart.order.client.order;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 
 import smart.order.client.R;
 import smart.order.client.SmartOrderClient;
+import smart.order.client.TCPConnection.TCPClient;
 import smart.order.client.database.AddOrder;
 
 import android.os.AsyncTask;
@@ -111,13 +114,14 @@ public class Order
 		try
 		{
 			jsonOrder = toJson();
+			TCPClient client = SmartOrderClient.getInstance().getClient();
 		} 
 		catch (Exception e)
 		{}
 
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("table", String.valueOf(getTable()));
-		map.put("status", TAG_OPEN);
+		map.put("order_table", String.valueOf(getTable()));
+		map.put("order_status", TAG_OPEN);
 
 		String food = new String();
 		for(int i = 0; i < getFoodItems().size(); i++)
@@ -131,9 +135,9 @@ public class Order
 			drink = drink + getDrinkItems().elementAt(i).getId() + ",";
 		}
 
-		map.put("food", food);
-		map.put("drink", drink);
-		map.put("price", String.valueOf(getSum()));
+		map.put("order_food", food);
+		map.put("order_drink", drink);
+		map.put("order_price", String.valueOf(Math.round(getSum() * 100.0) / 100.0));
 
 		new AddOrder().execute(map);
 	}
@@ -188,6 +192,7 @@ public class Order
 		{
 			sum += drinkItems.elementAt(i).getPrice();
 		}
+
 		return sum;
 	}
 	

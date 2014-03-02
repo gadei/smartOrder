@@ -38,8 +38,8 @@ public class GetFood extends AsyncTask<String, String, String>
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_FOOD = "food";
 	private static final String TAG_ID = "food_id";
-	private static final String TAG_NAME = "name";
-	private static final String TAG_PRICE = "price";
+	private static final String TAG_NAME = "food_name";
+	private static final String TAG_PRICE = "food_price";
 
 	private JSONParser jParser = new JSONParser();
 	private JSONArray food = null;
@@ -88,17 +88,17 @@ public class GetFood extends AsyncTask<String, String, String>
 					JSONObject c = food.getJSONObject(i);
 
 					// Storing each json item in variable
-					String id = c.getString(TAG_ID);
-					String name = c.getString(TAG_NAME);
-					String price = c.getString(TAG_PRICE);
+					String food_id = c.getString(TAG_ID);
+					String food_name = c.getString(TAG_NAME);
+					String food_price = c.getString(TAG_PRICE);
 
 					// creating new HashMap
 					HashMap<String, String> map = new HashMap<String, String>();
 
 					// adding each child node to HashMap key => value
-					map.put(TAG_ID, id);
-					map.put(TAG_NAME, name);
-					map.put(TAG_PRICE, price);
+					map.put(TAG_ID, food_id);
+					map.put(TAG_NAME, food_name);
+					map.put(TAG_PRICE, food_price);
 
 					// adding HashList to ArrayList
 					foodList.add(map);
