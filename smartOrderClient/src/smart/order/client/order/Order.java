@@ -23,7 +23,7 @@ public class Order
 	private static final String TAG_OPEN = "1";
 	private Vector<Food> foodItems = new Vector<Food>();
 	private Vector<Drink> drinkItems = new Vector<Drink>();
-
+	
 	private int table = 0;
 	private int orderId = 0;
 
@@ -45,7 +45,6 @@ public class Order
 			styleJSON.put("id", foodItems.elementAt(i).getId());
 			styleJSON.put("name", foodItems.elementAt(i).getName());
 			styleJSON.put("price", foodItems.elementAt(i).getPrice());
-			styleJSON.put("quantity", foodItems.elementAt(i).getQuantity());	
 
 			jArrayFood.put(styleJSON);
 		}		
@@ -57,8 +56,7 @@ public class Order
 
 			styleJSON.put("id", drinkItems.elementAt(i).getId());
 			styleJSON.put("name", drinkItems.elementAt(i).getName());
-			styleJSON.put("price", drinkItems.elementAt(i).getPrice());
-			styleJSON.put("quantity", drinkItems.elementAt(i).getQuantity());	
+			styleJSON.put("price", drinkItems.elementAt(i).getPrice());	
 
 			jArrayDrink.put(styleJSON);
 		}		
@@ -76,16 +74,16 @@ public class Order
 	public Menu addClickedItemToOrder(View view)
 	{
 		int menuId = (Integer)view.getTag(R.id.TAG_ID);
-		Vector<Food> food = SmartOrderClient.getInstance().getFood();
-		Vector<Drink> drink = SmartOrderClient.getInstance().getDrink();
+		Vector<Food> foodVector = SmartOrderClient.getInstance().getFood();
+		Vector<Drink> drinkVector = SmartOrderClient.getInstance().getDrink();
 
 		if(view.getTag(R.id.TAG_MENU) == "food")
 		{
-			for(int i = 0; i < food.size(); i++)
+			for(Food food : foodVector)
 			{
-				if(food.elementAt(i).getId() == menuId)
+				if(food.getId() == menuId)
 				{
-					Food newFood = new Food(food.elementAt(i));
+					Food newFood = new Food(food);
 					addFoodToOrder(newFood);
 					return newFood;
 				}
@@ -93,11 +91,11 @@ public class Order
 		}
 		if(view.getTag(R.id.TAG_MENU) == "drink")
 		{
-			for(int i = 0; i < drink.size(); i++)
+			for(Drink drink : drinkVector)
 			{
-				if(drink.elementAt(i).getId() == menuId)
+				if(drink.getId() == menuId)
 				{
-					Drink newDrink = new Drink(drink.elementAt(i));
+					Drink newDrink = new Drink(drink);
 					addDrinkToOrder(newDrink);
 					return newDrink;
 				}
@@ -115,6 +113,9 @@ public class Order
 		{
 			jsonOrder = toJson();
 			TCPClient client = SmartOrderClient.getInstance().getClient();
+			//-----------------------------------------------------------------
+			//TODO: Sent json String to C# Server 
+			//-----------------------------------------------------------------
 		} 
 		catch (Exception e)
 		{}
@@ -169,17 +170,6 @@ public class Order
 		this.drinkItems.addElement(drinkItem);
 	}
 	
-	public void removeFood(int id)
-	{
-		for(int i = 0; i < foodItems.size(); i++)
-		{
-			if(foodItems.elementAt(i).getId() == id)
-			{
-				foodItems.remove(i);
-				return;
-			}
-		}
-	}
 	
 	public double getSum()
 	{
@@ -197,12 +187,24 @@ public class Order
 	}
 	
 	public void removeDrink(int id)
-	{
-		for(int i = 0; i < drinkItems.size(); i++)
+	{		
+		for(Drink drink : drinkItems)
 		{
-			if(drinkItems.elementAt(i).getId() == id)
+			if(drink.getId() == id)
 			{
-				drinkItems.remove(i);
+				drinkItems.remove(drink);
+				return;
+			}
+		}
+	}
+	
+	public void removeFood(int id)
+	{
+		for(Food food : foodItems)
+		{
+			if(food.getId() == id)
+			{
+				foodItems.remove(food);
 				return;
 			}
 		}

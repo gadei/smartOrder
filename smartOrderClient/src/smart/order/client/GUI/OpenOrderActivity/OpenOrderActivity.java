@@ -26,7 +26,7 @@ public class OpenOrderActivity extends Activity
 {
 	private SmartOrderClient smartOrderClient;
 
-	private Vector<Menu> menuVector = null;
+	private Vector<Menu> menuVector = new Vector<Menu>();
 
 	int orderId = 0;
 
@@ -39,9 +39,6 @@ public class OpenOrderActivity extends Activity
 
 		smartOrderClient  = SmartOrderClient.getInstance();
 		smartOrderClient.setOpenOrderActivity(this);
-
-		menuVector = new Vector<Menu>();
-		menuVector.clear();
 
 		setOrderId();
 		createMenuArray();
@@ -135,6 +132,10 @@ public class OpenOrderActivity extends Activity
 		if(order != null)
 		{
 			orderId = order.getInt("order_id");
+		}
+		else
+		{
+			finish();
 		}
 	}
 }
